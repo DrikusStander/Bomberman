@@ -5,3 +5,4 @@ bomberman
 a.out
 *.gch
 *.so
+*.a
