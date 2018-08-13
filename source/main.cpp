@@ -10,7 +10,7 @@
 
 // GL includes
 #include "Shader.h"
-#include "Camera.h"
+#include "Camera.class.hpp"
 #include "Model.h"
 
 // GLM Mathemtics
@@ -31,7 +31,7 @@ void MouseCallback( GLFWwindow *window, double xPos, double yPos );
 void DoMovement( );
 
 // Camera
-Camera camera( glm::vec3( 0.0f, 300.0f, 200.0f ) );
+Camera camera;
 bool keys[1024];
 GLfloat lastX = 400, lastY = 300;
 bool firstMouse = true;

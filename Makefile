@@ -6,7 +6,7 @@
 #    By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/07/31 19:21:44 by cnolte            #+#    #+#              #
-#    Updated: 2018/08/13 11:51:54 by cnolte           ###   ########.fr        #
+#    Updated: 2018/08/13 17:58:02 by cnolte           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,12 +14,12 @@
 
 NAME := bomberman
 
-SRCS := source/main.cpp
+SRCS := source/main.cpp source/classes/Camera.class.cpp
 OBJS := $(SRCS:.cpp=.o)
 
 CXX := clang++ -std=c++11
 
-INC_DIRS = include/ $(HOME)/.brew/include resources/SOIL2
+INC_DIRS = include/ include/classes $(HOME)/.brew/include resources/SOIL2
 CXXFLAGS += $(addprefix -I, $(INC_DIRS))
 
 $(NAME): $(OBJS)
