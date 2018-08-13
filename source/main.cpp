@@ -19,7 +19,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 // Other Libs
-#include "resources/SOIL2/SOIL2.h"
+#include "SOIL2.h"
 
 // Properties
 const GLuint WIDTH = 2500, HEIGHT = 1350;
