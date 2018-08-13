@@ -31,7 +31,7 @@ void MouseCallback( GLFWwindow *window, double xPos, double yPos );
 void DoMovement( );
 
 // Camera
-Camera camera( glm::vec3( 0.0f, 0.0f, 300.0f ) );
+Camera camera( glm::vec3( 0.0f, 300.0f, 200.0f ) );
 bool keys[1024];
 GLfloat lastX = 400, lastY = 300;
 bool firstMouse = true;
@@ -41,6 +41,7 @@ GLfloat lastFrame = 0.0f;
 
 int main( )
 {
+	camera.ProcessMouseMovement( 0, -250 );
 	// Init GLFW
 	glfwInit( );
 	// Set all the required options for GLFW
