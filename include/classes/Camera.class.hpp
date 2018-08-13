@@ -6,7 +6,7 @@
 /*   By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/11 11:20:47 by cnolte            #+#    #+#             */
-/*   Updated: 2018/08/13 18:40:37 by cnolte           ###   ########.fr       */
+/*   Updated: 2018/08/13 19:18:14 by cnolte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,14 @@
 
 # include <iostream>
 
-#include <vector>
+# include <vector>
 
 // GL Includes
-#define GLEW_STATIC
-#include <GL/glew.h>
+# define GLEW_STATIC
+# include <GL/glew.h>
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
+# include <glm/glm.hpp>
+# include <glm/gtc/matrix_transform.hpp>
 
 // Defines several possible options for camera movement. Used as abstraction to stay away from window-system specific input methods
 enum Camera_Movement
