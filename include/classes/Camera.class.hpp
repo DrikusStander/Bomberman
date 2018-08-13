@@ -6,7 +6,7 @@
 /*   By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/11 11:20:47 by cnolte            #+#    #+#             */
-/*   Updated: 2018/08/13 18:33:55 by cnolte           ###   ########.fr       */
+/*   Updated: 2018/08/13 18:40:37 by cnolte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,6 @@ class Camera
 	public:
 		//start canonical form
 		Camera(void);
-		Camera(int const n);
 		Camera(Camera const & src);
 		~Camera(void);
 
@@ -58,6 +57,8 @@ class Camera
 		// Returns the view matrix calculated using Eular Angles and the LookAt Matrix
 		glm::mat4	GetViewMatrix(void);
 
+		GLfloat		GetZoom(void);
+
 		// Processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
 		void		ProcessKeyboard(Camera_Movement direction, GLfloat deltaTime);
 
@@ -67,14 +68,7 @@ class Camera
 		// Processes input received from a mouse scroll-wheel event. Only requires input on the vertical wheel-axis
 		void		ProcessMouseScroll(GLfloat yOffset);
 
-		GLfloat		GetZoom(void);
-		glm::vec3	GetPosition(void);
-		glm::vec3	GetFront(void);
-
-		int	getfoo(void) const;
 	private:
-		int	_foo;
-
 		 // Camera Attributes
 		glm::vec3	position;
 		glm::vec3	front;

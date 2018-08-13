@@ -6,7 +6,7 @@
 /*   By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/11 11:26:34 by cnolte            #+#    #+#             */
-/*   Updated: 2018/08/13 18:34:43 by cnolte           ###   ########.fr       */
+/*   Updated: 2018/08/13 18:40:55 by cnolte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 //start canonical form
 Camera::Camera(void)
 {
+	std::cout << "Default constructor called" << std::endl;
 	this->movementSpeed = SPEED;
 	this->mouseSensitivity = SENSITIVTY;
 	this->zoom = ZOOM;
@@ -24,13 +25,6 @@ Camera::Camera(void)
 	this->yaw = YAW;
 	this->pitch = PITCH;
 	this->updateCameraVectors( );
-}
-
-Camera::Camera(int const n) : _foo(n)
-{
-	std::cout << "Parametric Constructor called" << std::endl;
-
-	return ;
 }
 
 Camera::Camera(Camera const & src)
@@ -50,8 +44,8 @@ Camera::~Camera(void)
 Camera	&Camera::operator=(Camera const &rhs)
 {
 	std::cout << "Assignment operator called" << std::endl;
-	if (this != &rhs)
-		this->_foo = rhs.getfoo();
+	// if (this != &rhs)
+	// 	this->_foo = rhs.getfoo();
 	return (*this);
 }
 //end canonical form
@@ -98,6 +92,11 @@ void	Camera::ProcessKeyboard( Camera_Movement direction, GLfloat deltaTime )
 	}
 }
 
+GLfloat	Camera::GetZoom(void)
+{
+	return (this->zoom);
+}
+
 // Processes input received from a mouse input system. Expects the offset value in both the x and y direction.
 void	Camera::ProcessMouseMovement(GLfloat xOffset, GLfloat yOffset)
 {
@@ -126,27 +125,6 @@ void	Camera::ProcessMouseMovement(GLfloat xOffset, GLfloat yOffset)
 	this->updateCameraVectors( );
 }
 
-// Processes input received from a mouse scroll-wheel event. Only requires input on the vertical wheel-axis
-void	Camera::ProcessMouseScroll(GLfloat yOffset)
-{
-
-}
-
-GLfloat	Camera::GetZoom(void)
-{
-	return (this->zoom);
-}
-
-glm::vec3	Camera::GetPosition(void)
-{
-	return (this->position);
-}
-
-glm::vec3	Camera::GetFront(void)
-{
-	return (this->front);
-}
-
 // Calculates the front vector from the Camera's (updated) Eular Angles
 void Camera::updateCameraVectors(void)
 {
@@ -160,9 +138,4 @@ void Camera::updateCameraVectors(void)
 	// Also re-calculate the Right and Up vector
 	this->right = glm::normalize(glm::cross(this->front, this->worldUp));  // Normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
 	this->up = glm::normalize(glm::cross(this->right, this->front));
-}
-
-int	Camera::getfoo(void) const
-{
-	return (this->_foo);
 }
