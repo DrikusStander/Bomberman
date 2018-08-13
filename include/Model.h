@@ -15,7 +15,7 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-#include "Mesh.h"
+#include "Mesh.class.hpp"
 
 using namespace std;
 

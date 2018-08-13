@@ -6,7 +6,7 @@
 #    By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/07/31 19:21:44 by cnolte            #+#    #+#              #
-#    Updated: 2018/08/13 18:49:17 by cnolte           ###   ########.fr        #
+#    Updated: 2018/08/13 19:42:20 by cnolte           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@
 
 NAME := bomberman
 
-SRCS := source/main.cpp source/classes/Camera.class.cpp source/classes/Shader.class.cpp
+SRCS := source/main.cpp source/classes/Camera.class.cpp source/classes/Mesh.class.cpp source/classes/Shader.class.cpp
 OBJS := $(SRCS:.cpp=.o)
 
 CXX := clang++ -std=c++11
