@@ -1,1 +1,0 @@
-clang++ main.cpp -L ~/.brew/lib -I ~/.brew/include -lGLEW -lGLFW -lassimp -framework OpenGL -L . -lSOIL2 -framework CoreFoundation

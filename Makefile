@@ -6,40 +6,27 @@
 #    By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/07/31 19:21:44 by cnolte            #+#    #+#              #
-#    Updated: 2018/08/09 18:41:46 by cnolte           ###   ########.fr        #
+#    Updated: 2018/08/13 11:44:01 by cnolte           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-.DEFAULT_GOAL := install_dependencies
+NAME := bomberman
 
-NAME := nibbler libraries/FLTK/lib1-FLTK.so libraries/SDL2/lib2-SDL2.so libraries/SFML/lib3-SFML.so
-
-SRCS := source/main.cpp source/Exceptions.cpp source/classes/Game.class.cpp source/classes/Snake.class.cpp
+SRCS := source/main.cpp
 OBJS := $(SRCS:.cpp=.o)
 
 CXX := clang++ -std=c++11
 
-INC_DIRS = include/ include/classes libraries/FLTK/include/classes libraries/SDL2/include/classes libraries/SFML/include/classes $(HOME)/.brew/include
+INC_DIRS = include/ $(HOME)/.brew/include resources/SOIL2
 CXXFLAGS += $(addprefix -I, $(INC_DIRS))
 
-DLIBRARIES = libraries/FLTK/source/FLTKGameEvent.class.o libraries/FLTK/source/Cube.class.o \
-			 libraries/SDL2/source/SDL2GameEvent.class.o libraries/SDL2/source/Cube.class.o \
-			 libraries/SFML/source/SFMLGameEvent.class.o libraries/SFML/source/Cube.class.o
-
 $(NAME): $(OBJS)
-	@$(MAKE) -C libraries all
-	@$(CXX) $(OBJS) -o $@ 
+	@$(MAKE) -C resources/SOIL2 all
+	mv resources/SOIL2/libSOIL2.a .
+	@$(CXX) $(OBJS) -o $@ -L ~/.brew/lib -lGLEW -lGLFW -lassimp -framework OpenGL -L . -lSOIL2 -framework CoreFoundation
 	@echo [INFO] $@ "compiled successfully."
 
-all: $(NAME)
-
-install_dependencies:
-ifneq ($(LD_LIBRARY_PATH),$(HOME)/.brew/lib)
-	@echo "export LD_LIBRARY_PATH=~/.brew/lib" >> ~/.zshrc
-	@echo "Added missing environment variable. Please run 'make' again."
-	@exec zsh;
-endif
-	@if ! test -d ~/.brew/Library; \
+all: @if ! test -d ~/.brew/Library; \
 	then if ! test -s resources/install_brew.sh; \
 	then echo "ERROR: Brew install script missing."; \
 	else \
@@ -47,26 +34,30 @@ endif
 		echo "\n\nDone installing brew. Please run 'make' again."; \
 		exec zsh; \
 	fi else \
-	if ! test -d ~/.brew/Cellar/fltk; \
-	then brew install fltk; \
+	if ! test -d ~/.brew/Cellar/glfw; \
+	then brew install glfw; \
 	fi; \
-	if ! test -d ~/.brew/Cellar/sdl2; \
-	then brew install SDL2; \
+	if ! test -d ~/.brew/include/glm; \
+	then brew install glm; \
 	fi; \
-	if ! test -d ~/.brew/Cellar/sfml; \
-	then brew install sfml; \
+	if ! test -d ~/.brew/Cellar/assimp; \
+	then brew install assimp; \
+	fi; \
+	if ! test -d ~/.brew/Cellar/glew; \
+	then brew install glew; \
 	fi; \
 	fi
-	$(MAKE) -C . all; \
+	$(NAME)
 
 clean:
-	@$(MAKE) -C libraries clean
+	@$(MAKE) -C resources/SOIL2 clean
 	@rm -f $(OBJS)
 	@echo "[INFO] Objects removed!"
 
 fclean: clean
-	@$(MAKE) -C libraries fclean
-	@rm -f $(NAME)
+	@$(MAKE) -C resources/SOIL2 fclean
+	@rm -rf libSOIL2.a
+	@rm -rf $(NAME)
 	@echo "[INFO] $(NAME) removed!"
 
 re: fclean all
