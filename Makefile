@@ -6,9 +6,11 @@
 #    By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/07/31 19:21:44 by cnolte            #+#    #+#              #
-#    Updated: 2018/08/13 11:44:01 by cnolte           ###   ########.fr        #
+#    Updated: 2018/08/13 11:51:54 by cnolte           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
+
+.DEFAULT_GOAL := install_dependencies
 
 NAME := bomberman
 
@@ -26,7 +28,8 @@ $(NAME): $(OBJS)
 	@$(CXX) $(OBJS) -o $@ -L ~/.brew/lib -lGLEW -lGLFW -lassimp -framework OpenGL -L . -lSOIL2 -framework CoreFoundation
 	@echo [INFO] $@ "compiled successfully."
 
-all: @if ! test -d ~/.brew/Library; \
+install_dependencies:
+	@if ! test -d ~/.brew/Library; \
 	then if ! test -s resources/install_brew.sh; \
 	then echo "ERROR: Brew install script missing."; \
 	else \
@@ -47,7 +50,9 @@ all: @if ! test -d ~/.brew/Library; \
 	then brew install glew; \
 	fi; \
 	fi
-	$(NAME)
+	$(MAKE) -C . all
+
+all: $(NAME)
 
 clean:
 	@$(MAKE) -C resources/SOIL2 clean
