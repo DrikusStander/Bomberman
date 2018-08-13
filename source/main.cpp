@@ -9,7 +9,7 @@
 #include <GLFW/glfw3.h>
 
 // GL includes
-#include "Shader.h"
+#include "Shader.class.hpp"
 #include "Camera.class.hpp"
 #include "Model.h"
 
@@ -120,14 +120,14 @@ int main( )
 		shader.Use( );
 		
 		glm::mat4 view = camera.GetViewMatrix( );
-		glUniformMatrix4fv( glGetUniformLocation( shader.Program, "projection" ), 1, GL_FALSE, glm::value_ptr( projection ) );
-		glUniformMatrix4fv( glGetUniformLocation( shader.Program, "view" ), 1, GL_FALSE, glm::value_ptr( view ) );
+		glUniformMatrix4fv( glGetUniformLocation( shader.getProgram(), "projection" ), 1, GL_FALSE, glm::value_ptr( projection ) );
+		glUniformMatrix4fv( glGetUniformLocation( shader.getProgram(), "view" ), 1, GL_FALSE, glm::value_ptr( view ) );
 		
 		// Draw the loaded model
 		glm::mat4 model(1);
 		model = glm::translate( model, glm::vec3( 0.0f, -1.75f, 0.0f ) ); // Translate it down a bit so it's at the center of the scene
 		model = glm::scale( model, glm::vec3( 0.2f, 0.2f, 0.2f ) );	// It's a bit too big for our scene, so scale it down
-		glUniformMatrix4fv( glGetUniformLocation( shader.Program, "model" ), 1, GL_FALSE, glm::value_ptr( model ) );
+		glUniformMatrix4fv( glGetUniformLocation( shader.getProgram(), "model" ), 1, GL_FALSE, glm::value_ptr( model ) );
 		world.Draw( shader );
 		
 		// Swap the buffers

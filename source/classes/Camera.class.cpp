@@ -6,7 +6,7 @@
 /*   By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/11 11:26:34 by cnolte            #+#    #+#             */
-/*   Updated: 2018/08/13 18:40:55 by cnolte           ###   ########.fr       */
+/*   Updated: 2018/08/13 18:48:43 by cnolte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 //start canonical form
 Camera::Camera(void)
 {
-	std::cout << "Default constructor called" << std::endl;
+	std::cout << "Camera - Default constructor called" << std::endl;
 	this->movementSpeed = SPEED;
 	this->mouseSensitivity = SENSITIVTY;
 	this->zoom = ZOOM;
@@ -29,21 +29,18 @@ Camera::Camera(void)
 
 Camera::Camera(Camera const & src)
 {
-	std::cout << "Copy constructor called" << std::endl;
+	std::cout << "Camera - Copy constructor called" << std::endl;
 	*this = src;
-
-	return ;
 }
 
 Camera::~Camera(void)
 {
-	std::cout << "Destructor called" << std::endl;
-	return ;
+	std::cout << "Camera - Destructor called" << std::endl;
 }
 
 Camera	&Camera::operator=(Camera const &rhs)
 {
-	std::cout << "Assignment operator called" << std::endl;
+	std::cout << "Camera - Assignment operator called" << std::endl;
 	// if (this != &rhs)
 	// 	this->_foo = rhs.getfoo();
 	return (*this);
