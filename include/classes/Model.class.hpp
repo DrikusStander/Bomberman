@@ -6,28 +6,17 @@
 /*   By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/11 11:20:47 by cnolte            #+#    #+#             */
-/*   Updated: 2018/08/14 13:16:13 by cnolte           ###   ########.fr       */
+/*   Updated: 2018/08/14 13:34:41 by cnolte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MODEL_CLASS_HPP
 # define MODEL_CLASS_HPP
 
-# include <iostream>
-#include <string>
-#include <fstream>
-#include <sstream>
-#include <map>
-#include <vector>
-
-#include <GL/glew.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include "SOIL2.h"
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
-#include "Mesh.class.hpp"
+# include "SOIL2.h"
+# include <assimp/Importer.hpp>
+# include <assimp/scene.h>
+# include "Mesh.class.hpp"
 
 class Model
 {

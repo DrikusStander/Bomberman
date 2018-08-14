@@ -6,22 +6,17 @@
 /*   By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/11 11:20:47 by cnolte            #+#    #+#             */
-/*   Updated: 2018/08/13 19:18:14 by cnolte           ###   ########.fr       */
+/*   Updated: 2018/08/14 13:30:47 by cnolte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CAMERA_CLASS_HPP
 # define CAMERA_CLASS_HPP
 
-# include <iostream>
-
-# include <vector>
-
 // GL Includes
-# define GLEW_STATIC
 # include <GL/glew.h>
 
-# include <glm/glm.hpp>
+// Matrices includes
 # include <glm/gtc/matrix_transform.hpp>
 
 // Defines several possible options for camera movement. Used as abstraction to stay away from window-system specific input methods

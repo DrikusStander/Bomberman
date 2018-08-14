@@ -6,7 +6,7 @@
 /*   By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/11 11:20:47 by cnolte            #+#    #+#             */
-/*   Updated: 2018/08/13 19:08:44 by cnolte           ###   ########.fr       */
+/*   Updated: 2018/08/14 13:35:37 by cnolte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 # define SHADER_CLASS_HPP
 
 # include <iostream>
-# include <string>
 # include <fstream>
 # include <sstream>
 
