@@ -11,7 +11,7 @@
 // GL includes
 #include "Shader.class.hpp"
 #include "Camera.class.hpp"
-#include "Model.h"
+#include "Model.class.hpp"
 
 // GLM Mathemtics
 #include <glm/glm.hpp>
@@ -94,7 +94,7 @@ int main( )
 	// Load models
 	// Model ourModel( "res/models/nanosuit.obj" );
 	// Load world
-	Model world( "resources/models/world.obj" );
+	Model world("resources/models/world.obj");
 
 	// Draw in wireframe
 	//glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
