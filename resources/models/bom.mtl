@@ -1,0 +1,30 @@
+# Blender MTL File: 'bom.blend'
+# Material Count: 2
+
+newmtl Material.001
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.818921 0.818921 0.818921
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 3
+map_Ka bomb_texture.jpg
+map_Kd bomb_dif.jpg
+
+
+
+newmtl Material.002
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+map_Ka fuse_texture.jpg
+map_Kd fuse_texture.jpg
+map_Ks fuse_texture_spec.jpg
+
+illum 2

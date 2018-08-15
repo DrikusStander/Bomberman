@@ -76,6 +76,7 @@ Game::Game(const int width, const int height) : s_WIDTH(width), s_HEIGHT(height)
 
 	camera.ProcessMouseMovement(0, -250);
 
+
 	// Init GLFW
 	glfwInit();
 
@@ -130,7 +131,8 @@ Game::Game(const int width, const int height) : s_WIDTH(width), s_HEIGHT(height)
 	Shader	shader("resources/shaders/modelLoading.vert", "resources/shaders/modelLoading.frag");
 
 	// Load models
-	// Model ourModel("res/models/nanosuit.obj");
+	this->player = new Player(shader);
+	// Model ourModel("resources/models/bom.obj");
 	// Load world
 	Model	world("resources/models/world.obj");
 
@@ -144,6 +146,7 @@ Game::Game(const int width, const int height) : s_WIDTH(width), s_HEIGHT(height)
 	{
 		// Set frame time
 		GLfloat currentFrame = glfwGetTime();
+		// std::cout << "time: " << currentFrame << std::endl;
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
 
@@ -168,10 +171,16 @@ Game::Game(const int width, const int height) : s_WIDTH(width), s_HEIGHT(height)
 		glUniformMatrix4fv( glGetUniformLocation(shader.getProgram(), "model"), 1, GL_FALSE, glm::value_ptr(model));
 		world.Draw(shader);
 
+		// glm::mat4	model2(1);
+		// model2 = glm::translate(model2, glm::vec3(125.0f, 18.25f, 0.0f)); // Translate it down a bit so it's at the center of the scene
+		// model2 = glm::scale(model2, glm::vec3(4.25f, 2.25f, 4.25f));	// It's a bit too big for our scene, so scale it down
+		// glUniformMatrix4fv( glGetUniformLocation(shader.getProgram(), "model"), 1, GL_FALSE, glm::value_ptr(model2));
+		// ourModel.Draw(shader);
+		player->draw();
 		// Swap the buffers
 		glfwSwapBuffers(window);
 	}
-
+	delete this->player;
 	glfwTerminate();
 }
 
@@ -199,23 +208,48 @@ Game	&Game::operator=(Game const &rhs)
 void	Game::DoMovement(void)
 {
 	// Camera controls
-	if (keys[GLFW_KEY_W] || keys[GLFW_KEY_UP])
+	if (keys[GLFW_KEY_W])
 	{
 		camera.ProcessKeyboard(FORWARD, deltaTime);
 	}
 
-	if (keys[GLFW_KEY_S] || keys[GLFW_KEY_DOWN])
+	if (keys[GLFW_KEY_S])
 	{
 		camera.ProcessKeyboard(BACKWARD, deltaTime);
 	}
 
-	if (keys[GLFW_KEY_A] || keys[GLFW_KEY_LEFT])
+	if (keys[GLFW_KEY_A])
 	{
 		camera.ProcessKeyboard(LEFT, deltaTime);
 	}
 
-	if (keys[GLFW_KEY_D] || keys[GLFW_KEY_RIGHT])
+	if (keys[GLFW_KEY_D] )
 	{
 		camera.ProcessKeyboard(RIGHT, deltaTime);
+	}
+
+	if ( keys[GLFW_KEY_UP])
+	{
+		this->player->ProcessKeyboard(FWD);
+	}
+
+	if ( keys[GLFW_KEY_DOWN])
+	{
+		this->player->ProcessKeyboard(BKW);
+	}
+
+	if ( keys[GLFW_KEY_LEFT])
+	{
+		this->player->ProcessKeyboard(LFT);
+	}
+
+	if ( keys[GLFW_KEY_RIGHT])
+	{
+		this->player->ProcessKeyboard(RGT);
+	}
+
+	if (keys[GLFW_KEY_SPACE])
+	{
+		this->player->ProcessKeyboard(SPC);
 	}
 }

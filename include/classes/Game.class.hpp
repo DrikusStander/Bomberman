@@ -25,6 +25,9 @@
 # include "Camera.class.hpp"
 # include "Model.class.hpp"
 
+// #include "Character.class.hpp"
+#include "Player.class.hpp"
+
 class Game
 {
 	public:
@@ -35,6 +38,7 @@ class Game
 		~Game(void);
 
 		Game	&operator=(Game const &rhs);
+		Player *player;
 		//end canonical form
 
 	private:

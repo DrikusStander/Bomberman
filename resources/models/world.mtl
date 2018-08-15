@@ -26,8 +26,8 @@ newmtl 02___Default
 	Kd 0.5882 0.5882 0.5882
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka cobble_wall.jpg
-	map_Kd cobble_wall.jpg
+	map_Ka White-Brick-Wall.jpg
+	map_Kd White-Brick-Wall.jpg
 
 newmtl 07___Default
 	Ns 10.0000
