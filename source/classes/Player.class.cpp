@@ -43,17 +43,25 @@ void	Player::ProcessKeyboard(Direction direction)
 	{
 		case FWD:
 			this->rotate = 180.0f;
+			if (this->z_trans <= -168)
+				break;
 			this->z_trans--;
 			break;
 		case BKW:
+			if (this->z_trans >= 168)
+				break;
 			this->z_trans++;
 			this->rotate = 0.0f;
 			break;
 		case LFT:
+			if (this->x_trans <= -168)
+				break;
 			this->x_trans--;
 			this->rotate = 270.0f;
 			break;
 		case RGT:
+			if (this->x_trans >= 168)
+				break;
 			this->x_trans++;
 			this->rotate = 90.0f;
 			break;

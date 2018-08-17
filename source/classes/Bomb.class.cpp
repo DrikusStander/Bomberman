@@ -5,21 +5,26 @@
 Bomb::Bomb( Shader &shader, std::string model) : Item(shader, model)
 {
 	std::cout << "Bomb - Parametric Constructor called " << std::endl;
-	// this->PlantTime = 0.0f;
+	this->PlantTime = 0.0f;
 	this->PlantTimeLength = 3.0f;
 }
 
-// Bomb( Bomb const & src);
+Bomb::Bomb( Bomb const & src) : Item(src)
+{
+	*this = src;
+}
+
 Bomb::~Bomb( void )
 {
 	std::cout << "Bomb - Destructor called " << std::endl;
 }
 
-// Bomb const & operator=(Bomb const & rhs)
-// {
-
-// 	return(*this);
-// }
+Bomb const & Bomb::operator=(Bomb const & rhs)
+{
+	this->PlantTime = rhs.PlantTime;
+	this->PlantTimeLength = rhs.PlantTimeLength;
+	return(*this);
+}
 
 void Bomb::draw(void)
 {

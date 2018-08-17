@@ -8,7 +8,7 @@ Character::Character( Shader &shader, std::string model)
 	this->characterModel =  new Model(model);
 	this->_shader = &shader;
 	this->x_trans = 0.0f;
-	this->y_trans = 18.25f;
+	this->y_trans = 20.0f;
 	this->z_trans = 0.0f;
 	this->rotate = 180.0f;
 }

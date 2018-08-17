@@ -8,23 +8,33 @@ Item::Item( Shader &shader, std::string model)
 	this->ItemModel =  new Model(model);
 	this->_shader = &shader;
 	this->x_trans = 0.0f;
-	this->y_trans = 18.25f;
+	this->y_trans = 20.0f;
 	this->z_trans = 0.0f;
 	this->rotate = 180.0f;
 	this->active = false;
 }
 
-// Item( Item const & src);
+Item::Item( Item const & src)
+{
+	*this = src;
+}
+
 Item::~Item( void )
 {
 	std::cout << "Item - Destructor called " << std::endl;
 }
 
-// Item const & operator=(Item const & rhs)
-// {
-
-// 	return(*this);
-// }
+Item const & Item::operator=(Item const & rhs)
+{
+	this->ItemModel =  rhs.ItemModel;
+	this->_shader = rhs._shader;
+	this->x_trans = rhs.x_trans;
+	this->y_trans = rhs.y_trans;
+	this->z_trans = rhs.z_trans;
+	this->rotate = rhs.rotate;
+	this->active = rhs.active;
+	return(*this);
+}
 
 void Item::draw(void)
 {
