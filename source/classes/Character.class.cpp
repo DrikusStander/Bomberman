@@ -2,10 +2,10 @@
 #include "Character.class.hpp"
 
 
-Character::Character( Shader &shader)
+Character::Character( Shader &shader, std::string model)
 {
 	std::cout << "Character - Parametric Constructor called " << std::endl;
-	this->characterModel =  new Model("resources/models/nanosuit.obj");
+	this->characterModel =  new Model(model);
 	this->_shader = &shader;
 	this->x_trans = 0.0f;
 	this->y_trans = 18.25f;
@@ -13,14 +13,27 @@ Character::Character( Shader &shader)
 	this->rotate = 180.0f;
 }
 
-// Character( Character const & src);
+Character::Character( Character const & src)
+{
+	*this = src;
+}
+
 Character::~Character( void )
 {
 	std::cout << "Character - Destructor called " << std::endl;
+	delete this->characterModel;
 }
-// Character const & operator=(Character const & rhs);
 
-
+Character const & Character::operator=(Character const & rhs)
+{
+	this->characterModel = rhs.characterModel;
+	this->_shader = rhs._shader;
+	this->x_trans = rhs.x_trans;
+	this->y_trans = rhs.y_trans;
+	this->z_trans = rhs.z_trans;
+	this->rotate = rhs.rotate;
+	return(*this);
+}
 
 void Character::draw(void)
 {

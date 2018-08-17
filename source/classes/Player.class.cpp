@@ -1,19 +1,29 @@
 
 #include "Player.class.hpp"
 
-Player::Player( Shader &shader) : Character(shader)
+Player::Player( Shader &shader, std::string model) : Character(shader, model)
 {
 	std::cout << "Player - Constructor called " << std::endl;
-	this->bomb = new Item(shader);
+	this->bomb = new Bomb(shader, "resources/models/bom.obj");
 }
 
 
-// Player( Player const & src);
+Player::Player( Player const & src) : Character(src)
+{
+
+	*this = src;
+}
+
 Player::~Player( void )
 {
 	std::cout << "Player - Destructor called " << std::endl;
 }
-// Player const & operator=(Player const & rhs);
+
+Player const & Player::operator=(Player const & rhs)
+{
+	this->bomb = rhs.bomb;
+	return(*this);
+}
 
 void Player::draw(void)
 {
@@ -52,11 +62,8 @@ void	Player::ProcessKeyboard(Direction direction)
 			if (this->bomb->getActive() == false)
 			{
 				this->bomb->setPos(this->x_trans, this->z_trans);
-
 				this->bomb->setActive(true);
-				// glutTimerFunc(3000, this->bomb->setActive(false), 0);
 			}
-			// this->bomb->draw();
 			break;
 		}
 	}

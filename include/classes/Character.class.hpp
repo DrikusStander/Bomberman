@@ -1,7 +1,7 @@
 #ifndef CHARACTER_HPP
 #define CHARACTER_HPP
 
-
+#include <string>
 // GLEW
 # include <GL/glew.h>
 
@@ -33,10 +33,10 @@ class Character
 		float	z_trans;
 		float	rotate;
 	public:
-		Character( Shader &shader);
-		// Character( Character const & src);
+		Character( Shader &shader, std::string model);
+		Character( Character const & src);
 		~Character( void );
-		// Character const & operator=(Character const & rhs);
+		Character const & operator=(Character const & rhs);
 		void	draw(void);
 		virtual void	ProcessKeyboard(Direction direction) = 0;
 };

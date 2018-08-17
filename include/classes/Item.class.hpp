@@ -2,6 +2,8 @@
 #ifndef ITEM_HPP
 #define ITEM_HPP
 
+
+#include <string>
 // GLEW
 # include <GL/glew.h>
 
@@ -24,16 +26,13 @@ class Item
 		float	z_trans;
 		float	rotate;
 		bool	active;
-		GLfloat PlantTime;
-		GLfloat PlantTimeLength;
-
 
 	public:
-		Item( Shader &shader);
+		Item( Shader &shader, std::string model);
 		Item( Item const & src);
 		~Item( void );
 		Item const & operator=(Item const & rhs);
-		void setPos(float x, float y);
+		void	setPos(float x, float y);
 		void	draw(void);
 		void	setActive( bool active );
 		bool	getActive( void );

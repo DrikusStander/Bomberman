@@ -131,7 +131,7 @@ Game::Game(const int width, const int height) : s_WIDTH(width), s_HEIGHT(height)
 	Shader	shader("resources/shaders/modelLoading.vert", "resources/shaders/modelLoading.frag");
 
 	// Load models
-	this->player = new Player(shader);
+	this->player = new Player(shader, "resources/models/nanosuit.obj");
 	// Model ourModel("resources/models/bom.obj");
 	// Load world
 	Model	world("resources/models/world.obj");
