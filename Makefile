@@ -13,7 +13,7 @@
 .DEFAULT_GOAL := install_dependencies
 
 NAME := bomberman
-SRCS := source/main.cpp source/classes/Game.class.cpp source/classes/Camera.class.cpp source/classes/Mesh.class.cpp source/classes/Shader.class.cpp source/classes/Model.class.cpp source/classes/Character.class.cpp source/classes/Player.class.cpp source/classes/Item.class.cpp source/classes/Bomb.class.cpp
+SRCS := source/main.cpp source/classes/Game.class.cpp source/classes/Camera.class.cpp source/classes/Mesh.class.cpp source/classes/Shader.class.cpp source/classes/Model.class.cpp source/classes/Character.class.cpp source/classes/Player.class.cpp source/classes/Item.class.cpp source/classes/Bomb.class.cpp source/classes/World.class.cpp
 OBJS := $(SRCS:.cpp=.o)
 
 CXX := clang++ -std=c++11

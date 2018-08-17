@@ -4,6 +4,12 @@
 Player::Player( Shader &shader, std::string model) : Character(shader, model)
 {
 	std::cout << "Player - Constructor called " << std::endl;
+	this->x_trans = -168.0f;
+	this->z_trans = -168.0f;
+	this->row = 0;
+	this->col = 0;
+	this->rowCounter = 0;
+	this->colCounter = 0;
 	this->bomb = new Bomb(shader, "resources/models/bom.obj");
 }
 
@@ -43,28 +49,68 @@ void	Player::ProcessKeyboard(Direction direction)
 	{
 		case FWD:
 			this->rotate = 180.0f;
-			if (this->z_trans <= -168)
+			// check collision func
+			if (this->z_trans <= -168 || (*this->map)[this->row][this->col - 1] != NULL)
 				break;
+			this->colCounter++;
+			if (colCounter == 336 / 17)
+			{
+				this->col--;
+				if (this->col < 0)
+					this->col = 0;
+				this->colCounter = 0;
+			}
 			this->z_trans--;
 			break;
 		case BKW:
-			if (this->z_trans >= 168)
-				break;
-			this->z_trans++;
 			this->rotate = 0.0f;
+			if (this->z_trans >= 168 || (*this->map)[this->row][this->col + 1] != NULL)
+				break;
+			this->colCounter++;
+			if (colCounter == 336 / 17)
+			{
+				this->col++;
+				if (this->col > 16)
+					this->col = 16;
+				this->colCounter = 0;
+			}
+			this->z_trans++;
 			break;
 		case LFT:
-			if (this->x_trans <= -168)
-				break;
-			this->x_trans--;
+		{
+			// std::cout << "row : " << this->row << std::endl;
 			this->rotate = 270.0f;
-			break;
-		case RGT:
-			if (this->x_trans >= 168)
+			if (this->x_trans <= -168 || (*this->map)[this->row + 1][this->col] != NULL )
 				break;
-			this->x_trans++;
-			this->rotate = 90.0f;
+			this->rowCounter++;
+			if (rowCounter == 336 / 17)
+			{
+				this->row--;
+				if (this->row < 0)
+					this->row = 0;
+				this->rowCounter = 0;
+				std::cout << "Left row : " << this->row << std::endl;
+			}
+			this->x_trans--;
 			break;
+		}
+		case RGT:
+		{
+			this->rotate = 90.0f;
+			if (this->x_trans >= 168 || (*this->map)[this->row - 1][this->col] != NULL)
+				break;
+			this->rowCounter++;
+			if (rowCounter == 336 / 17)
+			{
+				this->row++;
+				if (this->row > 16)
+					this->row = 16;
+				std::cout << "Right row : " << this->row << std::endl;
+				this->rowCounter = 0;
+			}
+			this->x_trans++;
+			break;
+		}
 		case SPC:
 		{
 			if (this->bomb->getActive() == false)

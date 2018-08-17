@@ -12,6 +12,7 @@
 # include <glm/gtc/type_ptr.hpp>
 
 #include "Model.class.hpp"
+#include "Item.class.hpp"
 
 enum Direction
 {
@@ -32,6 +33,8 @@ class Character
 		float	y_trans;
 		float	z_trans;
 		float	rotate;
+		std::vector<std::vector<Item*>> *map;
+
 	public:
 		Character( Shader &shader, std::string model);
 		Character( Character const & src);
@@ -39,6 +42,7 @@ class Character
 		Character const & operator=(Character const & rhs);
 		void	draw(void);
 		virtual void	ProcessKeyboard(Direction direction) = 0;
+		void setMap( std::vector<std::vector<Item*>> *map);
 };
 
 #endif

@@ -26,7 +26,7 @@
 # include "Model.class.hpp"
 
 // #include "Character.class.hpp"
-#include "Player.class.hpp"
+#include "World.class.hpp"
 
 class Game
 {
@@ -38,7 +38,7 @@ class Game
 		~Game(void);
 
 		Game	&operator=(Game const &rhs);
-		Player *player;
+		World *world;
 		//end canonical form
 
 	private:

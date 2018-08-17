@@ -131,10 +131,10 @@ Game::Game(const int width, const int height) : s_WIDTH(width), s_HEIGHT(height)
 	Shader	shader("resources/shaders/modelLoading.vert", "resources/shaders/modelLoading.frag");
 
 	// Load models
-	this->player = new Player(shader, "resources/models/nanosuit.obj");
+	this->world = new World(shader, "resources/models/world.obj");
 	// Model ourModel("resources/models/bom.obj");
 	// Load world
-	Model	world("resources/models/world.obj");
+	// Model	world("resources/models/world.obj");
 
 	// Draw in wireframe
 	// glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
@@ -163,24 +163,24 @@ Game::Game(const int width, const int height) : s_WIDTH(width), s_HEIGHT(height)
 		glm::mat4 view = camera.GetViewMatrix();
 		glUniformMatrix4fv(glGetUniformLocation(shader.getProgram(), "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 		glUniformMatrix4fv(glGetUniformLocation(shader.getProgram(), "view"), 1, GL_FALSE, glm::value_ptr(view));
+		world->draw();
 
 		// Draw the loaded model
-		glm::mat4	model(1);
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // Translate it down a bit so it's at the center of the scene
-		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));	// It's a bit too big for our scene, so scale it down
-		glUniformMatrix4fv( glGetUniformLocation(shader.getProgram(), "model"), 1, GL_FALSE, glm::value_ptr(model));
-		world.Draw(shader);
+		// glm::mat4	model(1);
+		// model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // Translate it down a bit so it's at the center of the scene
+		// model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));	// It's a bit too big for our scene, so scale it down
+		// glUniformMatrix4fv( glGetUniformLocation(shader.getProgram(), "model"), 1, GL_FALSE, glm::value_ptr(model));
+		// world.Draw(shader);
 
 		// glm::mat4	model2(1);
 		// model2 = glm::translate(model2, glm::vec3(125.0f, 18.25f, 0.0f)); // Translate it down a bit so it's at the center of the scene
 		// model2 = glm::scale(model2, glm::vec3(4.25f, 2.25f, 4.25f));	// It's a bit too big for our scene, so scale it down
 		// glUniformMatrix4fv( glGetUniformLocation(shader.getProgram(), "model"), 1, GL_FALSE, glm::value_ptr(model2));
 		// ourModel.Draw(shader);
-		player->draw();
 		// Swap the buffers
 		glfwSwapBuffers(window);
 	}
-	delete this->player;
+	delete this->world;
 	glfwTerminate();
 }
 
@@ -230,26 +230,26 @@ void	Game::DoMovement(void)
 
 	if ( keys[GLFW_KEY_UP])
 	{
-		this->player->ProcessKeyboard(FWD);
+		this->world->ProcessKeyboard(FWD);
 	}
 
 	if ( keys[GLFW_KEY_DOWN])
 	{
-		this->player->ProcessKeyboard(BKW);
+		this->world->ProcessKeyboard(BKW);
 	}
 
 	if ( keys[GLFW_KEY_LEFT])
 	{
-		this->player->ProcessKeyboard(LFT);
+		this->world->ProcessKeyboard(LFT);
 	}
 
 	if ( keys[GLFW_KEY_RIGHT])
 	{
-		this->player->ProcessKeyboard(RGT);
+		this->world->ProcessKeyboard(RGT);
 	}
 
 	if (keys[GLFW_KEY_SPACE])
 	{
-		this->player->ProcessKeyboard(SPC);
+		this->world->ProcessKeyboard(SPC);
 	}
 }

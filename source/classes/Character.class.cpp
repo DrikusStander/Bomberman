@@ -44,3 +44,8 @@ void Character::draw(void)
 	glUniformMatrix4fv( glGetUniformLocation(this->_shader->getProgram(), "model"), 1, GL_FALSE, glm::value_ptr(model ));
 	this->characterModel->Draw(*this->_shader);
 }
+
+void Character::setMap( std::vector<std::vector<Item*>> *map)
+{
+	this->map = map;
+}

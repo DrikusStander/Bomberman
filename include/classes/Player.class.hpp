@@ -9,6 +9,10 @@ class Player : public Character
 {
 	private:
 		Bomb	*bomb;
+		int		row;
+		int		col;
+		int		colCounter;
+		int		rowCounter;
 
 	protected:
 	public:
@@ -18,6 +22,7 @@ class Player : public Character
 		Player const & operator=(Player const & rhs);
 		void draw(void);
 		void	ProcessKeyboard(Direction direction);
+		using Character::setMap;
 };
 
 #endif
