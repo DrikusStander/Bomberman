@@ -43,6 +43,27 @@ void Player::draw(void)
 		this->bomb->draw();
 }
 
+float	Player::getX()
+{
+	return this->x_trans;
+}
+
+float	Player::getZ()
+{
+	return this->z_trans;
+}
+
+void	Player::clipX(float x_move)
+{
+	this->x_trans += x_move;
+}
+
+void	Player::clipZ(float z_move)
+{
+	this->z_trans += z_move;
+}
+
+
 void	Player::ProcessKeyboard(Direction direction)
 {
 	switch(direction)
@@ -50,64 +71,31 @@ void	Player::ProcessKeyboard(Direction direction)
 		case FWD:
 			this->rotate = 180.0f;
 			// check collision func
-			if (this->z_trans <= -168 || (*this->map)[this->row][this->col - 1] != NULL)
-				break;
-			this->colCounter++;
-			if (colCounter == 336 / 17)
-			{
-				this->col--;
-				if (this->col < 0)
-					this->col = 0;
-				this->colCounter = 0;
-			}
+			// if (this->z_trans <= -168 )
+			// 	break;
 			this->z_trans--;
+
 			break;
 		case BKW:
 			this->rotate = 0.0f;
-			if (this->z_trans >= 168 || (*this->map)[this->row][this->col + 1] != NULL)
-				break;
-			this->colCounter++;
-			if (colCounter == 336 / 17)
-			{
-				this->col++;
-				if (this->col > 16)
-					this->col = 16;
-				this->colCounter = 0;
-			}
+			// if (this->z_trans >= 168 )
+			// 	break;
 			this->z_trans++;
+
 			break;
 		case LFT:
 		{
-			// std::cout << "row : " << this->row << std::endl;
 			this->rotate = 270.0f;
-			if (this->x_trans <= -168 || (*this->map)[this->row + 1][this->col] != NULL )
-				break;
-			this->rowCounter++;
-			if (rowCounter == 336 / 17)
-			{
-				this->row--;
-				if (this->row < 0)
-					this->row = 0;
-				this->rowCounter = 0;
-				std::cout << "Left row : " << this->row << std::endl;
-			}
+			// if (this->x_trans <= -168 )
+			// 	break;
 			this->x_trans--;
 			break;
 		}
 		case RGT:
 		{
 			this->rotate = 90.0f;
-			if (this->x_trans >= 168 || (*this->map)[this->row - 1][this->col] != NULL)
-				break;
-			this->rowCounter++;
-			if (rowCounter == 336 / 17)
-			{
-				this->row++;
-				if (this->row > 16)
-					this->row = 16;
-				std::cout << "Right row : " << this->row << std::endl;
-				this->rowCounter = 0;
-			}
+			// if (this->x_trans >= 168 )
+			// 	break;
 			this->x_trans++;
 			break;
 		}
@@ -121,4 +109,5 @@ void	Player::ProcessKeyboard(Direction direction)
 			break;
 		}
 	}
+	// std::cout<< this->x_trans << std::endl;
 }

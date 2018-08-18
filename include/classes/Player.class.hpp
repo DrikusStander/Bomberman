@@ -23,6 +23,10 @@ class Player : public Character
 		void draw(void);
 		void	ProcessKeyboard(Direction direction);
 		using Character::setMap;
+		float	getX();
+		float	getZ();
+		void	clipX(float x_move);
+		void	clipZ(float z_move);
 };
 
 #endif

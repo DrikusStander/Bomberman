@@ -37,6 +37,10 @@ class World
 		World const & operator=(World const & rhs);
 		void	draw(void);
 		virtual void	ProcessKeyboard(Direction direction);
+		float	player_getX(void);
+		float	player_getZ(void);
+		void	player_clipX(float x_move);
+		void	player_clipZ(float z_move);
 };
 
 #endif

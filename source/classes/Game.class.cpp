@@ -74,8 +74,39 @@ Game::Game(const int width, const int height) : s_WIDTH(width), s_HEIGHT(height)
 	deltaTime = 0.0;
 	lastFrame = 0.0;
 
-	camera.ProcessMouseMovement(0, -250);
+	this->player_x_pos = 0;
+	this->player_z_pos = 0;
+	
+	char tmpArray[17][17]=
+	{
+		{'\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0'},
+		{'\0','#','\0','#','\0','#','\0','#','\0','#','\0','#','\0','#','\0','#','\0'},
+		{'\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0'},
+		{'\0','#','\0','#','\0','#','\0','#','\0','#','\0','#','\0','#','\0','#','\0'},
+		{'\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0'},
+		{'\0','#','\0','#','\0','#','\0','#','\0','#','\0','#','\0','#','\0','#','\0'},
+		{'\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0'},
+		{'\0','#','\0','#','\0','#','\0','#','\0','#','\0','#','\0','#','\0','#','\0'},
+		{'\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0'},
+		{'\0','#','\0','#','\0','#','\0','#','\0','#','\0','#','\0','#','\0','#','\0'},
+		{'\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0'},
+		{'\0','#','\0','#','\0','#','\0','#','\0','#','\0','#','\0','#','\0','#','\0'},
+		{'\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0'},
+		{'\0','#','\0','#','\0','#','\0','#','\0','#','\0','#','\0','#','\0','#','\0'},
+		{'\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0'},
+		{'\0','#','\0','#','\0','#','\0','#','\0','#','\0','#','\0','#','\0','#','\0'},
+		{'\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0'}
+	};
 
+	for (int z = 0; z < 17; z++)
+	{
+		for (int x = 0; x < 17; x++)
+		{
+			this->mapArray[z][x] = tmpArray[z][x];
+		}
+	}
+
+	camera.ProcessMouseMovement(0, -250);
 
 	// Init GLFW
 	glfwInit();
@@ -169,13 +200,13 @@ Game::Game(const int width, const int height) : s_WIDTH(width), s_HEIGHT(height)
 		// glm::mat4	model(1);
 		// model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // Translate it down a bit so it's at the center of the scene
 		// model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));	// It's a bit too big for our scene, so scale it down
-		// glUniformMatrix4fv( glGetUniformLocation(shader.getProgram(), "model"), 1, GL_FALSE, glm::value_ptr(model));
+		// glUniformMatrix4fv( glGetUniformLocation(shader.getProgram(), "model"), 0, GL_FALSE, glm::value_ptr(model));
 		// world.Draw(shader);
 
 		// glm::mat4	model2(1);
 		// model2 = glm::translate(model2, glm::vec3(125.0f, 18.25f, 0.0f)); // Translate it down a bit so it's at the center of the scene
 		// model2 = glm::scale(model2, glm::vec3(4.25f, 2.25f, 4.25f));	// It's a bit too big for our scene, so scale it down
-		// glUniformMatrix4fv( glGetUniformLocation(shader.getProgram(), "model"), 1, GL_FALSE, glm::value_ptr(model2));
+		// glUniformMatrix4fv( glGetUniformLocation(shader.getProgram(), "model"), 0, GL_FALSE, glm::value_ptr(model2));
 		// ourModel.Draw(shader);
 		// Swap the buffers
 		glfwSwapBuffers(window);
@@ -230,26 +261,104 @@ void	Game::DoMovement(void)
 
 	if ( keys[GLFW_KEY_UP])
 	{
-		this->world->ProcessKeyboard(FWD);
+		if (this->player_z_pos > 0)
+		{
+			if (this->mapArray[this->player_z_pos - 1][this->player_x_pos] == '\0')
+			{
+				if (fmod(((168) - (this->world->player_getX() - 11)), -21) != 0.0f)
+				{
+					if (fmod(((-168) - (this->world->player_getZ() - 11)), -21) == 0)
+					{
+						if (fmod(((168) - (this->world->player_getX() - 11)), -21) > 11)
+							this->world->player_clipX(fmod(((168) - (this->world->player_getX())), -21));
+						else if (fmod(((168) - (this->world->player_getX() - 11)), -21) <= 11)
+							this->world->player_clipX(fmod(((-168) - (this->world->player_getX())), -21));
+						this->player_z_pos--;
+					}
+					this->world->ProcessKeyboard(FWD);
+				}
+			}
+		}
+		else if (this->world->player_getZ() > -168)
+			this->world->ProcessKeyboard(FWD);
 	}
 
 	if ( keys[GLFW_KEY_DOWN])
 	{
-		this->world->ProcessKeyboard(BKW);
+		if (this->player_z_pos < 16)
+		{
+			if (this->mapArray[this->player_z_pos + 1][this->player_x_pos] == '\0')
+			{
+				if (fmod(((168) - (this->world->player_getX() - 11)), -21) != 0.0f)
+				{
+					if ((fmod(((-168) - (this->world->player_getZ() - 11)), -21) == 0) && (this->player_z_pos < 16))
+					{
+						if (fmod(((168) - (this->world->player_getX() - 11)), -21) > 11)
+							this->world->player_clipX(fmod(((168) - (this->world->player_getX())), -21));
+						else if (fmod(((168) - (this->world->player_getX() - 11)), -21) <= 11)
+							this->world->player_clipX(fmod(((-168) - (this->world->player_getX())), -21));
+						this->player_z_pos++;
+					}
+					this->world->ProcessKeyboard(BKW);
+				}
+			}
+		}
+		else if (this->world->player_getZ() < 168)
+			this->world->ProcessKeyboard(BKW);
 	}
 
 	if ( keys[GLFW_KEY_LEFT])
 	{
-		this->world->ProcessKeyboard(LFT);
+		if (this->player_x_pos > 0)
+		{
+			if (this->mapArray[this->player_z_pos][this->player_x_pos - 1] == '\0')
+			{
+				if (fmod(((168) - (this->world->player_getZ() - 11)), -21) != 0.0f)
+				{
+					if ((fmod(((-168) - (this->world->player_getX() - 11)), -21) == 0) && (this->player_x_pos < 16))
+					{
+						if (fmod(((168) - (this->world->player_getZ() - 11)), -21) > 11)
+							this->world->player_clipZ(fmod(((168) - (this->world->player_getZ())), -21));
+						else if (fmod(((168) - (this->world->player_getZ() - 11)), -21) <= 11)
+							this->world->player_clipZ(fmod(((-168) - (this->world->player_getZ())), -21));
+						this->player_x_pos--;
+					}
+					this->world->ProcessKeyboard(LFT);
+				}
+			}
+		}
+		else if (this->world->player_getX() > -168)
+			this->world->ProcessKeyboard(LFT);
 	}
 
 	if ( keys[GLFW_KEY_RIGHT])
 	{
-		this->world->ProcessKeyboard(RGT);
+		if (this->player_x_pos < 16 )
+		{
+			if (this->mapArray[this->player_z_pos][this->player_x_pos + 1] == '\0')
+			{
+				if (fmod(((168) - (this->world->player_getZ() - 11)), -21) != 0.0f)
+				{
+					if ((fmod(((-168) - (this->world->player_getX() - 11)), -21) == 0) && (this->player_x_pos < 16))
+					{
+						if (fmod(((168) - (this->world->player_getZ() - 11)), -21) > 11)
+							this->world->player_clipZ(fmod(((168) - (this->world->player_getZ())), -21));
+						else if (fmod(((168) - (this->world->player_getZ() - 11)), -21) <= 11)
+							this->world->player_clipZ(fmod(((-168) - (this->world->player_getZ())), -21));
+						this->player_x_pos++;
+					}
+					this->world->ProcessKeyboard(RGT);
+				}
+			}
+		}
+		else if (this->world->player_getX() < 168)
+			this->world->ProcessKeyboard(RGT);
 	}
 
 	if (keys[GLFW_KEY_SPACE])
 	{
 		this->world->ProcessKeyboard(SPC);
 	}
+	std::cout << std::to_string((fmod(((168.0f) - (this->world->player_getX() - 11.0f)), -21.0f))) << std::endl;
+	std::cout << "array[" << this->player_z_pos << "][" << this->player_x_pos << "]" << std::endl;
 }

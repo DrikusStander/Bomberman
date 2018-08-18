@@ -13,28 +13,28 @@ World::World( Shader &shader, std::string model)
 	this->player = new Player(shader, "resources/models/nanosuit.obj");
 	this->map  = new std::vector<std::vector<Item*>>(17);
 	// std::vector< std::vector<Item*> > map(17, std::vector<Item*>(17));
-	for (int i = 0; i < 17; i++)
-		(*this->map)[i].resize(17);
+	// for (int i = 0; i < 17; i++)
+	// 	(*this->map)[i].resize(17);
 
-	// (*this->map)[3][0] = new Item(shader, "resources/models/enemy.obj");
-	// std::vector<Item *> row = matrix[0][0];
-	// this->map[0][0].push_back(new Item(shader, "resources/models/bom.obj"));
-	// this->map[0][3].push_back(new Item(shader, "resources/models/nanosuit.obj"));
-	for (int i = 0; i < 17; i++)
-	{
-		// std::cout << "row :" << i << " constructing" << std::endl;
-		for (int j = 0; j < 17; j++)
-		{
-			// std::cout << "col :" << j << " constructing" << std::endl;
-			if ((i % 2) != 0 && (j % 2) != 0)
-			{
-				// std::cout << "col :" << j << " placing a pillar" << std::endl;
-				(*this->map)[i][j] = new Item(shader, "resources/models/enemy.obj");
-			}
-			else
-				(*this->map)[i][j] = NULL;
-		}
-	}
+	// // (*this->map)[3][0] = new Item(shader, "resources/models/enemy.obj");
+	// // std::vector<Item *> row = matrix[0][0];
+	// // this->map[0][0].push_back(new Item(shader, "resources/models/bom.obj"));
+	// // this->map[0][3].push_back(new Item(shader, "resources/models/nanosuit.obj"));
+	// for (int i = 0; i < 17; i++)
+	// {
+	// 	// std::cout << "row :" << i << " constructing" << std::endl;
+	// 	for (int j = 0; j < 17; j++)
+	// 	{
+	// 		// std::cout << "col :" << j << " constructing" << std::endl;
+	// 		if ((i % 2) != 0 && (j % 2) != 0)
+	// 		{
+	// 			// std::cout << "col :" << j << " placing a pillar" << std::endl;
+	// 			(*this->map)[i][j] = new Item(shader, "resources/models/enemy.obj");
+	// 		}
+	// 		else
+	// 			(*this->map)[i][j] = NULL;
+	// 	}
+	// }
 
 }
 
@@ -66,7 +66,7 @@ void World::draw(void)
 	glm::mat4 model(1);
 	model = glm::translate( model, glm::vec3(this->x_trans, this->y_trans, this->z_trans)); 	// Translate it down a bit so it's at the center of the scene
 	model = glm::scale( model, glm::vec3(0.2f, 0.2f, 0.2f));									// It's a bit too big for our scene, so scale it down
-	glUniformMatrix4fv( glGetUniformLocation(this->_shader->getProgram(), "model"), 1, GL_FALSE, glm::value_ptr(model ));
+	glUniformMatrix4fv( glGetUniformLocation(this->_shader->getProgram(), "model"), 1, GL_FALSE, glm::value_ptr( model ));
 	this->WorldModel->Draw(*this->_shader);
 	this->player->draw();
 }
@@ -74,4 +74,24 @@ void World::draw(void)
 void	World::ProcessKeyboard(Direction direction)
 {
 	this->player->ProcessKeyboard(direction);
+}
+
+float	World::player_getX(void)
+{
+	return this->player->getX();
+}
+
+float	World::player_getZ(void)
+{
+	return this->player->getZ();
+}
+
+void	World::player_clipX(float x_move)
+{
+	this->player->clipX(x_move);
+}
+
+void	World::player_clipZ(float z_move)
+{
+	this->player->clipZ(z_move);
 }

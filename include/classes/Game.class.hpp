@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Game.class.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+        */
+/*   By: dwilliam <dwilliam@42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/11 11:20:47 by cnolte            #+#    #+#             */
-/*   Updated: 2018/08/14 14:54:19 by cnolte           ###   ########.fr       */
+/*   Updated: 2018/08/18 16:15:19 by dwilliam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,9 @@ class Game
 		GLuint	s_HEIGHT;
 		int		SCREEN_WIDTH;
 		int		SCREEN_HEIGHT;
+		char	mapArray[17][17];
+		int		player_x_pos;
+		int		player_z_pos;
 
 		void	DoMovement(void);
 };
