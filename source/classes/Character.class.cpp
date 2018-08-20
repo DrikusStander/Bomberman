@@ -45,7 +45,7 @@ void Character::draw(void)
 	this->characterModel->Draw(*this->_shader);
 }
 
-void Character::setMap( std::vector<std::vector<Item*>> *map)
+void Character::setMap( char **map)
 {
 	this->map = map;
 }

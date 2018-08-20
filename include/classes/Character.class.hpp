@@ -14,6 +14,8 @@
 #include "Model.class.hpp"
 #include "Item.class.hpp"
 
+#include <math.h>
+
 enum Direction
 {
 	FWD = 0,
@@ -33,7 +35,10 @@ class Character
 		float	y_trans;
 		float	z_trans;
 		float	rotate;
-		std::vector<std::vector<Item*>> *map;
+		char	**map;
+		Direction dirX;
+		Direction dirZ;
+		// char	(*map)[17][17];
 
 	public:
 		Character( Shader &shader, std::string model);
@@ -42,7 +47,7 @@ class Character
 		Character const & operator=(Character const & rhs);
 		void	draw(void);
 		virtual void	ProcessKeyboard(Direction direction) = 0;
-		void setMap( std::vector<std::vector<Item*>> *map);
+		void setMap( char **map);
 };
 
 #endif

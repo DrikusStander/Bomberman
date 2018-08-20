@@ -46,8 +46,10 @@ void Item::draw(void)
 	this->ItemModel->Draw(*this->_shader);
 }
 
-void Item::setPos(float x, float z)
+void Item::setPos(float x, float z, int row, int col)
 {
+	this->row = row;
+	this->col = col;
 	this->x_trans = x;
 	this->z_trans = z;
 }
@@ -60,4 +62,8 @@ void	Item::setActive(bool active)
 bool	Item::getActive()
 {
 	return(this->active);
+}
+void Item::setMap( char **map)
+{
+	this->map = map;
 }

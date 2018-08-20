@@ -27,7 +27,9 @@ class World
 		float	y_trans;
 		float	z_trans;
 		Player	*player;
-		std::vector<std::vector<Item*>> *map;
+		char	**map;
+		// char	(*map)[17][17];
+		// std::vector<std::vector<Item*>> *map;
 		// Item	**map;
 
 	public:

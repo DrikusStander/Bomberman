@@ -19,6 +19,7 @@ class Bomb : public Item
 		void	draw(void);
 		void	setActive( bool active );
 		using Item::setPos;
+		using Item::setMap;
 		using Item::getActive;
 };
 

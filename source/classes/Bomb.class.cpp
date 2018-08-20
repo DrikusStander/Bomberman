@@ -29,7 +29,11 @@ Bomb const & Bomb::operator=(Bomb const & rhs)
 void Bomb::draw(void)
 {
 	if ((glfwGetTime() - this->PlantTime) >= this->PlantTimeLength)
+	{
 		this->setActive(false);
+		this->map[this->row][this->col] = '\0';
+	}
+
 	glm::mat4 model(1);
 	model = glm::translate( model, glm::vec3(this->x_trans, this->y_trans, this->z_trans));		// Translate it down a bit so it's at the center of the scene
 	model = glm::scale(model, glm::vec3(4.25f, 2.25f, 4.25f));									// It's a bit too big for our scene, so scale it down
@@ -42,5 +46,6 @@ void	Bomb::setActive(bool active)
 {
 	if (active == true)
 		this->PlantTime = glfwGetTime();
+	this->map[this->row][this->col] = 'B';
 	this->active = active;
 }

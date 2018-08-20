@@ -11,8 +11,6 @@ class Player : public Character
 		Bomb	*bomb;
 		int		row;
 		int		col;
-		int		colCounter;
-		int		rowCounter;
 
 	protected:
 	public:

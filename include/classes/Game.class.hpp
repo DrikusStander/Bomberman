@@ -48,9 +48,9 @@ class Game
 		GLuint	s_HEIGHT;
 		int		SCREEN_WIDTH;
 		int		SCREEN_HEIGHT;
-		char	mapArray[17][17];
-		int		player_x_pos;
-		int		player_z_pos;
+		// char	mapArray[17][17];
+		// int		player_x_pos;
+		// int		player_z_pos;
 
 		void	DoMovement(void);
 };

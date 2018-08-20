@@ -8,8 +8,6 @@ Player::Player( Shader &shader, std::string model) : Character(shader, model)
 	this->z_trans = -168.0f;
 	this->row = 0;
 	this->col = 0;
-	this->rowCounter = 0;
-	this->colCounter = 0;
 	this->bomb = new Bomb(shader, "resources/models/bom.obj");
 }
 
@@ -63,51 +61,166 @@ void	Player::clipZ(float z_move)
 	this->z_trans += z_move;
 }
 
-
 void	Player::ProcessKeyboard(Direction direction)
 {
 	switch(direction)
 	{
 		case FWD:
-			this->rotate = 180.0f;
-			// check collision func
-			// if (this->z_trans <= -168 )
-			// 	break;
-			this->z_trans--;
+		{
+			if (this->row > 0)
+			{
+				if (this->map[this->row - 1][this->col] == '\0')
+				{
+					if (fmod(((168) - (this->x_trans - 10.5)), -21) != 0.0f)
+					{
+						if ((fmod(((168) - (this->z_trans - 10.5)), -21) == 0) && (this->row >= 0))
+						{
+							if (fmod( (168 - (this->x_trans - 10.5)), -21 ) > 10.5)
+								this->clipX(fmod(((168) - (this->x_trans)), -21));
+							else if (fmod(((168) - (this->x_trans - 10.5)), -21) <= 10.5)
+								this->clipX(fmod(((-168) - (this->x_trans)), -21));
+						}
+						this->rotate = 180.0f;
+						this->z_trans -= 0.5f;
+						this->row = static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21);
 
+					}
+				}
+			}
+			else if (this->z_trans > -168)
+			{
+				this->rotate = 180.0f;
+				this->z_trans -= 0.5f;
+				this->row = static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21);
+			}
 			break;
+		}
 		case BKW:
-			this->rotate = 0.0f;
-			// if (this->z_trans >= 168 )
-			// 	break;
-			this->z_trans++;
-
+		{
+			if (this->row < 16)
+			{
+				if (this->map[this->row + 1][this->col] == '\0')
+				{
+					if (fmod(((168) - (this->x_trans - 10.5)), -21) != 0.0f)
+					{
+						if ((fmod(((168) - (this->z_trans - 10.5)), -21) == 0) && (this->row < 16))
+						{
+							if (fmod(((168) - (this->x_trans) - 10.5), -21) > 10.5)
+								this->clipX(fmod(((168) - (this->x_trans)), -21));
+							else if (fmod(((168) - (this->x_trans - 10.5)), -21) <= 10.5)
+								this->clipX(fmod(((-168) - (this->x_trans)), -21));
+							else if (fmod(((168) - (this->x_trans - 10.5)), -21) > 10.5)
+								this->clipX(fmod(((168) - (this->x_trans)), -21));
+						}
+						this->rotate = 0.0f;
+						this->z_trans += 0.5f;
+						this->row = static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21);
+					}
+				}
+			}
+			else if (this->z_trans < 168)
+			{
+				this->rotate = 0.0f;
+				this->z_trans += 0.5f;
+				this->row = static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21);
+			}
 			break;
+		}
 		case LFT:
 		{
-			this->rotate = 270.0f;
-			// if (this->x_trans <= -168 )
-			// 	break;
-			this->x_trans--;
+			if (this->col > 0)
+			{
+				if (this->map[this->row][this->col - 1] == '\0')
+				{
+					if (fmod(((168) - (this->z_trans - 10.5)), -21) != 0.0f)
+					{
+						if ((fmod(((168) - (this->x_trans - 10.5)), -21) == 0) && (this->col >= 0) )
+						{
+							if (fmod(((168) - (this->z_trans - 10.5)), -21) > 10.5)
+								this->clipZ(fmod(((168) - (this->z_trans)), -21));
+							else if (fmod(((168) - (this->z_trans - 10.5)), -21) <= 10.5)
+								this->clipZ(fmod(((-168) - (this->z_trans)), -21));
+						}
+						this->rotate = 270.0f;
+						this->x_trans -= 0.5f;
+						this->col = static_cast<int>((-168 - (this->x_trans + 10.5)) /  -21);
+					}
+				}
+			}
+			else if (this->x_trans > -168)
+			{
+				this->rotate = 270.0f;
+				this->x_trans -= 0.5;
+				this->col = static_cast<int>((-168 - (this->x_trans + 10.5)) /  -21);
+			}
 			break;
 		}
 		case RGT:
 		{
-			this->rotate = 90.0f;
-			// if (this->x_trans >= 168 )
-			// 	break;
-			this->x_trans++;
+			if (this->col < 16 )
+			{
+				if (this->map[this->row][this->col + 1] == '\0')
+				{
+					if (fmod( ( (168) - (this->z_trans - 10.5) ), -21 ) != 0.0f)
+					{
+						if ((fmod(((168) - (this->x_trans - 10.5)), -21) == 0) && (this->col < 16) )
+						{
+							if (fmod(((168) - (this->z_trans - 10.5)), -21) > 10.5)
+								this->clipZ(fmod(((168) - (this->z_trans)), -21));
+							else if (fmod(((168) - (this->z_trans - 10.5)), -21) <= 10.5)
+								this->clipZ(fmod(((-168) - (this->z_trans)), -21));
+						}
+						this->rotate = 90.0f;
+						this->x_trans += 0.5f;
+						this->col = static_cast<int>((-168 - (this->x_trans + 10.5)) /  -21);
+					}
+				}
+			}
+			else if (this->x_trans < 168)
+			{
+				this->rotate = 90.0f;
+				this->x_trans += 0.5f;
+				this->col = static_cast<int>((-168 - (this->x_trans + 10.5)) /  -21);
+			}
 			break;
 		}
 		case SPC:
 		{
 			if (this->bomb->getActive() == false)
 			{
-				this->bomb->setPos(this->x_trans, this->z_trans);
+				float bomb_x;
+				float bomb_z;
+				if (fmod(((168) - (this->z_trans - 10.5)), -21) > 10.5)
+					bomb_z = this->z_trans + fmod(((168) - (this->z_trans)), -21);
+				else if (fmod(((168) - (this->z_trans - 10.5)), -21) <= 10.5)
+					bomb_z = this->z_trans + fmod(((-168) - (this->z_trans)), -21);
+				if (fmod(((168) - (this->x_trans) - 10.5), -21) > 10.5)
+					bomb_x = this->x_trans + fmod(((168) - (this->x_trans)), -21);
+				else if (fmod(((168) - (this->x_trans - 10.5)), -21) <= 10.5)
+					bomb_x = this->x_trans + fmod(((-168) - (this->x_trans)), -21);
+				this->bomb->setPos(bomb_x, bomb_z, this->row, this->col);
+				this->bomb->setMap(this->map);
+				// this->map[this->row][this->col] = 'B';
 				this->bomb->setActive(true);
 			}
 			break;
 		}
 	}
 	// std::cout<< this->x_trans << std::endl;
+	
+	std::cout << "x_trans: " << std::to_string((fmod(((168.0f) - (this->x_trans - 10.5f)), -21.0f))) << std::endl;
+	// std::cout << "x_transB: " << std::to_string((fmod(((168.0f) - (this->x_transB - 10.5f)), -21.0f))) << std::endl;
+	// std::cout << "x_transA: " << std::to_string((fmod(((168.0f) - (this->x_transA - 10.5f)), -21.0f))) << std::endl;
+
+		std::cout << "z_trans: "<< std::to_string((fmod(((168) - (this->z_trans - 10.5)), -21))) << std::endl;
+		// std::cout << "z_transB: "<< std::to_string((fmod(((168) - (this->z_transB - 10.5)), -21))) << std::endl;
+		// std::cout << "z_transA: "<< std::to_string((fmod(((168) - (this->z_transA - 10.5)), -21))) << std::endl;
+
+		// std::cout << "col should be: "<< std::to_string((fmod(this->x_trans + 168, 336))) << std::endl;
+		// std::cout << "col should be: "<< std::to_string((this->x_trans) / 336) << std::endl;
+		// std::cout << "row should be: "<< std::to_string((fmod(this->z_trans - 168, 336))) << std::endl;
+		// std::cout << "row should be: "<< std::to_string(static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21)) << std::endl;
+
+
+	std::cout << "array[" << this->row << "][" << this->col << "]" << std::endl;
 }
