@@ -34,11 +34,13 @@ class Item
 		Item( Item const & src);
 		~Item( void );
 		Item const & operator=(Item const & rhs);
-		void	setPos(float x, float y, int row, int col);
+		void	setPos(float x, float z, int row, int col);
 		void	draw(void);
 		void	setActive( bool active );
 		bool	getActive( void );
 		void	setMap( char **map);
+		int		getCol();
+		int		getRow();
 };
 
 #endif

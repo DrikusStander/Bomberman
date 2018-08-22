@@ -11,65 +11,19 @@ World::World( Shader &shader, std::string model)
 	this->y_trans = 0.0f;
 	this->z_trans = 0.0f;
 	this->player = new Player(shader, "resources/models/nanosuit.obj");
-	// this->map  = new std::vector<std::vector<Item*>>(17);
-	// std::vector< std::vector<Item*> > map(17, std::vector<Item*>(17));
-	// for (int i = 0; i < 17; i++)
-	// 	(*this->map)[i].resize(17);
+	this->objects = new std::vector<Item*>();
+	this->enemies = new std::vector<Enemy*>();
+	this->worldStatus = 0;
 
-	// // (*this->map)[3][0] = new Item(shader, "resources/models/enemy.obj");
-	// // std::vector<Item *> row = matrix[0][0];
-	// // this->map[0][0].push_back(new Item(shader, "resources/models/bom.obj"));
-	// // this->map[0][3].push_back(new Item(shader, "resources/models/nanosuit.obj"));
-	// for (int i = 0; i < 17; i++)
-	// {
-	// 	// std::cout << "row :" << i << " constructing" << std::endl;
-	// 	for (int j = 0; j < 17; j++)
-	// 	{
-	// 		// std::cout << "col :" << j << " constructing" << std::endl;
-	// 		if ((i % 2) != 0 && (j % 2) != 0)
-	// 		{
-	// 			// std::cout << "col :" << j << " placing a pillar" << std::endl;
-	// 			(*this->map)[i][j] = new Item(shader, "resources/models/enemy.obj");
-	// 		}
-	// 		else
-	// 			(*this->map)[i][j] = NULL;
-	// 	}
-	// }
-
-
-	// this->player_x_pos = 0;
-	// this->player_z_pos = 0;
-	
-	// char tmpArray[17][17]=
-	// {
-	// 	{'\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0'},
-	// 	{'\0','#' ,'\0','#' ,'\0','#' ,'\0','#' ,'\0','#' ,'\0','#' ,'\0','#' ,'\0','#' ,'\0'},
-	// 	{'\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0'},
-	// 	{'\0','#' ,'\0','#' ,'\0','#' ,'\0','#' ,'\0','#' ,'\0','#' ,'\0','#' ,'\0','#' ,'\0'},
-	// 	{'\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0'},
-	// 	{'\0','#' ,'\0','#' ,'\0','#' ,'\0','#' ,'\0','#' ,'\0','#' ,'\0','#' ,'\0','#' ,'\0'},
-	// 	{'\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0'},
-	// 	{'\0','#' ,'\0','#' ,'\0','#' ,'\0','#' ,'\0','#' ,'\0','#' ,'\0','#' ,'\0','#' ,'\0'},
-	// 	{'\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0'},
-	// 	{'\0','#' ,'\0','#' ,'\0','#' ,'\0','#' ,'\0','#' ,'\0','#' ,'\0','#' ,'\0','#' ,'\0'},
-	// 	{'\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0'},
-	// 	{'\0','#' ,'\0','#' ,'\0','#' ,'\0','#' ,'\0','#' ,'\0','#' ,'\0','#' ,'\0','#' ,'\0'},
-	// 	{'\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0'},
-	// 	{'\0','#' ,'\0','#' ,'\0','#' ,'\0','#' ,'\0','#' ,'\0','#' ,'\0','#' ,'\0','#' ,'\0'},
-	// 	{'\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0'},
-	// 	{'\0','#' ,'\0','#' ,'\0','#' ,'\0','#' ,'\0','#' ,'\0','#' ,'\0','#' ,'\0','#' ,'\0'},
-	// 	{'\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0'}
-	// };
-	this->map = new char*[17] ;//&tmpArray;
+	// initiliaze the map
+	this->map = new char*[17] ;
 	for (int z = 0; z < 17; z++)
 	{
 		this->map[z] = new char[17];
-		// for (int x = 0; x < 17; x++)
-		// {
-		// 	this->mapArray[z][x] = tmpArray[z][x];
-		// }
 	}
 
+	// randomly innitilize breakable walls to the world
+	std::srand(std::time(NULL));
 	for (int i = 0; i < 17; i++)
 	{
 		for(int j = 0; j < 17; j++)
@@ -80,11 +34,47 @@ World::World( Shader &shader, std::string model)
 			}
 			else
 			{
-				this->map[i][j] = '\0';
+				if (i < 2 && j <  2)
+					this->map[i][j] = '\0';
+				else
+				{
+					if ((std::rand() % 3 + 1) == 1)
+					{
+						this->map[i][j] = 'W';
+						Item *temp = new Item(shader, "resources/models/wall.obj");
+						float x_transT = ((-168) - (j) * (-21));
+						float z_transT = ((-168) - (i) * (-21));
+						temp->setPos( x_transT, z_transT, i, j);
+						this->objects->push_back(temp);
+					}
+					else
+						this->map[i][j] = '\0';
+				}
 			}
 		}
 	}
-	// this->player->setMap(this->map);
+
+	// Initialize Enemies into the world
+	int enemy_count = 5;
+	while (enemy_count > 0)
+	{
+		int row = (rand() % 16);
+		int col = (rand() % 16);
+		if ( (row > 2) && (col > 2))
+		{
+			if (this->map[row][col] == '\0')
+			{
+				this->map[row][col] = 'E';
+				float x_transT = ((-168) - (col) * (-21));
+				float z_transT = ((-168) - (row) * (-21));
+				Enemy *temp = new Enemy(shader, "resources/models/enemy.obj");
+				temp->setPos(x_transT, z_transT, row, col);
+				this->enemies->push_back(temp);
+				enemy_count--;
+			}
+		}
+
+	}
 
 }
 
@@ -98,6 +88,34 @@ World::~World( void )
 	std::cout << "World - Destructor called " << std::endl;
 	delete this->WorldModel;
 	delete this->player;
+
+	// clean up map
+	for (int z = 0; z < 17; z++)
+	{
+		delete [] this->map[z];
+	}
+	delete [] this->map;
+
+	
+	// clean up objects
+	for (std::vector<Item*>::iterator it = this->objects->begin() ; it != this->objects->end(); )
+	{
+		if (it != this->objects->end())
+		{
+			delete (*it);
+			it = this->objects->erase(it);
+		}
+	}
+	delete this->objects;
+
+	// clean up enemies
+	for (std::vector<Enemy*>::iterator it = this->enemies->begin() ; it != this->enemies->end(); )
+	{
+		delete (*it);
+		it = this->enemies->erase(it);
+	}
+	delete this->enemies;
+
 }
 
 World const & World::operator=(World const & rhs)
@@ -122,6 +140,61 @@ void World::draw(void)
 	glUniformMatrix4fv( glGetUniformLocation(this->_shader->getProgram(), "model"), 1, GL_FALSE, glm::value_ptr( model ));
 	this->WorldModel->Draw(*this->_shader);
 	this->player->draw();
+
+	//check what items the bomb affected
+	for (int i = 0; i < 17; i++)
+	{
+		for (int j = 0; j < 17; j++)
+		{
+			if (this->map[i][j] == 'D')
+			{
+				// check if the player was hit
+				if (this->player->getRow() == i && this->player->getCol() == j)
+				{
+					/* 
+						handle this event diffrently
+						check lives of the player 
+							-> if lives left respawn
+							-> if no lives left lose splash screen and send to menu
+					*/
+					this->worldStatus = 1;
+				}
+
+				// check what object was affected
+				for (std::vector<Item*>::iterator it = this->objects->begin() ; it != this->objects->end(); )
+				{
+					if ((*it)->getRow() == i && (*it)->getCol() == j)
+					{
+						delete (*it);
+						it = this->objects->erase(it);
+					}
+					else
+						++it;
+				}
+
+				// check what enemy was affected
+				for (std::vector<Enemy*>::iterator it = this->enemies->begin() ; it != this->enemies->end(); )
+				{
+					if ((*it)->getRow() == i && (*it)->getCol() == j)
+					{
+						delete (*it);
+						it = this->enemies->erase(it);
+					}
+					else
+						++it;
+				}
+				this->map[i][j] = '\0';
+			}
+		}
+	}
+	for (Enemy *enemy : *this->enemies)
+	{
+		enemy->draw();
+	}
+	for (Item *item : *this->objects)
+	{
+		item->draw();
+	}
 }
 
 void	World::ProcessKeyboard(Direction direction)
@@ -147,4 +220,9 @@ void	World::player_clipX(float x_move)
 void	World::player_clipZ(float z_move)
 {
 	this->player->clipZ(z_move);
+}
+
+int		World::getStatus( void )
+{
+	return (this->worldStatus);
 }

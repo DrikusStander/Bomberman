@@ -13,6 +13,7 @@
 
 #include "Model.class.hpp"
 #include "Player.class.hpp"
+#include "Enemy.class.hpp"
 #include "Item.class.hpp"
 
 #include <vector>
@@ -28,6 +29,9 @@ class World
 		float	z_trans;
 		Player	*player;
 		char	**map;
+		std::vector<Item*>	*objects;
+		std::vector<Enemy*>	*enemies;
+		int		worldStatus;
 		// char	(*map)[17][17];
 		// std::vector<std::vector<Item*>> *map;
 		// Item	**map;
@@ -43,6 +47,7 @@ class World
 		float	player_getZ(void);
 		void	player_clipX(float x_move);
 		void	player_clipZ(float z_move);
+		int		getStatus( void );
 };
 
 #endif

@@ -9,6 +9,7 @@ class Bomb : public Item
 	private:
 		GLfloat PlantTime;
 		GLfloat PlantTimeLength;
+		int		blastRaduis;
 	protected:
 
 	public:

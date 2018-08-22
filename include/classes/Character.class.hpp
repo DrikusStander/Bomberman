@@ -38,7 +38,8 @@ class Character
 		char	**map;
 		Direction dirX;
 		Direction dirZ;
-		// char	(*map)[17][17];
+		int		row;
+		int		col;
 
 	public:
 		Character( Shader &shader, std::string model);
@@ -48,6 +49,10 @@ class Character
 		void	draw(void);
 		virtual void	ProcessKeyboard(Direction direction) = 0;
 		void setMap( char **map);
+		void	setPos(float x, float z, int row, int col);
+		int		getCol();
+		int		getRow();
+
 };
 
 #endif

@@ -1,30 +1,29 @@
-#ifndef PLAYER_HPP
-#define PLAYER_HPP
+#ifndef ENEMY_HPP
+#define ENEMY_HPP
 
 #include "Character.class.hpp"
 #include "Bomb.class.hpp"
 
 
-class Player : public Character
+class Enemy : public Character
 {
 	private:
-		Bomb	*bomb;
 	protected:
 	public:
-		Player( Shader &shader, std::string model);
-		Player( Player const & src);
-		~Player( void );
-		Player const & operator=(Player const & rhs);
+		Enemy( Shader &shader, std::string model);
+		Enemy( Enemy const & src);
+		~Enemy( void );
+		Enemy const & operator=(Enemy const & rhs);
 		void draw(void);
 		void	ProcessKeyboard(Direction direction);
 		using Character::setMap;
+		using Character::setPos;
 		using Character::getCol;
 		using Character::getRow;
 		float	getX();
 		float	getZ();
 		void	clipX(float x_move);
 		void	clipZ(float z_move);
-
 };
 
 #endif

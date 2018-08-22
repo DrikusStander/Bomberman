@@ -22,6 +22,7 @@ Item::Item( Item const & src)
 Item::~Item( void )
 {
 	std::cout << "Item - Destructor called " << std::endl;
+	delete this->ItemModel;
 }
 
 Item const & Item::operator=(Item const & rhs)
@@ -39,8 +40,8 @@ Item const & Item::operator=(Item const & rhs)
 void Item::draw(void)
 {
 	glm::mat4 model(1);
-	model = glm::translate( model, glm::vec3(this->x_trans, this->y_trans, this->z_trans)); // Translate it down a bit so it's at the center of the scene
-	model = glm::scale(model, glm::vec3(4.25f, 2.25f, 4.25f));								// It's a bit too big for our scene, so scale it down
+	model = glm::translate( model, glm::vec3(this->x_trans, this->y_trans, this->z_trans)); // Translate item
+	model = glm::scale(model, glm::vec3(4.25f, 2.25f, 4.25f));								// scale item
 	model = glm::rotate(model, glm::radians(this->rotate), glm::vec3(0, 1, 0)); 			// where x, y, z is axis of rotation (e.g. 0 1 0)
 	glUniformMatrix4fv( glGetUniformLocation(this->_shader->getProgram(), "model"), 1, GL_FALSE, glm::value_ptr(model ));
 	this->ItemModel->Draw(*this->_shader);
@@ -66,4 +67,14 @@ bool	Item::getActive()
 void Item::setMap( char **map)
 {
 	this->map = map;
+}
+
+int		Item::getCol()
+{
+	return(this->col);
+}
+
+int		Item::getRow()
+{
+	return(this->row);
 }
