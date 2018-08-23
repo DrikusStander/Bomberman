@@ -5,12 +5,34 @@
 World::World( Shader &shader, std::string model)
 {
 	std::cout << "World - Parametric Constructor called " << std::endl;
+	this->active = 0;
 	this->WorldModel =  new Model(model);
 	this->_shader = &shader;
 	this->x_trans = 0.0f;
 	this->y_trans = 0.0f;
 	this->z_trans = 0.0f;
-	this->player = new Player(shader, "resources/models/nanosuit.obj");
+	this->player[0] = new Player(shader, "resources/models/player/player_run_0.obj");
+	this->player[1] = new Player(shader, "resources/models/player/player_run_1.obj");
+	this->player[2] = new Player(shader, "resources/models/player/player_run_2.obj");
+	this->player[3] = new Player(shader, "resources/models/player/player_run_3.obj");
+	this->player[4] = new Player(shader, "resources/models/player/player_run_4.obj");
+	this->player[5] = new Player(shader, "resources/models/player/player_run_5.obj");
+	this->player[6] = new Player(shader, "resources/models/player/player_run_6.obj");
+	this->player[7] = new Player(shader, "resources/models/player/player_run_7.obj");
+	this->player[8] = new Player(shader, "resources/models/player/player_run_8.obj");
+	this->player[9] = new Player(shader, "resources/models/player/player_run_9.obj");
+	this->player[10] = new Player(shader, "resources/models/player/player_run_10.obj");
+	this->player[11] = new Player(shader, "resources/models/player/player_run_11.obj");
+	this->player[12] = new Player(shader, "resources/models/player/player_run_12.obj");
+	this->player[13] = new Player(shader, "resources/models/player/player_run_13.obj");
+	this->player[14] = new Player(shader, "resources/models/player/player_run_14.obj");
+	this->player[15] = new Player(shader, "resources/models/player/player_run_15.obj");
+	this->player[16] = new Player(shader, "resources/models/player/player_run_16.obj");
+	this->player[17] = new Player(shader, "resources/models/player/player_run_17.obj");
+	this->player[18] = new Player(shader, "resources/models/player/player_run_18.obj");
+	this->player[19] = new Player(shader, "resources/models/player/player_run_19.obj");
+	this->player[20] = new Player(shader, "resources/models/player/player_run_20.obj");
+	this->player[21] = new Player(shader, "resources/models/player/player_run_21.obj");
 	this->objects = new std::vector<Item*>();
 	this->enemies = new std::vector<Enemy*>();
 	this->worldStatus = 0;
@@ -87,7 +109,28 @@ World::~World( void )
 {
 	std::cout << "World - Destructor called " << std::endl;
 	delete this->WorldModel;
-	delete this->player;
+	delete this->player[0];
+	delete this->player[1];
+	delete this->player[2];
+	delete this->player[3];
+	delete this->player[4];
+	delete this->player[5];
+	delete this->player[6];
+	delete this->player[7];
+	delete this->player[8];
+	delete this->player[9];
+	delete this->player[10];
+	delete this->player[11];
+	delete this->player[12];
+	delete this->player[13];
+	delete this->player[14];
+	delete this->player[15];
+	delete this->player[16];
+	delete this->player[17];
+	delete this->player[18];
+	delete this->player[19];
+	delete this->player[20];
+	delete this->player[21];
 
 	// clean up map
 	for (int z = 0; z < 17; z++)
@@ -130,7 +173,28 @@ World const & World::operator=(World const & rhs)
 
 void World::draw(void)
 {
-	this->player->setMap(this->map);
+	this->player[0]->setMap(this->map);
+	this->player[1]->setMap(this->map);
+	this->player[2]->setMap(this->map);
+	this->player[3]->setMap(this->map);
+	this->player[4]->setMap(this->map);
+	this->player[5]->setMap(this->map);
+	this->player[6]->setMap(this->map);
+	this->player[7]->setMap(this->map);
+	this->player[8]->setMap(this->map);
+	this->player[9]->setMap(this->map);
+	this->player[10]->setMap(this->map);
+	this->player[11]->setMap(this->map);
+	this->player[12]->setMap(this->map);
+	this->player[13]->setMap(this->map);
+	this->player[14]->setMap(this->map);
+	this->player[15]->setMap(this->map);
+	this->player[16]->setMap(this->map);
+	this->player[17]->setMap(this->map);
+	this->player[18]->setMap(this->map);
+	this->player[19]->setMap(this->map);
+	this->player[20]->setMap(this->map);
+	this->player[21]->setMap(this->map);
 	if (this->map[0][0] != '\0')
 		std::cout << "map[0][0] : " << this->map[0][0] << std::endl;
 
@@ -139,7 +203,7 @@ void World::draw(void)
 	model = glm::scale( model, glm::vec3(0.2f, 0.2f, 0.2f));									// It's a bit too big for our scene, so scale it down
 	glUniformMatrix4fv( glGetUniformLocation(this->_shader->getProgram(), "model"), 1, GL_FALSE, glm::value_ptr( model ));
 	this->WorldModel->Draw(*this->_shader);
-	this->player->draw();
+	this->player[this->active]->draw();
 
 	//check what items the bomb affected
 	for (int i = 0; i < 17; i++)
@@ -149,7 +213,7 @@ void World::draw(void)
 			if (this->map[i][j] == 'D')
 			{
 				// check if the player was hit
-				if (this->player->getRow() == i && this->player->getCol() == j)
+				if (this->player[this->active]->getRow() == i && this->player[this->active]->getCol() == j)
 				{
 					/* 
 						handle this event diffrently
@@ -199,27 +263,31 @@ void World::draw(void)
 
 void	World::ProcessKeyboard(Direction direction)
 {
-	this->player->ProcessKeyboard(direction);
+	this->player[this->active]->ProcessKeyboard(direction);
+	// if (this->active < 21)
+	// 	this->active++;
+	// else if (this->active == 21)
+	// 	this->active = 0;
 }
 
 float	World::player_getX(void)
 {
-	return this->player->getX();
+	return this->player[this->active-1]->getX();
 }
 
 float	World::player_getZ(void)
 {
-	return this->player->getZ();
+	return this->player[this->active-1]->getZ();
 }
 
 void	World::player_clipX(float x_move)
 {
-	this->player->clipX(x_move);
+	this->player[this->active]->clipX(x_move);
 }
 
 void	World::player_clipZ(float z_move)
 {
-	this->player->clipZ(z_move);
+	this->player[this->active]->clipZ(z_move);
 }
 
 int		World::getStatus( void )

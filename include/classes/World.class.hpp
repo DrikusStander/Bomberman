@@ -27,11 +27,12 @@ class World
 		float	x_trans;
 		float	y_trans;
 		float	z_trans;
-		Player	*player;
+		Player	*player[22];
 		char	**map;
 		std::vector<Item*>	*objects;
 		std::vector<Enemy*>	*enemies;
 		int		worldStatus;
+		int		active;
 		// char	(*map)[17][17];
 		// std::vector<std::vector<Item*>> *map;
 		// Item	**map;

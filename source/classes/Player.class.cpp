@@ -34,7 +34,7 @@ void Player::draw(void)
 {
 	glm::mat4 model(1);
 	model = glm::translate( model, glm::vec3(this->x_trans, this->y_trans, this->z_trans)); 	// Translate item
-	model = glm::scale( model, glm::vec3(2.25f, 1.25f, 2.25f));									// scale item
+	model = glm::scale( model, glm::vec3(1.2f, 1.2f, 1.2f));									// scale item
 	model = glm::rotate(model, glm::radians(this->rotate), glm::vec3(0, 1, 0)); 				// where x, y, z is axis of rotation (e.g. 0 1 0)
 	glUniformMatrix4fv( glGetUniformLocation(this->_shader->getProgram(), "model"), 1, GL_FALSE, glm::value_ptr(model ));
 	this->characterModel->Draw(*this->_shader);
@@ -82,7 +82,7 @@ void	Player::ProcessKeyboard(Direction direction)
 								this->clipX(fmod(((-168) - (this->x_trans)), -21));
 						}
 						this->rotate = 180.0f;
-						this->z_trans -= 0.5f;
+						this->z_trans -= 0.5f * 3;
 						this->map[this->row][this->col] = '\0';
 						this->row = static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21);
 						this->map[this->row][this->col] = 'P';
@@ -97,7 +97,7 @@ void	Player::ProcessKeyboard(Direction direction)
 						else if (fmod(((168) - (this->x_trans - 10.5)), -21) <= 10.5)
 							this->clipX(fmod(((-168) - (this->x_trans)), -21));
 						this->rotate = 180.0f;
-						this->z_trans -= 0.5f;
+						this->z_trans -= 0.5f * 3;
 						this->map[this->row][this->col] = '\0';
 						this->row = static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21);
 						this->map[this->row][this->col] = 'P';
@@ -107,7 +107,7 @@ void	Player::ProcessKeyboard(Direction direction)
 			else if (this->z_trans > -168)
 			{
 				this->rotate = 180.0f;
-				this->z_trans -= 0.5f;
+				this->z_trans -= 0.5f * 3;
 						this->map[this->row][this->col] = '\0';
 				this->row = static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21);
 						this->map[this->row][this->col] = 'P';
@@ -132,7 +132,7 @@ void	Player::ProcessKeyboard(Direction direction)
 								this->clipX(fmod(((168) - (this->x_trans)), -21));
 						}
 						this->rotate = 0.0f;
-						this->z_trans += 0.5f;
+						this->z_trans += 0.5f * 3;
 						this->map[this->row][this->col] = '\0';
 						this->row = static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21);
 						this->map[this->row][this->col] = 'P';
@@ -149,7 +149,7 @@ void	Player::ProcessKeyboard(Direction direction)
 						else if (fmod(((168) - (this->x_trans - 10.5)), -21) > 10.5)
 							this->clipX(fmod(((168) - (this->x_trans)), -21));
 						this->rotate = 0.0f;
-						this->z_trans += 0.5f;
+						this->z_trans += 0.5f * 3;
 						this->map[this->row][this->col] = '\0';
 						this->row = static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21);
 						this->map[this->row][this->col] = 'P';
@@ -159,7 +159,7 @@ void	Player::ProcessKeyboard(Direction direction)
 			else if (this->z_trans < 168)
 			{
 				this->rotate = 0.0f;
-				this->z_trans += 0.5f;
+				this->z_trans += 0.5f * 3;
 						this->map[this->row][this->col] = '\0';
 				this->row = static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21);
 						this->map[this->row][this->col] = 'P';
@@ -182,7 +182,7 @@ void	Player::ProcessKeyboard(Direction direction)
 								this->clipZ(fmod(((-168) - (this->z_trans)), -21));
 						}
 						this->rotate = 270.0f;
-						this->x_trans -= 0.5f;
+						this->x_trans -= 0.5f * 3;
 						this->map[this->row][this->col] = '\0';
 						this->col = static_cast<int>((-168 - (this->x_trans + 10.5)) /  -21);
 						this->map[this->row][this->col] = 'P';
@@ -197,7 +197,7 @@ void	Player::ProcessKeyboard(Direction direction)
 						else if (fmod(((168) - (this->z_trans - 10.5)), -21) <= 10.5)
 							this->clipZ(fmod(((-168) - (this->z_trans)), -21));
 						this->rotate = 270.0f;
-						this->x_trans -= 0.5f;
+						this->x_trans -= 0.5f * 3;
 						this->map[this->row][this->col] = '\0';
 						this->col = static_cast<int>((-168 - (this->x_trans + 10.5)) /  -21);
 						this->map[this->row][this->col] = 'P';
@@ -207,7 +207,7 @@ void	Player::ProcessKeyboard(Direction direction)
 			else if (this->x_trans > -168)
 			{
 				this->rotate = 270.0f;
-				this->x_trans -= 0.5;
+				this->x_trans -= 0.5 * 3;
 						this->map[this->row][this->col] = '\0';
 				this->col = static_cast<int>((-168 - (this->x_trans + 10.5)) /  -21);
 						this->map[this->row][this->col] = 'P';
@@ -230,7 +230,7 @@ void	Player::ProcessKeyboard(Direction direction)
 								this->clipZ(fmod(((-168) - (this->z_trans)), -21));
 						}
 						this->rotate = 90.0f;
-						this->x_trans += 0.5f;
+						this->x_trans += 0.5f * 3;
 						this->map[this->row][this->col] = '\0';
 						this->col = static_cast<int>((-168 - (this->x_trans + 10.5)) /  -21);
 						this->map[this->row][this->col] = 'P';
@@ -245,7 +245,7 @@ void	Player::ProcessKeyboard(Direction direction)
 						else if (fmod(((168) - (this->z_trans - 10.5)), -21) <= 10.5)
 							this->clipZ(fmod(((-168) - (this->z_trans)), -21));
 						this->rotate = 90.0f;
-						this->x_trans += 0.5f;
+						this->x_trans += 0.5f * 3;
 						this->map[this->row][this->col] = '\0';
 						this->col = static_cast<int>((-168 - (this->x_trans + 10.5)) /  -21);
 						this->map[this->row][this->col] = 'P';
@@ -255,7 +255,7 @@ void	Player::ProcessKeyboard(Direction direction)
 			else if (this->x_trans < 168)
 			{
 				this->rotate = 90.0f;
-				this->x_trans += 0.5f;
+				this->x_trans += 0.5f * 3;
 						this->map[this->row][this->col] = '\0';
 				this->col = static_cast<int>((-168 - (this->x_trans + 10.5)) /  -21);
 						this->map[this->row][this->col] = 'P';
