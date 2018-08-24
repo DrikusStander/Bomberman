@@ -16,6 +16,7 @@
 # include "Player.class.hpp"
 # include "Enemy.class.hpp"
 # include "Item.class.hpp"
+# include "Scoring.class.hpp"
 
 # include <vector>
 
@@ -24,6 +25,7 @@ class World
 	private:
 	protected:
 		Model	*WorldModel;
+		Scoring	*text;
 		Shader	*_shader;
 		float	x_trans;
 		float	y_trans;

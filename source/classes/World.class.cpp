@@ -1,11 +1,10 @@
-
 #include "World.class.hpp"
 
-
-World::World( Shader &shader, std::string model)
+World::World(Shader &shader, std::string model)
 {
 	std::cout << "World - Parametric Constructor called " << std::endl;
 	this->WorldModel =  new Model(model);
+	this->text =  new Scoring(shader, "resources/models/scoring/scoring_time.obj");
 	this->_shader = &shader;
 	this->x_trans = 0.0f;
 	this->y_trans = 0.0f;
@@ -193,6 +192,7 @@ void World::draw(void)
 			std::cout << std::endl;
 	}
 	this->player->draw();
+	this->text->draw();
 
 	// std::cout << "drwaing enemies" << std::endl;
 	for (Enemy *enemy : *this->enemies)
