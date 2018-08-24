@@ -24,6 +24,8 @@ class Player : public Character
 		float	getZ();
 		void	clipX(float x_move);
 		void	clipZ(float z_move);
+		void	setPosOnMap();
+		void	clearPosOnMap();
 
 };
 

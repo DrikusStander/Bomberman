@@ -196,7 +196,11 @@ Game	&Game::operator=(Game const &rhs)
 void	Game::DoMovement(void)
 {
 	// Camera controls
-	if (keys[GLFW_KEY_W])
+	if (keys[GLFW_KEY_Q])
+		camera.ProcessKeyboard(UP, deltaTime);
+	else if (keys[GLFW_KEY_E])
+		camera.ProcessKeyboard(DOWN, deltaTime);
+	else if (keys[GLFW_KEY_W])
 		camera.ProcessKeyboard(FORWARD, deltaTime);
 	else if (keys[GLFW_KEY_S])
 		camera.ProcessKeyboard(BACKWARD, deltaTime);

@@ -10,7 +10,6 @@ Player::Player( Shader &shader, std::string model) : Character(shader, model + "
 	this->x_trans = -168.0f;
 	this->z_trans = -168.0f;
 	this->bomb = new Bomb(shader, "resources/models/bom.obj");
-	// this->map[this->row][this->col] = 'P';
 
 }
 
@@ -65,11 +64,21 @@ void	Player::clipZ(float z_move)
 	this->z_trans += z_move;
 }
 
+void	Player::setPosOnMap()
+{
+	if (this->map[this->row][this->col] != 'B' && this->map[this->row][this->col] != 'D')
+		this->map[this->row][this->col] = 'P';
+}
+
+void	Player::clearPosOnMap()
+{
+	if (this->map[this->row][this->col] != 'B' && this->map[this->row][this->col] != 'D')
+		this->map[this->row][this->col] = '\0';
+}
+
 void	Player::ProcessKeyboard(Direction direction)
 {
-	if (this->active < 21)
-		this->active++;
-	else if (this->active == 21)
+	if (this->active == 21)
 		this->active = 0;
 	switch(direction)
 	{
@@ -77,7 +86,7 @@ void	Player::ProcessKeyboard(Direction direction)
 		{
 			if (this->row > 0)
 			{
-				if (this->map[this->row - 1][this->col] == '\0')
+				if (this->map[this->row - 1][this->col] == '\0' || this->map[this->row - 1][this->col] == 'E')
 				{
 					if (fmod(((168) - (this->x_trans - 10.5)), -21) != 0.0f)
 					{
@@ -90,9 +99,10 @@ void	Player::ProcessKeyboard(Direction direction)
 						}
 						this->rotate = 180.0f;
 						this->z_trans -= 0.5f * 3;
-						this->map[this->row][this->col] = '\0';
+						this->clearPosOnMap();
 						this->row = static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21);
-						this->map[this->row][this->col] = 'P';
+						this->active++;
+						this->setPosOnMap();
 					}
 				}
 				else if (static_cast<int>((-168 - ((this->z_trans - 0.5) + 10.5)) /  -21) > this->row - 1) 
@@ -105,9 +115,10 @@ void	Player::ProcessKeyboard(Direction direction)
 							this->clipX(fmod(((-168) - (this->x_trans)), -21));
 						this->rotate = 180.0f;
 						this->z_trans -= 0.5f * 3;
-						this->map[this->row][this->col] = '\0';
+						this->clearPosOnMap();
 						this->row = static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21);
-						this->map[this->row][this->col] = 'P';
+						this->active++;
+						this->setPosOnMap();
 					}
 				}
 			}
@@ -115,9 +126,10 @@ void	Player::ProcessKeyboard(Direction direction)
 			{
 				this->rotate = 180.0f;
 				this->z_trans -= 0.5f * 3;
-						this->map[this->row][this->col] = '\0';
+				this->clearPosOnMap();
 				this->row = static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21);
-						this->map[this->row][this->col] = 'P';
+				this->active++;
+				this->setPosOnMap();
 			}
 			break;
 		}
@@ -125,7 +137,7 @@ void	Player::ProcessKeyboard(Direction direction)
 		{
 			if (this->row < 16)
 			{
-				if (this->map[this->row + 1][this->col] == '\0')
+				if (this->map[this->row + 1][this->col] == '\0' || this->map[this->row + 1][this->col] == 'E')
 				{
 					if (fmod(((168) - (this->x_trans - 10.5)), -21) != 0.0f)
 					{
@@ -140,9 +152,10 @@ void	Player::ProcessKeyboard(Direction direction)
 						}
 						this->rotate = 0.0f;
 						this->z_trans += 0.5f * 3;
-						this->map[this->row][this->col] = '\0';
+						this->clearPosOnMap();
 						this->row = static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21);
-						this->map[this->row][this->col] = 'P';
+						this->active++;
+						this->setPosOnMap();
 					}
 				}
 				else if (static_cast<int>((-168 - ((this->z_trans + 0.5) + 10.5)) /  -21) < this->row + 1) 
@@ -157,9 +170,10 @@ void	Player::ProcessKeyboard(Direction direction)
 							this->clipX(fmod(((168) - (this->x_trans)), -21));
 						this->rotate = 0.0f;
 						this->z_trans += 0.5f * 3;
-						this->map[this->row][this->col] = '\0';
+						this->clearPosOnMap();
 						this->row = static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21);
-						this->map[this->row][this->col] = 'P';
+						this->active++;
+						this->setPosOnMap();
 					}
 			}
 			}
@@ -167,9 +181,10 @@ void	Player::ProcessKeyboard(Direction direction)
 			{
 				this->rotate = 0.0f;
 				this->z_trans += 0.5f * 3;
-						this->map[this->row][this->col] = '\0';
+				this->clearPosOnMap();
 				this->row = static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21);
-						this->map[this->row][this->col] = 'P';
+				this->active++;
+				this->setPosOnMap();
 			}
 			break;
 		}
@@ -177,7 +192,7 @@ void	Player::ProcessKeyboard(Direction direction)
 		{
 			if (this->col > 0)
 			{
-				if (this->map[this->row][this->col - 1] == '\0')
+				if (this->map[this->row][this->col - 1] == '\0' || this->map[this->row][this->col - 1] == 'E')
 				{
 					if (fmod(((168) - (this->z_trans - 10.5)), -21) != 0.0f)
 					{
@@ -190,9 +205,10 @@ void	Player::ProcessKeyboard(Direction direction)
 						}
 						this->rotate = 270.0f;
 						this->x_trans -= 0.5f * 3;
-						this->map[this->row][this->col] = '\0';
+						this->clearPosOnMap();
 						this->col = static_cast<int>((-168 - (this->x_trans + 10.5)) /  -21);
-						this->map[this->row][this->col] = 'P';
+						this->active++;
+						this->setPosOnMap();
 					}
 				}
 				else if (static_cast<int>((-168 - ((this->x_trans - 0.5) + 10.5)) /  -21) > this->col - 1)
@@ -205,9 +221,10 @@ void	Player::ProcessKeyboard(Direction direction)
 							this->clipZ(fmod(((-168) - (this->z_trans)), -21));
 						this->rotate = 270.0f;
 						this->x_trans -= 0.5f * 3;
-						this->map[this->row][this->col] = '\0';
+						this->clearPosOnMap();
 						this->col = static_cast<int>((-168 - (this->x_trans + 10.5)) /  -21);
-						this->map[this->row][this->col] = 'P';
+						this->active++;
+						this->setPosOnMap();
 					}
 				}
 			}
@@ -215,9 +232,10 @@ void	Player::ProcessKeyboard(Direction direction)
 			{
 				this->rotate = 270.0f;
 				this->x_trans -= 0.5 * 3;
-						this->map[this->row][this->col] = '\0';
+				this->clearPosOnMap();
 				this->col = static_cast<int>((-168 - (this->x_trans + 10.5)) /  -21);
-						this->map[this->row][this->col] = 'P';
+				this->active++;
+				this->setPosOnMap();
 			}
 			break;
 		}
@@ -225,7 +243,7 @@ void	Player::ProcessKeyboard(Direction direction)
 		{
 			if (this->col < 16 )
 			{
-				if (this->map[this->row][this->col + 1] == '\0')
+				if (this->map[this->row][this->col + 1] == '\0' || this->map[this->row][this->col + 1] == 'E')
 				{
 					if (fmod( ( (168) - (this->z_trans - 10.5) ), -21 ) != 0.0f)
 					{
@@ -238,9 +256,10 @@ void	Player::ProcessKeyboard(Direction direction)
 						}
 						this->rotate = 90.0f;
 						this->x_trans += 0.5f * 3;
-						this->map[this->row][this->col] = '\0';
+						this->clearPosOnMap();
 						this->col = static_cast<int>((-168 - (this->x_trans + 10.5)) /  -21);
-						this->map[this->row][this->col] = 'P';
+						this->active++;
+						this->setPosOnMap();
 					}
 				}
 				else if (static_cast<int>((-168 - ((this->x_trans + 0.5) + 10.5)) /  -21) < this->col + 1)
@@ -253,9 +272,10 @@ void	Player::ProcessKeyboard(Direction direction)
 							this->clipZ(fmod(((-168) - (this->z_trans)), -21));
 						this->rotate = 90.0f;
 						this->x_trans += 0.5f * 3;
-						this->map[this->row][this->col] = '\0';
+						this->clearPosOnMap();
 						this->col = static_cast<int>((-168 - (this->x_trans + 10.5)) /  -21);
-						this->map[this->row][this->col] = 'P';
+						this->active++;
+						this->setPosOnMap();
 					}
 				}
 			}
@@ -263,9 +283,10 @@ void	Player::ProcessKeyboard(Direction direction)
 			{
 				this->rotate = 90.0f;
 				this->x_trans += 0.5f * 3;
-						this->map[this->row][this->col] = '\0';
+				this->clearPosOnMap();
 				this->col = static_cast<int>((-168 - (this->x_trans + 10.5)) /  -21);
-						this->map[this->row][this->col] = 'P';
+				this->active++;
+				this->setPosOnMap();
 			}
 			break;
 		}
