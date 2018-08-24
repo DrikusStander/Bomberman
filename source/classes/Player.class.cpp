@@ -1,8 +1,11 @@
 
 #include "Player.class.hpp"
 
-Player::Player( Shader &shader, std::string model) : Character(shader, model)
+Player::Player( Shader &shader, std::string model) : Character(shader, model + "0.obj")
 {
+	this->active = 0;
+	for (int i = 0; i < 22; i++)
+		this->characterModelarr.push_back(new Model(model + std::to_string(i) + ".obj"));
 	std::cout << "Player - Constructor called " << std::endl;
 	this->x_trans = -168.0f;
 	this->z_trans = -168.0f;
@@ -37,7 +40,7 @@ void Player::draw(void)
 	model = glm::scale( model, glm::vec3(1.2f, 1.2f, 1.2f));									// scale item
 	model = glm::rotate(model, glm::radians(this->rotate), glm::vec3(0, 1, 0)); 				// where x, y, z is axis of rotation (e.g. 0 1 0)
 	glUniformMatrix4fv( glGetUniformLocation(this->_shader->getProgram(), "model"), 1, GL_FALSE, glm::value_ptr(model ));
-	this->characterModel->Draw(*this->_shader);
+	this->characterModelarr[this->active]->Draw(*this->_shader);
 	if (this->bomb->getActive() == true)
 		this->bomb->draw();
 }
@@ -64,6 +67,10 @@ void	Player::clipZ(float z_move)
 
 void	Player::ProcessKeyboard(Direction direction)
 {
+	if (this->active < 21)
+		this->active++;
+	else if (this->active == 21)
+		this->active = 0;
 	switch(direction)
 	{
 		case FWD:
@@ -287,6 +294,6 @@ void	Player::ProcessKeyboard(Direction direction)
 	// std::cout << "* x_trans: " << this->x_trans << std::endl;
 	// std::cout << "* z_trans: " << this->z_trans << std::endl;
 	std::cout << "x_trans: " << std::to_string((fmod(((168.0f) - (this->x_trans - 10.5f)), -21.0f))) << std::endl;
-		std::cout << "z_trans: "<< std::to_string((fmod(((168) - (this->z_trans - 10.5)), -21))) << std::endl;
+	std::cout << "z_trans: "<< std::to_string((fmod(((168) - (this->z_trans - 10.5)), -21))) << std::endl;
 	std::cout << "array[" << this->row << "][" << this->col << "]" << std::endl;
 }

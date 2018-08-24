@@ -8,6 +8,7 @@
 class Enemy : public Character
 {
 	private:
+		Direction dir;
 	protected:
 	public:
 		Enemy( Shader &shader, std::string model);

@@ -4,12 +4,12 @@
 Enemy::Enemy( Shader &shader, std::string model) : Character(shader, model)
 {
 	std::cout << "Enemy - Constructor called " << std::endl;
+	this->dir = FWD;
 }
 
 
 Enemy::Enemy( Enemy const & src) : Character(src)
 {
-
 	*this = src;
 }
 
@@ -20,6 +20,7 @@ Enemy::~Enemy( void )
 
 Enemy const & Enemy::operator=(Enemy const & rhs)
 {
+	this->dir = rhs.dir;
 	return(*this);
 }
 
@@ -44,6 +45,7 @@ float	Enemy::getZ()
 }
 
 void	Enemy::clipX(float x_move)
+
 {
 	this->x_trans += x_move;
 }
@@ -53,43 +55,48 @@ void	Enemy::clipZ(float z_move)
 	this->z_trans += z_move;
 }
 
+// void	Enemy::moveFwd()
+// {
+// 	if (this->row > 0)
+// 	{
+// 		if (this->map[this->row - 1][this->col] == '\0')
+// 		{
+// 			if (fmod(((168) - (this->x_trans - 10.5)), -21) != 0.0f)
+// 			{
+// 				if ((fmod(((168) - (this->z_trans - 10.5)), -21) == 0) && (this->row >= 0))
+// 				{
+// 					if (fmod( (168 - (this->x_trans - 10.5)), -21 ) > 10.5)
+// 						this->clipX(fmod(((168) - (this->x_trans)), -21));
+// 					else if (fmod(((168) - (this->x_trans - 10.5)), -21) <= 10.5)
+// 						this->clipX(fmod(((-168) - (this->x_trans)), -21));
+// 				}
+// 				this->rotate = 180.0f;
+// 				this->z_trans -= 0.5f;
+// 				this->row = static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21);
+// 			}
+// 		}
+// 		else if (static_cast<int>((-168 - ((this->z_trans - 0.5) + 10.5)) /  -21) > this->row - 1) 
+// 		{
+// 			if (fmod(((168) - (this->z_trans - 10.5)), -21) < 10.5)
+// 			{
+// 				if (fmod( (168 - (this->x_trans - 10.5)), -21 ) > 10.5)
+// 					this->clipX(fmod(((168) - (this->x_trans)), -21));
+// 				else if (fmod(((168) - (this->x_trans - 10.5)), -21) <= 10.5)
+// 					this->clipX(fmod(((-168) - (this->x_trans)), -21));
+// 				this->rotate = 180.0f;
+// 				this->z_trans -= 0.5f;
+// 				this->row = static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21);
+// 			}
+// 		}
+// }
+
 void	Enemy::ProcessKeyboard(Direction direction)
 {}
 // 	switch(direction)
 // 	{
 // 		case FWD:
 // 		{
-// 			if (this->row > 0)
-// 			{
-// 				if (this->map[this->row - 1][this->col] == '\0')
-// 				{
-// 					// if (fmod(((168) - (this->x_trans - 10.5)), -21) != 0.0f)
-// 					{
-// 						if ((fmod(((168) - (this->z_trans - 10.5)), -21) == 0) && (this->row >= 0))
-// 						{
-// 							if (fmod( (168 - (this->x_trans - 10.5)), -21 ) > 10.5)
-// 								this->clipX(fmod(((168) - (this->x_trans)), -21));
-// 							else if (fmod(((168) - (this->x_trans - 10.5)), -21) <= 10.5)
-// 								this->clipX(fmod(((-168) - (this->x_trans)), -21));
-// 						}
-// 						this->rotate = 180.0f;
-// 						this->z_trans -= 0.5f;
-// 						this->row = static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21);
-// 					}
-// 				}
-// 				else if (static_cast<int>((-168 - ((this->z_trans - 0.5) + 10.5)) /  -21) > this->row - 1) 
-// 				{
-// 					if (fmod(((168) - (this->z_trans - 10.5)), -21) < 10.5)
-// 					{
-// 						if (fmod( (168 - (this->x_trans - 10.5)), -21 ) > 10.5)
-// 							this->clipX(fmod(((168) - (this->x_trans)), -21));
-// 						else if (fmod(((168) - (this->x_trans - 10.5)), -21) <= 10.5)
-// 							this->clipX(fmod(((-168) - (this->x_trans)), -21));
-// 						this->rotate = 180.0f;
-// 						this->z_trans -= 0.5f;
-// 						this->row = static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21);
-// 					}
-// 				}
+// 			
 // 			}
 // 			else if (this->z_trans > -168)
 // 			{

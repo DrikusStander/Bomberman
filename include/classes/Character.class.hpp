@@ -30,6 +30,7 @@ class Character
 	private:
 	protected:
 		Model *characterModel;
+		std::vector<Model*> characterModelarr;
 		Shader *_shader;
 		float	x_trans;
 		float	y_trans;

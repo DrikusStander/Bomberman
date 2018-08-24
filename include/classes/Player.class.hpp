@@ -9,6 +9,7 @@ class Player : public Character
 {
 	private:
 		Bomb	*bomb;
+		int		active;
 	protected:
 	public:
 		Player( Shader &shader, std::string model);
