@@ -195,10 +195,6 @@ Game	&Game::operator=(Game const &rhs)
 // Moves/alters the camera positions based on user input
 void	Game::DoMovement(void)
 {
-	// switch (keys)
-	// {
-	// 	case 
-	// }
 	// Camera controls
 
 	if (keys[GLFW_KEY_Q])
@@ -211,47 +207,25 @@ void	Game::DoMovement(void)
 		camera.ProcessKeyboard(DOWN, deltaTime);
 	}
 	if (keys[GLFW_KEY_W])
-	{
 		camera.ProcessKeyboard(FORWARD, deltaTime);
-	}
-
-	if (keys[GLFW_KEY_S])
-	{
+	else if (keys[GLFW_KEY_S])
 		camera.ProcessKeyboard(BACKWARD, deltaTime);
-	}
-
-	if (keys[GLFW_KEY_A])
-	{
+	else if (keys[GLFW_KEY_A])
 		camera.ProcessKeyboard(LEFT, deltaTime);
-	}
-
-	if (keys[GLFW_KEY_D] )
-	{
+	else if (keys[GLFW_KEY_D] )
 		camera.ProcessKeyboard(RIGHT, deltaTime);
-	}
 
-	if ( keys[GLFW_KEY_UP])
-	{
+	// Player controls
+	if (keys[GLFW_KEY_UP])
 		this->world->ProcessKeyboard(FWD);
-	}
-
-	if ( keys[GLFW_KEY_DOWN])
-	{
+	else if (keys[GLFW_KEY_DOWN])
 		this->world->ProcessKeyboard(BKW);
-	}
-
-	if ( keys[GLFW_KEY_LEFT])
-	{
+	else if (keys[GLFW_KEY_LEFT])
 		this->world->ProcessKeyboard(LFT);
-	}
-
-	if ( keys[GLFW_KEY_RIGHT])
-	{
+	else if (keys[GLFW_KEY_RIGHT])
 		this->world->ProcessKeyboard(RGT);
-	}
 
+	// Plant a bomb
 	if (keys[GLFW_KEY_SPACE])
-	{
 		this->world->ProcessKeyboard(SPC);
-	}
 }
