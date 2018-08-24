@@ -69,6 +69,7 @@ World::World( Shader &shader, std::string model)
 				float z_transT = ((-168) - (row) * (-21));
 				Enemy *temp = new Enemy(shader, "resources/models/enemy.obj");
 				temp->setPos(x_transT, z_transT, row, col);
+				temp->setMap(this->map);
 				this->enemies->push_back(temp);
 				enemy_count--;
 			}
@@ -139,13 +140,16 @@ void World::draw(void)
 	model = glm::scale( model, glm::vec3(0.2f, 0.2f, 0.2f));									// It's a bit too big for our scene, so scale it down
 	glUniformMatrix4fv( glGetUniformLocation(this->_shader->getProgram(), "model"), 1, GL_FALSE, glm::value_ptr( model ));
 	this->WorldModel->Draw(*this->_shader);
-	this->player->draw();
 
 	//check what items the bomb affected
+			std::cout << std::endl;
+			std::cout << std::endl;
+
 	for (int i = 0; i < 17; i++)
 	{
 		for (int j = 0; j < 17; j++)
 		{
+			std::cout << this->map[i][j] << " " ;
 			if (this->map[i][j] == 'D')
 			{
 				// check if the player was hit
@@ -186,11 +190,17 @@ void World::draw(void)
 				this->map[i][j] = '\0';
 			}
 		}
+			std::cout << std::endl;
 	}
+	this->player->draw();
+
+	// std::cout << "drwaing enemies" << std::endl;
 	for (Enemy *enemy : *this->enemies)
 	{
 		enemy->draw();
 	}
+	// std::cout << "objects enemies" << std::endl;
+
 	for (Item *item : *this->objects)
 	{
 		item->draw();

@@ -9,6 +9,7 @@ class Enemy : public Character
 {
 	private:
 		Direction dir;
+		int		changedir;
 	protected:
 	public:
 		Enemy( Shader &shader, std::string model);
@@ -25,6 +26,13 @@ class Enemy : public Character
 		float	getZ();
 		void	clipX(float x_move);
 		void	clipZ(float z_move);
+		void	moveFwd();
+		void	moveBkw();
+		void	moveLft();
+		void	moveRgt();
+		void	changeDir();
+		void	setPosOnMap();
+		void	clearPosOnMap();
 };
 
 #endif

@@ -200,6 +200,16 @@ void	Game::DoMovement(void)
 	// 	case 
 	// }
 	// Camera controls
+
+	if (keys[GLFW_KEY_Q])
+	{
+		camera.ProcessKeyboard(UP, deltaTime);
+	}
+
+	if (keys[GLFW_KEY_E])
+	{
+		camera.ProcessKeyboard(DOWN, deltaTime);
+	}
 	if (keys[GLFW_KEY_W])
 	{
 		camera.ProcessKeyboard(FORWARD, deltaTime);
