@@ -6,11 +6,10 @@
 /*   By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/11 11:26:34 by cnolte            #+#    #+#             */
-/*   Updated: 2018/08/13 20:18:28 by cnolte           ###   ########.fr       */
+/*   Updated: 2018/08/24 12:33:55 by cnolte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <iostream>
 #include "Camera.class.hpp"
 
 //start canonical form

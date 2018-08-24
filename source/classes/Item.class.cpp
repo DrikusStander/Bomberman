@@ -1,6 +1,4 @@
-
 #include "Item.class.hpp"
-
 
 Item::Item( Shader &shader, std::string model)
 {

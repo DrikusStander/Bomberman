@@ -1,4 +1,3 @@
-
 #include "Enemy.class.hpp"
 
 Enemy::Enemy( Shader &shader, std::string model) : Character(shader, model)

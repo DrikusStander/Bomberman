@@ -1,8 +1,8 @@
 
 #ifndef BOMB_HPP
-#define BOMB_HPP
+# define BOMB_HPP
 
-#include "Item.class.hpp"
+# include "Item.class.hpp"
 
 class Bomb : public Item
 {

@@ -1,4 +1,3 @@
-
 #include "Character.class.hpp"
 
 

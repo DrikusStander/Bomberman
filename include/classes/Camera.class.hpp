@@ -6,7 +6,7 @@
 /*   By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/11 11:20:47 by cnolte            #+#    #+#             */
-/*   Updated: 2018/08/14 13:30:47 by cnolte           ###   ########.fr       */
+/*   Updated: 2018/08/24 12:34:03 by cnolte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 
 // GL Includes
 # include <GL/glew.h>
+
+# include <iostream>
 
 // Matrices includes
 # include <glm/gtc/matrix_transform.hpp>

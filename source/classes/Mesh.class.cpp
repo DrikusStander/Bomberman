@@ -10,12 +10,12 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <iostream>
 #include "Mesh.class.hpp"
 
 //start canonical form
 Mesh::Mesh(void)
 {
+
 }
 
 Mesh::Mesh(Mesh const & src)
@@ -25,6 +25,7 @@ Mesh::Mesh(Mesh const & src)
 
 Mesh::~Mesh(void)
 {
+
 }
 
 Mesh	&Mesh::operator=(Mesh const &rhs)

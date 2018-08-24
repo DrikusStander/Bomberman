@@ -1,9 +1,7 @@
-
 #ifndef ITEM_HPP
-#define ITEM_HPP
+# define ITEM_HPP
 
-
-#include <string>
+# include <string>
 // GLEW
 # include <GL/glew.h>
 
@@ -13,7 +11,7 @@
 // GLM Mathemtics
 # include <glm/gtc/type_ptr.hpp>
 
-#include "Model.class.hpp"
+# include "Model.class.hpp"
 
 class Item
 {

@@ -1,7 +1,7 @@
 #ifndef CHARACTER_HPP
 #define CHARACTER_HPP
 
-#include <string>
+# include <string>
 // GLEW
 # include <GL/glew.h>
 
@@ -11,10 +11,10 @@
 // GLM Mathemtics
 # include <glm/gtc/type_ptr.hpp>
 
-#include "Model.class.hpp"
-#include "Item.class.hpp"
+# include "Model.class.hpp"
+# include "Item.class.hpp"
 
-#include <math.h>
+# include <math.h>
 
 enum Direction
 {

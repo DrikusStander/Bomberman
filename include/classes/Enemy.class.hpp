@@ -1,8 +1,8 @@
 #ifndef ENEMY_HPP
-#define ENEMY_HPP
+# define ENEMY_HPP
 
-#include "Character.class.hpp"
-#include "Bomb.class.hpp"
+# include "Character.class.hpp"
+# include "Bomb.class.hpp"
 
 
 class Enemy : public Character

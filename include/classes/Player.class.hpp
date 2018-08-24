@@ -1,9 +1,8 @@
 #ifndef PLAYER_HPP
-#define PLAYER_HPP
+# define PLAYER_HPP
 
-#include "Character.class.hpp"
-#include "Bomb.class.hpp"
-
+# include "Character.class.hpp"
+# include "Bomb.class.hpp"
 
 class Player : public Character
 {
