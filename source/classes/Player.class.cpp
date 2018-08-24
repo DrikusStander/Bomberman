@@ -10,7 +10,6 @@ Player::Player( Shader &shader, std::string model) : Character(shader, model + "
 	this->x_trans = -168.0f;
 	this->z_trans = -168.0f;
 	this->bomb = new Bomb(shader, "resources/models/bom.obj");
-	// this->map[this->row][this->col] = 'P';
 
 }
 
@@ -108,7 +107,6 @@ void	Player::ProcessKeyboard(Direction direction)
 				}
 				else if (static_cast<int>((-168 - ((this->z_trans - 0.5) + 10.5)) /  -21) > this->row - 1) 
 				{
-					std::cout << "else if " << std::endl;
 					if (fmod(((168) - (this->z_trans - 10.5)), -21) < 10.5)
 					{
 						if (fmod( (168 - (this->x_trans - 10.5)), -21 ) > 10.5)
@@ -128,10 +126,10 @@ void	Player::ProcessKeyboard(Direction direction)
 			{
 				this->rotate = 180.0f;
 				this->z_trans -= 0.5f * 3;
-						this->clearPosOnMap();
+				this->clearPosOnMap();
 				this->row = static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21);
-						this->active++;
-						this->setPosOnMap();
+				this->active++;
+				this->setPosOnMap();
 			}
 			break;
 		}
@@ -183,10 +181,10 @@ void	Player::ProcessKeyboard(Direction direction)
 			{
 				this->rotate = 0.0f;
 				this->z_trans += 0.5f * 3;
-						this->clearPosOnMap();
+				this->clearPosOnMap();
 				this->row = static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21);
-						this->active++;
-						this->setPosOnMap();
+				this->active++;
+				this->setPosOnMap();
 			}
 			break;
 		}
@@ -234,10 +232,10 @@ void	Player::ProcessKeyboard(Direction direction)
 			{
 				this->rotate = 270.0f;
 				this->x_trans -= 0.5 * 3;
-						this->clearPosOnMap();
+				this->clearPosOnMap();
 				this->col = static_cast<int>((-168 - (this->x_trans + 10.5)) /  -21);
-						this->active++;
-						this->setPosOnMap();
+				this->active++;
+				this->setPosOnMap();
 			}
 			break;
 		}
@@ -285,10 +283,10 @@ void	Player::ProcessKeyboard(Direction direction)
 			{
 				this->rotate = 90.0f;
 				this->x_trans += 0.5f * 3;
-						this->clearPosOnMap();
+				this->clearPosOnMap();
 				this->col = static_cast<int>((-168 - (this->x_trans + 10.5)) /  -21);
-						this->active++;
-						this->setPosOnMap();
+				this->active++;
+				this->setPosOnMap();
 			}
 			break;
 		}

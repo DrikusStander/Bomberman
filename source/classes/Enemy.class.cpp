@@ -95,11 +95,9 @@ void	Enemy::moveFwd()
 				this->rotate = 180.0f;
 				this->z_trans -= 0.5f;
 				this->clearPosOnMap();
-				// this->map[this->row][this->col] = '\0';
 				this->row = static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21);
 				// this->active++;
 				this->setPosOnMap();
-				// this->map[this->row][this->col] = 'E';
 			}
 		}
 		else if (static_cast<int>((-168 - ((this->z_trans - 0.5) + 10.5)) /  -21) > this->row - 1) 
@@ -113,11 +111,9 @@ void	Enemy::moveFwd()
 				this->rotate = 180.0f;
 				this->z_trans -= 0.5f;
 				this->clearPosOnMap();
-				// this->map[this->row][this->col] = '\0';
 				this->row = static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21);
 				// this->active++;
 				this->setPosOnMap();
-				// this->map[this->row][this->col] = 'E';
 			}
 			else
 				this->changeDir();
@@ -128,12 +124,10 @@ void	Enemy::moveFwd()
 	{
 		this->rotate = 180.0f;
 		this->z_trans -= 0.5f;
-				this->clearPosOnMap();
-		// this->map[this->row][this->col] = '\0';
+		this->clearPosOnMap();
 		this->row = static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21);
 		// this->active++;
-				this->setPosOnMap();
-		// this->map[this->row][this->col] = 'E';
+		this->setPosOnMap();
 	}
 	else
 		this->changeDir();
@@ -159,11 +153,9 @@ void	Enemy::moveBkw()
 				this->rotate = 0.0f;
 				this->z_trans += 0.5f;
 				this->clearPosOnMap();
-				// this->map[this->row][this->col] = '\0';
 				this->row = static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21);
 				// this->active++;
 				this->setPosOnMap();
-				// this->map[this->row][this->col] = 'E';
 			}
 		}
 		else if (static_cast<int>((-168 - ((this->z_trans + 0.5) + 10.5)) /  -21) < this->row + 1) 
@@ -179,11 +171,9 @@ void	Enemy::moveBkw()
 				this->rotate = 0.0f;
 				this->z_trans += 0.5f;
 				this->clearPosOnMap();
-				// this->map[this->row][this->col] = '\0';
 				this->row = static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21);
 				// this->active++;
 				this->setPosOnMap();
-				// this->map[this->row][this->col] = 'E';
 			}
 			else
 				this->changeDir();
@@ -194,12 +184,10 @@ void	Enemy::moveBkw()
 	{
 		this->rotate = 0.0f;
 		this->z_trans += 0.5f;
-				this->clearPosOnMap();
-		// this->map[this->row][this->col] = '\0';
+		this->clearPosOnMap();
 		this->row = static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21);
 		// this->active++;
-				this->setPosOnMap();
-		// this->map[this->row][this->col] = 'E';
+		this->setPosOnMap();
 	}
 	else
 		this->changeDir();
@@ -223,11 +211,9 @@ void	Enemy::moveLft()
 				this->rotate = 270.0f;
 				this->x_trans -= 0.5f;
 				this->clearPosOnMap();
-				// this->map[this->row][this->col] = '\0';
 				this->col = static_cast<int>((-168 - (this->x_trans + 10.5)) /  -21);
 				// this->active++;
 				this->setPosOnMap();
-				// this->map[this->row][this->col] = 'E';
 			}
 		}
 		else if (static_cast<int>((-168 - ((this->x_trans - 0.5) + 10.5)) /  -21) > this->col - 1)
@@ -241,11 +227,9 @@ void	Enemy::moveLft()
 				this->rotate = 270.0f;
 				this->x_trans -= 0.5f;
 				this->clearPosOnMap();
-				// this->map[this->row][this->col] = '\0';
 				this->col = static_cast<int>((-168 - (this->x_trans + 10.5)) /  -21);
 				// this->active++;
 				this->setPosOnMap();
-				// this->map[this->row][this->col] = 'E';
 			}
 			else
 				this->changeDir();
@@ -256,12 +240,10 @@ void	Enemy::moveLft()
 	{
 		this->rotate = 270.0f;
 		this->x_trans -= 0.5;
-				this->clearPosOnMap();
-		// this->map[this->row][this->col] = '\0';
+		this->clearPosOnMap();
 		this->col = static_cast<int>((-168 - (this->x_trans + 10.5)) /  -21);
 		// this->active++;
-				this->setPosOnMap();
-		// this->map[this->row][this->col] = 'E';
+		this->setPosOnMap();
 	}
 	else
 		this->changeDir();
@@ -285,11 +267,9 @@ void	Enemy::moveRgt()
 				this->rotate = 90.0f;
 				this->x_trans += 0.5f;
 				this->clearPosOnMap();
-				// this->map[this->row][this->col] = '\0';
 				this->col = static_cast<int>((-168 - (this->x_trans + 10.5)) /  -21);
 				// this->active++;
 				this->setPosOnMap();
-				// this->map[this->row][this->col] = 'E';
 			}
 		}
 		else if (static_cast<int>((-168 - ((this->x_trans + 0.5) + 10.5)) /  -21) < this->col + 1)
@@ -303,11 +283,9 @@ void	Enemy::moveRgt()
 				this->rotate = 90.0f;
 				this->x_trans += 0.5f;
 				this->clearPosOnMap();
-				// this->map[this->row][this->col] = '\0';
 				this->col = static_cast<int>((-168 - (this->x_trans + 10.5)) /  -21);
 				// this->active++;
 				this->setPosOnMap();
-				// this->map[this->row][this->col] = 'E';
 			}
 			else
 				this->changeDir();
@@ -318,12 +296,10 @@ void	Enemy::moveRgt()
 	{
 		this->rotate = 90.0f;
 		this->x_trans += 0.5f;
-				this->clearPosOnMap();
-		// this->map[this->row][this->col] = '\0';
+		this->clearPosOnMap();
 		this->col = static_cast<int>((-168 - (this->x_trans + 10.5)) /  -21);
 		// this->active++;
-				this->setPosOnMap();
-		// this->map[this->row][this->col] = 'E';
+		this->setPosOnMap();
 	}
 	else
 		this->changeDir();
