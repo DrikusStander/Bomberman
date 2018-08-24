@@ -65,7 +65,7 @@ void	Enemy::setPosOnMap()
 {
 	if (this->map[this->row][this->col] == 'P')
 		this->map[this->row][this->col] = 'D';
-	else if (this->map[this->row][this->col] != 'B')
+	else if (this->map[this->row][this->col] != 'B' && this->map[this->row][this->col] != 'D')
 		this->map[this->row][this->col] = 'E';
 }
 
