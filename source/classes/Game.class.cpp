@@ -89,13 +89,10 @@ Game::Game(const int width, const int height) : s_WIDTH(width), s_HEIGHT(height)
 	// Create a GLFWwindow object that we can use for GLFW's functions
 	GLFWwindow	*window = glfwCreateWindow(this->s_WIDTH, this->s_HEIGHT, "Bomberman", nullptr, nullptr);
 
-	if (nullptr == window)
+	if (window == nullptr)
 	{
-		std::cout << "Failed to create GLFW window" << std::endl;
 		glfwTerminate();
-
-		return ;
-		// return (EXIT_FAILURE);
+		throw Exceptions::CreateWindowFailed();
 	}
 
 	glfwMakeContextCurrent(window);
@@ -114,11 +111,7 @@ Game::Game(const int width, const int height) : s_WIDTH(width), s_HEIGHT(height)
 
 	// Initialize GLEW to setup the OpenGL Function pointers
 	if (GLEW_OK != glewInit())
-	{
-		std::cout << "Failed to initialize GLEW" << std::endl;
-		return ;
-		// return (EXIT_FAILURE);
-	}
+		throw Exceptions::InitializeGlewFailed();
 
 	// Define the viewport dimensions
 	glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -185,8 +178,16 @@ Game::~Game(void)
 Game	&Game::operator=(Game const &rhs)
 {
 	std::cout << "Game - Assignment operator called" << std::endl;
-	// if (this != &rhs)
-	// 	this->_foo = rhs.getfoo();
+	if (this != &rhs)
+	{
+		this->deltaTime = rhs.deltaTime;
+		this->lastFrame = rhs.lastFrame;
+		this->s_WIDTH = rhs.s_WIDTH;
+		this->s_HEIGHT = rhs.s_HEIGHT;
+		this->SCREEN_HEIGHT = rhs.SCREEN_HEIGHT;
+		this->SCREEN_WIDTH = rhs.SCREEN_WIDTH;
+		this->world = rhs.world;
+	}
 	return (*this);
 }
 //end canonical form
@@ -194,6 +195,10 @@ Game	&Game::operator=(Game const &rhs)
 // Moves/alters the camera positions based on user input
 void	Game::DoMovement(void)
 {
+	// switch (keys)
+	// {
+	// 	case 
+	// }
 	// Camera controls
 	if (keys[GLFW_KEY_W])
 	{
