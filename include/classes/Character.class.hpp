@@ -1,5 +1,5 @@
-#ifndef CHARACTER_HPP
-#define CHARACTER_HPP
+#ifndef CHARACTER_CLASS_HPP
+#define CHARACTER_CLASS_HPP
 
 # include <string>
 // GLEW

@@ -1,5 +1,5 @@
-#ifndef PLAYER_HPP
-# define PLAYER_HPP
+#ifndef PLAYER_CLASS_HPP
+# define PLAYER_CLASS_HPP
 
 # include "Character.class.hpp"
 # include "Bomb.class.hpp"

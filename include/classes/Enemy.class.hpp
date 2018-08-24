@@ -1,5 +1,5 @@
-#ifndef ENEMY_HPP
-# define ENEMY_HPP
+#ifndef ENEMY_CLASS_HPP
+# define ENEMY_CLASS_HPP
 
 # include "Character.class.hpp"
 # include "Bomb.class.hpp"

@@ -1,6 +1,6 @@
 
-#ifndef BOMB_HPP
-# define BOMB_HPP
+#ifndef BOMB_CLASS_HPP
+# define BOMB_CLASS_HPP
 
 # include "Item.class.hpp"
 

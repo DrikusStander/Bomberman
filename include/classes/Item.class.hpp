@@ -1,5 +1,5 @@
-#ifndef ITEM_HPP
-# define ITEM_HPP
+#ifndef ITEM_CLASS_HPP
+# define ITEM_CLASS_HPP
 
 # include <string>
 // GLEW

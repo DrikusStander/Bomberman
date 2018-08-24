@@ -1,7 +1,8 @@
-#ifndef WORLD_HPP
-# define WORLD_HPP
+#ifndef WORLD_CLASS_HPP
+# define WORLD_CLASS_HPP
 
 # include <string>
+
 // GLEW
 # include <GL/glew.h>
 
