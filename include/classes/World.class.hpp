@@ -16,6 +16,7 @@
 # include "Player.class.hpp"
 # include "Enemy.class.hpp"
 # include "Item.class.hpp"
+# include "Powerup.class.hpp"
 # include "Scoring.class.hpp"
 
 # include <vector>
@@ -34,6 +35,7 @@ class World
 		char	**map;
 		std::vector<Item*>	*objects;
 		std::vector<Enemy*>	*enemies;
+		std::vector<Powerup*>	*powerups;
 		int		worldStatus;
 
 	public:

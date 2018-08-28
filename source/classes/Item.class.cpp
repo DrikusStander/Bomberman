@@ -76,3 +76,13 @@ int		Item::getRow()
 {
 	return(this->row);
 }
+
+float	Item::getX()
+{
+	return(this->x_trans);
+}
+
+float	Item::getZ()
+{
+	return(this->z_trans);
+}

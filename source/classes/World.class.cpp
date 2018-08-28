@@ -12,6 +12,7 @@ World::World(Shader &shader, std::string model)
 	this->player = new Player(shader, "resources/models/player/player_run_");
 	this->objects = new std::vector<Item*>();
 	this->enemies = new std::vector<Enemy*>();
+	this->powerups = new std::vector<Powerup*>();
 	this->worldStatus = 0;
 
 	// initiliaze the map
@@ -116,6 +117,14 @@ World::~World( void )
 	}
 	delete this->enemies;
 
+	// clean up Powerups
+	for (std::vector<Powerup*>::iterator it = this->powerups->begin() ; it != this->powerups->end(); )
+	{
+		delete (*it);
+		it = this->powerups->erase(it);
+	}
+	delete this->powerups;
+
 }
 
 World const & World::operator=(World const & rhs)
@@ -158,7 +167,7 @@ void World::draw(void)
 						handle this event diffrently
 						check lives of the player
 							-> if lives left respawn
-							-> if no lives left lose splash screen and send to menu
+							-> if no lives left Gameover splash screen and send to menu
 					*/
 					this->worldStatus = 1;
 				}
@@ -168,6 +177,14 @@ void World::draw(void)
 				{
 					if ((*it)->getRow() == i && (*it)->getCol() == j)
 					{
+						// generate a powerup based on random chance
+						if ((rand() % 3) == 0)
+						{
+							Powerup *temp = new Powerup(*this->_shader, "resources/models/coin/bomb/coin");
+							temp->setPos((*it)->getX(), (*it)->getZ(), (*it)->getRow(), (*it)->getCol()); 
+							this->powerups->push_back(temp);
+							this->map[i][j] = 'U';
+						}
 						delete (*it);
 						it = this->objects->erase(it);
 					}
@@ -186,7 +203,27 @@ void World::draw(void)
 					else
 						++it;
 				}
-				this->map[i][j] = '\0';
+				if (this->map[i][j] == 'D')
+					this->map[i][j] = '\0';
+			}
+			if (this->map[i][j] == 'U')
+			{
+				// check if the player is on powerup
+				if (this->player->getRow() == i && this->player->getCol() == j)
+				{
+					for (std::vector<Powerup*>::iterator it = this->powerups->begin() ; it != this->powerups->end(); )
+					{
+						if ((*it)->getRow() == i && (*it)->getCol() == j)
+						{
+							// creater getter on Powerup to display what powerup it represents
+							this->player->handlePowerup(0);
+							delete (*it);
+							it = this->powerups->erase(it);
+						}
+						else
+							++it;
+					}
+				}
 			}
 		}
 			std::cout << std::endl;
@@ -199,11 +236,16 @@ void World::draw(void)
 	{
 		enemy->draw();
 	}
-	// std::cout << "objects enemies" << std::endl;
 
+	// std::cout << "objects enemies" << std::endl;
 	for (Item *item : *this->objects)
 	{
 		item->draw();
+	}
+
+	for (Powerup *powerup : *this->powerups)
+	{
+		powerup->draw();
 	}
 }
 

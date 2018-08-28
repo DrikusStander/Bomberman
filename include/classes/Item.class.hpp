@@ -18,6 +18,7 @@ class Item
 	private:
 	protected:
 		Model *ItemModel;
+		std::vector<Model*> itemModelarr;
 		Shader *_shader;
 		float	x_trans;
 		float	y_trans;
@@ -39,6 +40,8 @@ class Item
 		void	setMap( char **map);
 		int		getCol();
 		int		getRow();
+		float	getX();
+		float	getZ();
 };
 
 #endif

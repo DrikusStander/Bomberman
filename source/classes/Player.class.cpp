@@ -66,13 +66,13 @@ void	Player::clipZ(float z_move)
 
 void	Player::setPosOnMap()
 {
-	if (this->map[this->row][this->col] != 'B' && this->map[this->row][this->col] != 'D')
+	if (this->map[this->row][this->col] != 'B' && this->map[this->row][this->col] != 'D' && this->map[this->row][this->col] != 'U')
 		this->map[this->row][this->col] = 'P';
 }
 
 void	Player::clearPosOnMap()
 {
-	if (this->map[this->row][this->col] != 'B' && this->map[this->row][this->col] != 'D')
+	if (this->map[this->row][this->col] != 'B' && this->map[this->row][this->col] != 'D' && this->map[this->row][this->col] != 'U')
 		this->map[this->row][this->col] = '\0';
 }
 
@@ -86,7 +86,7 @@ void	Player::ProcessKeyboard(Direction direction)
 		{
 			if (this->row > 0)
 			{
-				if (this->map[this->row - 1][this->col] == '\0' || this->map[this->row - 1][this->col] == 'E')
+				if (this->map[this->row - 1][this->col] == '\0' || this->map[this->row - 1][this->col] == 'E' || this->map[this->row - 1][this->col] == 'U')
 				{
 					if (fmod(((168) - (this->x_trans - 10.5)), -21) != 0.0f)
 					{
@@ -137,7 +137,7 @@ void	Player::ProcessKeyboard(Direction direction)
 		{
 			if (this->row < 16)
 			{
-				if (this->map[this->row + 1][this->col] == '\0' || this->map[this->row + 1][this->col] == 'E')
+				if (this->map[this->row + 1][this->col] == '\0' || this->map[this->row + 1][this->col] == 'E' || this->map[this->row + 1][this->col] == 'U')
 				{
 					if (fmod(((168) - (this->x_trans - 10.5)), -21) != 0.0f)
 					{
@@ -192,7 +192,7 @@ void	Player::ProcessKeyboard(Direction direction)
 		{
 			if (this->col > 0)
 			{
-				if (this->map[this->row][this->col - 1] == '\0' || this->map[this->row][this->col - 1] == 'E')
+				if (this->map[this->row][this->col - 1] == '\0' || this->map[this->row][this->col - 1] == 'E' || this->map[this->row][this->col - 1] == 'U')
 				{
 					if (fmod(((168) - (this->z_trans - 10.5)), -21) != 0.0f)
 					{
@@ -243,7 +243,7 @@ void	Player::ProcessKeyboard(Direction direction)
 		{
 			if (this->col < 16 )
 			{
-				if (this->map[this->row][this->col + 1] == '\0' || this->map[this->row][this->col + 1] == 'E')
+				if (this->map[this->row][this->col + 1] == '\0' || this->map[this->row][this->col + 1] == 'E' || this->map[this->row][this->col + 1] == 'U')
 				{
 					if (fmod( ( (168) - (this->z_trans - 10.5) ), -21 ) != 0.0f)
 					{
@@ -317,4 +317,12 @@ void	Player::ProcessKeyboard(Direction direction)
 	std::cout << "x_trans: " << std::to_string((fmod(((168.0f) - (this->x_trans - 10.5f)), -21.0f))) << std::endl;
 	std::cout << "z_trans: "<< std::to_string((fmod(((168) - (this->z_trans - 10.5)), -21))) << std::endl;
 	std::cout << "array[" << this->row << "][" << this->col << "]" << std::endl;
+}
+
+void	Player::handlePowerup(int powerup)
+{
+	if (powerup == 0)
+	{
+		this->bomb->incBlastRaduis();
+	}
 }

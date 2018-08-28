@@ -26,7 +26,7 @@ class Player : public Character
 		void	clipZ(float z_move);
 		void	setPosOnMap();
 		void	clearPosOnMap();
-
+		void	handlePowerup(int powerup);
 };
 
 #endif

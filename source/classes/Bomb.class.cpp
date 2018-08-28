@@ -27,30 +27,83 @@ Bomb const & Bomb::operator=(Bomb const & rhs)
 	return(*this);
 }
 
+void	Bomb::checkDestruction()
+{
+	//check down
+	for (int i = 1; i <= this->blastRaduis; i++)
+	{
+		if (row + i < 17 && this->map[this->row + i][this->col] == '#')
+			break;
+		if (row + i < 17 && (this->map[this->row + i][this->col] != '\0' && this->map[this->row + i][this->col] != '#'))
+		{
+			if (this->map[this->row + i][this->col] == 'W')
+			{
+				this->map[this->row + i][this->col] = 'D';
+				break;
+			}
+			else
+				this->map[this->row + i][this->col] = 'D';
+		}
+	}
+	//check up
+	for (int i = 1; i <= this->blastRaduis; i++)
+	{
+		if (row - i > -1 && this->map[this->row - i][this->col] == '#')
+			break;
+		if (row - i > -1 && (this->map[this->row - i][this->col] != '\0' && this->map[this->row - i][this->col] != '#'))
+		{
+			if (this->map[this->row - i][this->col] == 'W')
+			{
+				this->map[this->row - i][this->col] = 'D';
+				break;
+			}
+			else
+				this->map[this->row - i][this->col] = 'D';
+		}
+	}
+	//check right
+	for (int i = 1; i <= this->blastRaduis; i++)
+	{
+		if (col + i < 17 && this->map[this->row][this->col + i] == '#')
+			break;
+		if (col + i < 17 && (this->map[this->row][this->col  + i] != '\0' && this->map[this->row][this->col + i] != '#'))
+		{
+			if (this->map[this->row][this->col + i] == 'W')
+			{
+				this->map[this->row][this->col + i] = 'D';
+				break;
+			}
+			else
+				this->map[this->row][this->col + i] = 'D';
+		}
+	}
+	//check left
+	for (int i = 1; i <= this->blastRaduis; i++)
+	{
+		if (col - i > -1 && this->map[this->row][this->col - i] == '#')
+			break;
+		if (col - i > -1 && (this->map[this->row][this->col - i] != '\0' && this->map[this->row][this->col - i] != '#'))
+		{
+			if (this->map[this->row][this->col - i] == 'W')
+			{
+				this->map[this->row][this->col - i] = 'D';
+				break;
+			}
+			else
+				this->map[this->row][this->col - i] = 'D';
+		}
+	}
+}
+
 void Bomb::draw(void)
 {
+	
 	if ((glfwGetTime() - this->PlantTime) >= this->PlantTimeLength)
 	{
-		if (this->row + this->blastRaduis < 17 && (this->map[this->row + this->blastRaduis][this->col] != '\0' && this->map[this->row + this->blastRaduis][this->col] != '#'))
-		{
-			this->map[this->row + this->blastRaduis][this->col] = 'D';
-		}
-		if (this->row - this->blastRaduis > -1 && (this->map[this->row - this->blastRaduis][this->col] != '\0' && this->map[this->row - this->blastRaduis][this->col] != '#'))
-		{
-			this->map[this->row - this->blastRaduis][this->col] = 'D';
-		}
-		if (this->col + this->blastRaduis < 17 && (this->map[this->row][this->col + this->blastRaduis] != '\0' && this->map[this->row][this->col + this->blastRaduis] != '#') )
-		{
-			this->map[this->row][this->col + this->blastRaduis] = 'D';
-		}
-		if (this->col - this->blastRaduis > -1 && (this->map[this->row][this->col - this->blastRaduis] != '\0' && this->map[this->row][this->col - this->blastRaduis] != '#' ))
-		{
-			this->map[this->row][this->col - this->blastRaduis] = 'D';
-		}
+		this->checkDestruction();
 		this->setActive(false);
 		this->map[this->row][this->col] = 'D';
 	}
-
 	glm::mat4 model(1);
 	model = glm::translate( model, glm::vec3(this->x_trans, this->y_trans, this->z_trans));		// Translate item
 	model = glm::scale(model, glm::vec3(4.25f, 2.25f, 4.25f));									// scale item
@@ -65,4 +118,9 @@ void	Bomb::setActive(bool active)
 		this->PlantTime = glfwGetTime();
 	this->map[this->row][this->col] = 'B';
 	this->active = active;
+}
+
+void	Bomb::incBlastRaduis()
+{
+	this->blastRaduis++;
 }

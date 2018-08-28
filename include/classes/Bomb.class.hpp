@@ -19,6 +19,8 @@ class Bomb : public Item
 		Bomb const & operator=(Bomb const & rhs);
 		void	draw(void);
 		void	setActive( bool active );
+		void	checkDestruction();
+		void	incBlastRaduis();
 		using Item::setPos;
 		using Item::setMap;
 		using Item::getActive;

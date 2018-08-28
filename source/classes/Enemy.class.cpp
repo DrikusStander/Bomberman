@@ -65,7 +65,7 @@ void	Enemy::setPosOnMap()
 {
 	if (this->map[this->row][this->col] == 'P')
 		this->map[this->row][this->col] = 'D';
-	else if (this->map[this->row][this->col] != 'B' && this->map[this->row][this->col] != 'D')
+	else if (this->map[this->row][this->col] != 'B' && this->map[this->row][this->col] != 'D' && this->map[this->row][this->col] != 'U')
 		this->map[this->row][this->col] = 'E';
 }
 
@@ -73,7 +73,7 @@ void	Enemy::clearPosOnMap()
 {
 	if (this->map[this->row][this->col] == 'P')
 		this->map[this->row][this->col] = 'P';
-	else if (this->map[this->row][this->col] != 'B' && this->map[this->row][this->col] != 'D')
+	else if (this->map[this->row][this->col] != 'B' && this->map[this->row][this->col] != 'D' && this->map[this->row][this->col] != 'U')
 		this->map[this->row][this->col] = '\0';
 }
 
@@ -81,7 +81,7 @@ void	Enemy::moveFwd()
 {
 	if (this->row > 0)
 	{
-		if (this->map[this->row - 1][this->col] == '\0' || this->map[this->row - 1][this->col] == 'P' )
+		if (this->map[this->row - 1][this->col] == '\0' || this->map[this->row - 1][this->col] == 'P' || this->map[this->row - 1][this->col] == 'U')
 		{
 			if (fmod(((168) - (this->x_trans - 10.5)), -21) != 0.0f)
 			{
@@ -137,7 +137,7 @@ void	Enemy::moveBkw()
 {
 	if (this->row < 16)
 	{
-		if (this->map[this->row + 1][this->col] == '\0' || this->map[this->row + 1][this->col] == 'P' )
+		if (this->map[this->row + 1][this->col] == '\0' || this->map[this->row + 1][this->col] == 'P' || this->map[this->row + 1][this->col] == 'U')
 		{
 			if (fmod(((168) - (this->x_trans - 10.5)), -21) != 0.0f)
 			{
@@ -197,7 +197,7 @@ void	Enemy::moveLft()
 {
 	if (this->col > 0)
 	{
-		if (this->map[this->row][this->col - 1] == '\0' || this->map[this->row][this->col - 1] == 'P' )
+		if (this->map[this->row][this->col - 1] == '\0' || this->map[this->row][this->col - 1] == 'P' || this->map[this->row][this->col - 1] == 'U')
 		{
 			if (fmod(((168) - (this->z_trans - 10.5)), -21) != 0.0f)
 			{
@@ -253,7 +253,7 @@ void	Enemy::moveRgt()
 {
 	if (this->col < 16 )
 	{
-		if (this->map[this->row][this->col + 1] == '\0' || this->map[this->row][this->col + 1] == 'P')
+		if (this->map[this->row][this->col + 1] == '\0' || this->map[this->row][this->col + 1] == 'P' || this->map[this->row][this->col + 1] == 'U')
 		{
 			if (fmod( ( (168) - (this->z_trans - 10.5) ), -21 ) != 0.0f)
 			{
