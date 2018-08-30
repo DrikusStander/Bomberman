@@ -140,9 +140,6 @@ World const & World::operator=(World const & rhs)
 void World::draw(void)
 {
 	this->player->setMap(this->map);
-	if (this->map[0][0] != '\0')
-		std::cout << "map[0][0] : " << this->map[0][0] << std::endl;
-
 	glm::mat4 model(1);
 	model = glm::translate( model, glm::vec3(this->x_trans, this->y_trans, this->z_trans)); 	// Translate it down a bit so it's at the center of the scene
 	model = glm::scale( model, glm::vec3(0.2f, 0.2f, 0.2f));									// It's a bit too big for our scene, so scale it down
@@ -150,14 +147,15 @@ void World::draw(void)
 	this->WorldModel->Draw(*this->_shader);
 
 	//check what items the bomb affected
-			std::cout << std::endl;
-			std::cout << std::endl;
+			// std::cout << std::endl;
+			// std::cout << std::endl;
 
 	for (int i = 0; i < 17; i++)
 	{
 		for (int j = 0; j < 17; j++)
 		{
-			std::cout << this->map[i][j] << " " ;
+			// std::cout << this->map[i][j] << " " ;
+			// std::cout << "Checking if player is affected at: " << i << " " << j << std::endl;
 			if (this->map[i][j] == 'D')
 			{
 				// check if the player was hit
@@ -172,19 +170,53 @@ void World::draw(void)
 					this->worldStatus = 1;
 				}
 
-				// check what object was affected
-				for (std::vector<Item*>::iterator it = this->objects->begin() ; it != this->objects->end(); )
+				// check what powerup was affected
+				// std::cout << "Checking what powerups are affected" << std::endl;
+				for (std::vector<Powerup*>::iterator it = this->powerups->begin() ; it != this->powerups->end(); )
 				{
 					if ((*it)->getRow() == i && (*it)->getCol() == j)
 					{
+						delete (*it);
+						it = this->powerups->erase(it);
+					}
+					else
+						++it;
+				}
+
+				// check what object was affected
+				// std::cout << "Checking what objects are affected" << std::endl;
+				for (std::vector<Item*>::iterator it = this->objects->begin() ; it != this->objects->end(); )
+				{
+					int objRow = (*it)->getRow();
+					int objCol = (*it)->getCol();
+					// std::cout << "robjRow: " << objRow << " objCol: " << objCol << std::endl;
+					if ((*it)->getRow() == i && (*it)->getCol() == j)
+					{
+						// std::cout << "inside if" << objCol << std::endl;
 						// generate a powerup based on random chance
 						if ((rand() % 3) == 0)
 						{
-							Powerup *temp = new Powerup(*this->_shader, "resources/models/coin/bomb/coin");
-							temp->setPos((*it)->getX(), (*it)->getZ(), (*it)->getRow(), (*it)->getCol()); 
+							int powerupOption = rand() % 3;
+							Powerup *temp;
+							std::cout << "powerupOptiuon = " << powerupOption << std::endl;
+							if (powerupOption == 0)
+							{
+								temp = new Powerup(*this->_shader, "resources/models/coin/bomb/coin", powerupOption);
+							}
+							else if (powerupOption == 1)
+							{
+								temp = new Powerup(*this->_shader, "resources/models/coin/run/coin", powerupOption);
+							}
+							else
+							{
+								temp =  new Powerup(*this->_shader, "resources/models/coin/bombs/coin", powerupOption);
+							}
+							temp->setPos((*it)->getX(), (*it)->getZ(), (*it)->getRow(), (*it)->getCol());
 							this->powerups->push_back(temp);
+							// std::cout << "placing newly created object at i: " << i << " j: " << j << std::endl;
 							this->map[i][j] = 'U';
 						}
+						// std::cout << "delete object" << objCol << std::endl;
 						delete (*it);
 						it = this->objects->erase(it);
 					}
@@ -193,6 +225,7 @@ void World::draw(void)
 				}
 
 				// check what enemy was affected
+				// std::cout << "Checking what enemies are affected" << std::endl;
 				for (std::vector<Enemy*>::iterator it = this->enemies->begin() ; it != this->enemies->end(); )
 				{
 					if ((*it)->getRow() == i && (*it)->getCol() == j)
@@ -203,9 +236,13 @@ void World::draw(void)
 					else
 						++it;
 				}
+
+				// std::cout << "Set pos in map to 0" << std::endl;
 				if (this->map[i][j] == 'D')
 					this->map[i][j] = '\0';
 			}
+
+			// std::cout << "Checking if powerup is present" << std::endl;
 			if (this->map[i][j] == 'U')
 			{
 				// check if the player is on powerup
@@ -216,7 +253,7 @@ void World::draw(void)
 						if ((*it)->getRow() == i && (*it)->getCol() == j)
 						{
 							// creater getter on Powerup to display what powerup it represents
-							this->player->handlePowerup(0);
+							this->player->handlePowerup((*it)->getType());
 							delete (*it);
 							it = this->powerups->erase(it);
 						}
@@ -226,7 +263,7 @@ void World::draw(void)
 				}
 			}
 		}
-			std::cout << std::endl;
+			// std::cout << std::endl;
 	}
 	this->player->draw();
 	this->text->draw();

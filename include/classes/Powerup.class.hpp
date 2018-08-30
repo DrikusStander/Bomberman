@@ -18,8 +18,9 @@ class Powerup : public Item
 	private:
 	protected:
 		int activeFrame;
+		int powerupType;
 	public:
-		Powerup( Shader &shader, std::string model);
+		Powerup( Shader &shader, std::string model, int type);
 		Powerup( Powerup const & src);
 		~Powerup( void );
 		Powerup const & operator=(Powerup const & rhs);
@@ -30,6 +31,7 @@ class Powerup : public Item
 		// void	setMap( char **map);
 		// int		getCol();
 		// int		getRow();
+		int		getType(void);
 };
 
 #endif

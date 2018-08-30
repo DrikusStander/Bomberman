@@ -9,7 +9,10 @@ Player::Player( Shader &shader, std::string model) : Character(shader, model + "
 	std::cout << "Player - Constructor called " << std::endl;
 	this->x_trans = -168.0f;
 	this->z_trans = -168.0f;
-	this->bomb = new Bomb(shader, "resources/models/bom.obj");
+	for (int i = 0; i < 3; i++)
+		this->bomb.push_back(new Bomb(shader, "resources/models/bom.obj"));
+	this->speedMult = 1;
+	this->bombCount = 1;
 
 }
 
@@ -23,7 +26,7 @@ Player::Player( Player const & src) : Character(src)
 Player::~Player( void )
 {
 	std::cout << "Player - Destructor called " << std::endl;
-	delete this->bomb;
+	// delete this->bomb;
 }
 
 Player const & Player::operator=(Player const & rhs)
@@ -40,8 +43,11 @@ void Player::draw(void)
 	model = glm::rotate(model, glm::radians(this->rotate), glm::vec3(0, 1, 0)); 				// where x, y, z is axis of rotation (e.g. 0 1 0)
 	glUniformMatrix4fv( glGetUniformLocation(this->_shader->getProgram(), "model"), 1, GL_FALSE, glm::value_ptr(model ));
 	this->characterModelarr[this->active]->Draw(*this->_shader);
-	if (this->bomb->getActive() == true)
-		this->bomb->draw();
+	for (std::vector<Bomb*>::iterator it = this->bomb.begin() ; it != this->bomb.end(); it++)
+	{
+		if ((*it)->getActive() == true)
+			(*it)->draw();
+	}
 }
 
 float	Player::getX()
@@ -98,7 +104,7 @@ void	Player::ProcessKeyboard(Direction direction)
 								this->clipX(fmod(((-168) - (this->x_trans)), -21));
 						}
 						this->rotate = 180.0f;
-						this->z_trans -= 0.5f * 3;
+						this->z_trans -= 0.5f * this->speedMult;
 						this->clearPosOnMap();
 						this->row = static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21);
 						this->active++;
@@ -114,7 +120,7 @@ void	Player::ProcessKeyboard(Direction direction)
 						else if (fmod(((168) - (this->x_trans - 10.5)), -21) <= 10.5)
 							this->clipX(fmod(((-168) - (this->x_trans)), -21));
 						this->rotate = 180.0f;
-						this->z_trans -= 0.5f * 3;
+						this->z_trans -= 0.5f * this->speedMult;
 						this->clearPosOnMap();
 						this->row = static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21);
 						this->active++;
@@ -125,7 +131,7 @@ void	Player::ProcessKeyboard(Direction direction)
 			else if (this->z_trans > -168)
 			{
 				this->rotate = 180.0f;
-				this->z_trans -= 0.5f * 3;
+				this->z_trans -= 0.5f * this->speedMult;
 				this->clearPosOnMap();
 				this->row = static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21);
 				this->active++;
@@ -151,7 +157,7 @@ void	Player::ProcessKeyboard(Direction direction)
 								this->clipX(fmod(((168) - (this->x_trans)), -21));
 						}
 						this->rotate = 0.0f;
-						this->z_trans += 0.5f * 3;
+						this->z_trans += 0.5f * this->speedMult;
 						this->clearPosOnMap();
 						this->row = static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21);
 						this->active++;
@@ -169,7 +175,7 @@ void	Player::ProcessKeyboard(Direction direction)
 						else if (fmod(((168) - (this->x_trans - 10.5)), -21) > 10.5)
 							this->clipX(fmod(((168) - (this->x_trans)), -21));
 						this->rotate = 0.0f;
-						this->z_trans += 0.5f * 3;
+						this->z_trans += 0.5f * this->speedMult;
 						this->clearPosOnMap();
 						this->row = static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21);
 						this->active++;
@@ -180,7 +186,7 @@ void	Player::ProcessKeyboard(Direction direction)
 			else if (this->z_trans < 168)
 			{
 				this->rotate = 0.0f;
-				this->z_trans += 0.5f * 3;
+				this->z_trans += 0.5f * this->speedMult;
 				this->clearPosOnMap();
 				this->row = static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21);
 				this->active++;
@@ -204,7 +210,7 @@ void	Player::ProcessKeyboard(Direction direction)
 								this->clipZ(fmod(((-168) - (this->z_trans)), -21));
 						}
 						this->rotate = 270.0f;
-						this->x_trans -= 0.5f * 3;
+						this->x_trans -= 0.5f * this->speedMult;
 						this->clearPosOnMap();
 						this->col = static_cast<int>((-168 - (this->x_trans + 10.5)) /  -21);
 						this->active++;
@@ -220,7 +226,7 @@ void	Player::ProcessKeyboard(Direction direction)
 						else if (fmod(((168) - (this->z_trans - 10.5)), -21) <= 10.5)
 							this->clipZ(fmod(((-168) - (this->z_trans)), -21));
 						this->rotate = 270.0f;
-						this->x_trans -= 0.5f * 3;
+						this->x_trans -= 0.5f * this->speedMult;
 						this->clearPosOnMap();
 						this->col = static_cast<int>((-168 - (this->x_trans + 10.5)) /  -21);
 						this->active++;
@@ -231,7 +237,7 @@ void	Player::ProcessKeyboard(Direction direction)
 			else if (this->x_trans > -168)
 			{
 				this->rotate = 270.0f;
-				this->x_trans -= 0.5 * 3;
+				this->x_trans -= 0.5 * this->speedMult;
 				this->clearPosOnMap();
 				this->col = static_cast<int>((-168 - (this->x_trans + 10.5)) /  -21);
 				this->active++;
@@ -255,7 +261,7 @@ void	Player::ProcessKeyboard(Direction direction)
 								this->clipZ(fmod(((-168) - (this->z_trans)), -21));
 						}
 						this->rotate = 90.0f;
-						this->x_trans += 0.5f * 3;
+						this->x_trans += 0.5f * this->speedMult;
 						this->clearPosOnMap();
 						this->col = static_cast<int>((-168 - (this->x_trans + 10.5)) /  -21);
 						this->active++;
@@ -271,7 +277,7 @@ void	Player::ProcessKeyboard(Direction direction)
 						else if (fmod(((168) - (this->z_trans - 10.5)), -21) <= 10.5)
 							this->clipZ(fmod(((-168) - (this->z_trans)), -21));
 						this->rotate = 90.0f;
-						this->x_trans += 0.5f * 3;
+						this->x_trans += 0.5f * this->speedMult;
 						this->clearPosOnMap();
 						this->col = static_cast<int>((-168 - (this->x_trans + 10.5)) /  -21);
 						this->active++;
@@ -282,7 +288,7 @@ void	Player::ProcessKeyboard(Direction direction)
 			else if (this->x_trans < 168)
 			{
 				this->rotate = 90.0f;
-				this->x_trans += 0.5f * 3;
+				this->x_trans += 0.5f * this->speedMult;
 				this->clearPosOnMap();
 				this->col = static_cast<int>((-168 - (this->x_trans + 10.5)) /  -21);
 				this->active++;
@@ -292,21 +298,29 @@ void	Player::ProcessKeyboard(Direction direction)
 		}
 		case SPC:
 		{
-			if (this->bomb->getActive() == false)
+			std::cout << "need to place bomb" << std::endl;
+			for (int i = 0 ; i < this->bombCount; i++)
 			{
-				float bomb_x;
-				float bomb_z;
-				if (fmod(((168) - (this->z_trans - 10.5)), -21) > 10.5)
-					bomb_z = this->z_trans + fmod(((168) - (this->z_trans)), -21);
-				else if (fmod(((168) - (this->z_trans - 10.5)), -21) <= 10.5)
-					bomb_z = this->z_trans + fmod(((-168) - (this->z_trans)), -21);
-				if (fmod(((168) - (this->x_trans) - 10.5), -21) > 10.5)
-					bomb_x = this->x_trans + fmod(((168) - (this->x_trans)), -21);
-				else if (fmod(((168) - (this->x_trans - 10.5)), -21) <= 10.5)
-					bomb_x = this->x_trans + fmod(((-168) - (this->x_trans)), -21);
-				this->bomb->setPos(bomb_x, bomb_z, this->row, this->col);
-				this->bomb->setMap(this->map);
-				this->bomb->setActive(true);
+				std::cout << "bomb: " << i << std::endl;
+				if (this->map[this->row][this->col] == 'B')
+					break;
+				if (this->bomb[i]->getActive() == false)
+				{
+					float bomb_x;
+					float bomb_z;
+					if (fmod(((168) - (this->z_trans - 10.5)), -21) > 10.5)
+						bomb_z = this->z_trans + fmod(((168) - (this->z_trans)), -21);
+					else if (fmod(((168) - (this->z_trans - 10.5)), -21) <= 10.5)
+						bomb_z = this->z_trans + fmod(((-168) - (this->z_trans)), -21);
+					if (fmod(((168) - (this->x_trans) - 10.5), -21) > 10.5)
+						bomb_x = this->x_trans + fmod(((168) - (this->x_trans)), -21);
+					else if (fmod(((168) - (this->x_trans - 10.5)), -21) <= 10.5)
+						bomb_x = this->x_trans + fmod(((-168) - (this->x_trans)), -21);
+					this->bomb[i]->setPos(bomb_x, bomb_z, this->row, this->col);
+					this->bomb[i]->setMap(this->map);
+					this->bomb[i]->setActive(true);
+					break;
+				}
 			}
 			break;
 		}
@@ -314,15 +328,28 @@ void	Player::ProcessKeyboard(Direction direction)
 	
 	// std::cout << "* x_trans: " << this->x_trans << std::endl;
 	// std::cout << "* z_trans: " << this->z_trans << std::endl;
-	std::cout << "x_trans: " << std::to_string((fmod(((168.0f) - (this->x_trans - 10.5f)), -21.0f))) << std::endl;
-	std::cout << "z_trans: "<< std::to_string((fmod(((168) - (this->z_trans - 10.5)), -21))) << std::endl;
-	std::cout << "array[" << this->row << "][" << this->col << "]" << std::endl;
+	// std::cout << "x_trans: " << std::to_string((fmod(((168.0f) - (this->x_trans - 10.5f)), -21.0f))) << std::endl;
+	// std::cout << "z_trans: "<< std::to_string((fmod(((168) - (this->z_trans - 10.5)), -21))) << std::endl;
+	// std::cout << "array[" << this->row << "][" << this->col << "]" << std::endl;
 }
 
 void	Player::handlePowerup(int powerup)
 {
 	if (powerup == 0)
 	{
-		this->bomb->incBlastRaduis();
+		for (std::vector<Bomb*>::iterator it = this->bomb.begin() ; it != this->bomb.end(); it++)
+		{
+			(*it)->incBlastRaduis();
+		}
+	}
+	else if (powerup == 1)
+	{
+		if (this->speedMult < 7)
+			this->speedMult += 2;
+	}
+	else if (powerup == 2)
+	{
+		if (this->bombCount < 3)
+			this->bombCount++;
 	}
 }

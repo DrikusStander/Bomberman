@@ -32,65 +32,81 @@ void	Bomb::checkDestruction()
 	//check down
 	for (int i = 1; i <= this->blastRaduis; i++)
 	{
-		if (row + i < 17 && this->map[this->row + i][this->col] == '#')
-			break;
-		if (row + i < 17 && (this->map[this->row + i][this->col] != '\0' && this->map[this->row + i][this->col] != '#'))
+		// std::cout << "Checking bomb Down " << this->row + i << std::endl;
+		if (this->row + i < 17)
 		{
-			if (this->map[this->row + i][this->col] == 'W')
-			{
-				this->map[this->row + i][this->col] = 'D';
+			if (this->map[this->row + i][this->col] == '#')
 				break;
+			if (this->map[this->row + i][this->col] != '\0' && this->map[this->row + i][this->col] != '#')
+			{
+				if (this->map[this->row + i][this->col] == 'W')
+				{
+					this->map[this->row + i][this->col] = 'D';
+					break;
+				}
+				else
+					this->map[this->row + i][this->col] = 'D';
 			}
-			else
-				this->map[this->row + i][this->col] = 'D';
 		}
 	}
 	//check up
 	for (int i = 1; i <= this->blastRaduis; i++)
 	{
-		if (row - i > -1 && this->map[this->row - i][this->col] == '#')
-			break;
-		if (row - i > -1 && (this->map[this->row - i][this->col] != '\0' && this->map[this->row - i][this->col] != '#'))
+		// std::cout << "Checking bomb Up " << this->row  - i << std::endl;
+		if (this->row - i > -1)
 		{
-			if (this->map[this->row - i][this->col] == 'W')
-			{
-				this->map[this->row - i][this->col] = 'D';
+			if (this->map[this->row - i][this->col] == '#')
 				break;
+			if (this->map[this->row - i][this->col] != '\0' && this->map[this->row - i][this->col] != '#')
+			{
+				if (this->map[this->row - i][this->col] == 'W')
+				{
+					this->map[this->row - i][this->col] = 'D';
+					break;
+				}
+				else
+					this->map[this->row - i][this->col] = 'D';
 			}
-			else
-				this->map[this->row - i][this->col] = 'D';
 		}
 	}
 	//check right
 	for (int i = 1; i <= this->blastRaduis; i++)
 	{
-		if (col + i < 17 && this->map[this->row][this->col + i] == '#')
-			break;
-		if (col + i < 17 && (this->map[this->row][this->col  + i] != '\0' && this->map[this->row][this->col + i] != '#'))
+		// std::cout << "Checking bomb Right " << this->col  + i << std::endl;
+		if (this->col + i < 17)
 		{
-			if (this->map[this->row][this->col + i] == 'W')
-			{
-				this->map[this->row][this->col + i] = 'D';
+			if (this->map[this->row][this->col + i] == '#')
 				break;
+			if (this->map[this->row][this->col  + i] != '\0' && this->map[this->row][this->col + i] != '#')
+			{
+				if (this->map[this->row][this->col + i] == 'W')
+				{
+					this->map[this->row][this->col + i] = 'D';
+					break;
+				}
+				else
+					this->map[this->row][this->col + i] = 'D';
 			}
-			else
-				this->map[this->row][this->col + i] = 'D';
 		}
 	}
 	//check left
 	for (int i = 1; i <= this->blastRaduis; i++)
 	{
-		if (col - i > -1 && this->map[this->row][this->col - i] == '#')
-			break;
-		if (col - i > -1 && (this->map[this->row][this->col - i] != '\0' && this->map[this->row][this->col - i] != '#'))
+		// std::cout << "Checking bomb Left " << this->col - i << std::endl;
+		if (this->col - i > -1)
 		{
-			if (this->map[this->row][this->col - i] == 'W')
-			{
-				this->map[this->row][this->col - i] = 'D';
+			if (this->map[this->row][this->col - i] == '#')
 				break;
+			if (this->map[this->row][this->col - i] != '\0' && this->map[this->row][this->col - i] != '#')
+			{
+				if (this->map[this->row][this->col - i] == 'W')
+				{
+					this->map[this->row][this->col - i] = 'D';
+					break;
+				}
+				else
+					this->map[this->row][this->col - i] = 'D';
 			}
-			else
-				this->map[this->row][this->col - i] = 'D';
 		}
 	}
 }
@@ -100,9 +116,16 @@ void Bomb::draw(void)
 	
 	if ((glfwGetTime() - this->PlantTime) >= this->PlantTimeLength)
 	{
+		std::cout << "Bomb check distruction" << std::endl;
 		this->checkDestruction();
+		std::cout << "Bomb set visible to false" << std::endl;
+
 		this->setActive(false);
+
+		std::cout << "Bomb set pos on map to D" << std::endl;
 		this->map[this->row][this->col] = 'D';
+		std::cout << "Bomb DRAW THE MODEL" << std::endl;
+		
 	}
 	glm::mat4 model(1);
 	model = glm::translate( model, glm::vec3(this->x_trans, this->y_trans, this->z_trans));		// Translate item
@@ -122,5 +145,6 @@ void	Bomb::setActive(bool active)
 
 void	Bomb::incBlastRaduis()
 {
-	this->blastRaduis++;
+	if (this->blastRaduis < 3)
+		this->blastRaduis++;
 }

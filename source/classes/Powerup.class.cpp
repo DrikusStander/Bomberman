@@ -1,9 +1,8 @@
 #include "Powerup.class.hpp"
 
-Powerup::Powerup( Shader &shader, std::string model) : Item(shader, model + "0.obj")
+Powerup::Powerup( Shader &shader, std::string model, int type) : Item(shader, model + "0.obj")
 {
 	std::cout << "Powerup - Parametric Constructor called " << std::endl;
-	// this->PowerupModel =  new Model(model);
 	for (int i = 0; i < 24; i++)
 		this->itemModelarr.push_back(new Model(model + std::to_string(i) + ".obj"));
 	this->_shader = &shader;
@@ -13,6 +12,7 @@ Powerup::Powerup( Shader &shader, std::string model) : Item(shader, model + "0.o
 	this->rotate = 180.0f;
 	this->active = false;
 	this->activeFrame = 0;
+	this->powerupType = type;
 }
 
 Powerup::Powerup( Powerup const & src) : Item(src)
@@ -36,6 +36,7 @@ Powerup const & Powerup::operator=(Powerup const & rhs)
 	this->z_trans = rhs.z_trans;
 	this->rotate = rhs.rotate;
 	this->active = rhs.active;
+	this->powerupType = rhs.powerupType;
 	return(*this);
 }
 
@@ -53,34 +54,7 @@ void Powerup::draw(void)
 	this->itemModelarr[this->activeFrame]->Draw(*this->_shader);
 }
 
-// void Powerup::setPos(float x, float z, int row, int col)
-// {
-// 	this->row = row;
-// 	this->col = col;
-// 	this->x_trans = x;
-// 	this->z_trans = z;
-// }
-
-// void	Powerup::setActive(bool active)
-// {
-// 	this->active = active;
-// }
-
-// bool	Powerup::getActive()
-// {
-// 	return(this->active);
-// }
-// void Powerup::setMap( char **map)
-// {
-// 	this->map = map;
-// }
-
-// int		Powerup::getCol()
-// {
-// 	return(this->col);
-// }
-
-// int		Powerup::getRow()
-// {
-// 	return(this->row);
-// }
+int		Powerup::getType(void)
+{
+	return(this->powerupType);
+}

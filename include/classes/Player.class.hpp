@@ -7,8 +7,10 @@
 class Player : public Character
 {
 	private:
-		Bomb	*bomb;
+		std::vector<Bomb*>	bomb;
+		int		bombCount;
 		int		active;
+		int		speedMult;
 	protected:
 	public:
 		Player( Shader &shader, std::string model);
