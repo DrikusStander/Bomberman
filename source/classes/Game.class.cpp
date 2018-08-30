@@ -125,8 +125,8 @@ Game::Game(const int width, const int height) : s_WIDTH(width), s_HEIGHT(height)
 	// Load models
 	this->world = new World(shader, "resources/models/world.obj");
 	
-	// Powerup temp(shader, "resources/models/coin/bomb/coin");
-	// Powerup temp2(shader, "resources/models/coin/run/coin");
+	// Item temp(shader, "resources/models/fire/fire.obj");
+	// Item temp2(shader, "resources/models/fire/fire.obj");
 	// temp2.setPos(168, 168, 0, 0);
 
 	glm::mat4 projection = glm::perspective(camera.GetZoom(), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 1000.0f);

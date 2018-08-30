@@ -9,7 +9,11 @@ class Bomb : public Item
 	private:
 		GLfloat PlantTime;
 		GLfloat PlantTimeLength;
+		GLfloat ExplodeTimeLength;
 		int		blastRaduis;
+		int		activeFlames;
+		bool	destruction;
+		std::vector<Item*> flames;
 	protected:
 
 	public:

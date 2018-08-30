@@ -7,7 +7,14 @@ Bomb::Bomb( Shader &shader, std::string model) : Item(shader, model)
 	std::cout << "Bomb - Parametric Constructor called " << std::endl;
 	this->PlantTime = 0.0f;
 	this->PlantTimeLength = 3.0f;
+	this->ExplodeTimeLength = 1.0f;
 	this->blastRaduis = 1;
+	this->activeFlames = 0;
+	this->destruction = false;
+	for (int i = 0; i < 12; i++)
+	{
+		this->flames.push_back(new Item(shader, "resources/models/fire/fire.obj"));
+	}
 }
 
 Bomb::Bomb( Bomb const & src) : Item(src)
@@ -39,13 +46,21 @@ void	Bomb::checkDestruction()
 				break;
 			if (this->map[this->row + i][this->col] != '\0' && this->map[this->row + i][this->col] != '#')
 			{
-				if (this->map[this->row + i][this->col] == 'W')
+				if (this->map[this->row + i][this->col] == 'W'  || (this->map[this->row + i][this->col] == 'U' && this->destruction == false))
 				{
 					this->map[this->row + i][this->col] = 'D';
 					break;
 				}
-				else
+				else 
 					this->map[this->row + i][this->col] = 'D';
+				
+			}
+			if (this->map[this->row + i][this->col] != 'U')
+			{
+				int tempX = -168 - (this->row + i) *  -21;
+				int tempZ = -168 - (this->col) *  -21;
+				this->flames[this->activeFlames]->setPos(tempZ, tempX, this->row + i, this->col);
+				this->activeFlames++;
 			}
 		}
 	}
@@ -59,13 +74,21 @@ void	Bomb::checkDestruction()
 				break;
 			if (this->map[this->row - i][this->col] != '\0' && this->map[this->row - i][this->col] != '#')
 			{
-				if (this->map[this->row - i][this->col] == 'W')
+				if (this->map[this->row - i][this->col] == 'W'  || (this->map[this->row - i][this->col] == 'U' && this->destruction == false))
 				{
 					this->map[this->row - i][this->col] = 'D';
 					break;
 				}
 				else
 					this->map[this->row - i][this->col] = 'D';
+				
+			}
+			if (this->map[this->row - i][this->col] != 'U')
+			{
+				int tempX = -168 - (this->row - i) *  -21;
+				int tempZ = -168 - (this->col) *  -21;
+				this->flames[this->activeFlames]->setPos(tempZ, tempX, this->row - i, this->col);
+				this->activeFlames++;
 			}
 		}
 	}
@@ -79,13 +102,21 @@ void	Bomb::checkDestruction()
 				break;
 			if (this->map[this->row][this->col  + i] != '\0' && this->map[this->row][this->col + i] != '#')
 			{
-				if (this->map[this->row][this->col + i] == 'W')
+				if (this->map[this->row][this->col + i] == 'W' || (this->map[this->row][this->col + i] == 'U' && this->destruction == false) )
 				{
 					this->map[this->row][this->col + i] = 'D';
 					break;
 				}
 				else
 					this->map[this->row][this->col + i] = 'D';
+				
+			}
+			if (this->map[this->row][this->col + i] != 'U')
+			{
+				int tempX = -168 - (this->row) *  -21;
+				int tempZ = -168 - (this->col + i) *  -21;
+				this->flames[this->activeFlames]->setPos(tempZ, tempX, this->row, this->col + i);
+				this->activeFlames++;
 			}
 		}
 	}
@@ -99,7 +130,7 @@ void	Bomb::checkDestruction()
 				break;
 			if (this->map[this->row][this->col - i] != '\0' && this->map[this->row][this->col - i] != '#')
 			{
-				if (this->map[this->row][this->col - i] == 'W')
+				if (this->map[this->row][this->col - i] == 'W'  || (this->map[this->row][this->col - i] == 'U' && this->destruction == false))
 				{
 					this->map[this->row][this->col - i] = 'D';
 					break;
@@ -107,32 +138,50 @@ void	Bomb::checkDestruction()
 				else
 					this->map[this->row][this->col - i] = 'D';
 			}
+			if (this->map[this->row][this->col - i] != 'U')
+			{
+				int tempX = -168 - (this->row) *  -21;
+				int tempZ = -168 - (this->col - i) *  -21;
+				this->flames[this->activeFlames]->setPos(tempZ, tempX, this->row, this->col - i);
+				this->activeFlames++;
+			}
 		}
 	}
 }
 
 void Bomb::draw(void)
 {
-	
 	if ((glfwGetTime() - this->PlantTime) >= this->PlantTimeLength)
 	{
+		this->activeFlames = 0;
+		if ((glfwGetTime() - this->PlantTime) >= this->ExplodeTimeLength + this->PlantTimeLength)
+		{
+			this->setActive(false);
+			this->destruction = false;
+		}
 		std::cout << "Bomb check distruction" << std::endl;
 		this->checkDestruction();
+		this->destruction = true;
 		std::cout << "Bomb set visible to false" << std::endl;
-
-		this->setActive(false);
 
 		std::cout << "Bomb set pos on map to D" << std::endl;
 		this->map[this->row][this->col] = 'D';
 		std::cout << "Bomb DRAW THE MODEL" << std::endl;
+		for (int i = 0; i < this->activeFlames; i++)
+		{
+			this->flames[i]->draw();
+		}
 		
 	}
-	glm::mat4 model(1);
-	model = glm::translate( model, glm::vec3(this->x_trans, this->y_trans, this->z_trans));		// Translate item
-	model = glm::scale(model, glm::vec3(4.25f, 2.25f, 4.25f));									// scale item
-	model = glm::rotate(model, glm::radians(this->rotate), glm::vec3(0, 1, 0));					// where x, y, z is axis of rotation (e.g. 0 1 0)
-	glUniformMatrix4fv( glGetUniformLocation(this->_shader->getProgram(), "model"), 1, GL_FALSE, glm::value_ptr(model ));
-	this->ItemModel->Draw(*this->_shader);
+	else
+	{
+		glm::mat4 model(1);
+		model = glm::translate( model, glm::vec3(this->x_trans, this->y_trans, this->z_trans));		// Translate item
+		model = glm::scale(model, glm::vec3(4.25f, 2.25f, 4.25f));									// scale item
+		model = glm::rotate(model, glm::radians(this->rotate), glm::vec3(0, 1, 0));					// where x, y, z is axis of rotation (e.g. 0 1 0)
+		glUniformMatrix4fv( glGetUniformLocation(this->_shader->getProgram(), "model"), 1, GL_FALSE, glm::value_ptr(model ));
+		this->ItemModel->Draw(*this->_shader);
+	}
 }
 
 void	Bomb::setActive(bool active)
