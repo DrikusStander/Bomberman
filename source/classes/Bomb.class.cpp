@@ -46,10 +46,9 @@ void	Bomb::checkDestruction()
 				break;
 			if (this->map[this->row + i][this->col] != '\0' && this->map[this->row + i][this->col] != '#')
 			{
-				if (this->map[this->row + i][this->col] == 'W'  || (this->map[this->row + i][this->col] == 'U' && this->destruction == false))
+				if ((this->map[this->row + i][this->col] == 'U' && this->destruction == true) || this->map[this->row + i][this->col] == 'W')
 				{
-					this->map[this->row + i][this->col] = 'D';
-					break;
+					//do nothing
 				}
 				else 
 					this->map[this->row + i][this->col] = 'D';
@@ -61,6 +60,11 @@ void	Bomb::checkDestruction()
 				int tempZ = -168 - (this->col) *  -21;
 				this->flames[this->activeFlames]->setPos(tempZ, tempX, this->row + i, this->col);
 				this->activeFlames++;
+				if (this->map[this->row + i][this->col] == 'W')
+				{
+					this->map[this->row + i][this->col] = 'D';
+					break;
+				}
 			}
 		}
 	}
@@ -74,10 +78,9 @@ void	Bomb::checkDestruction()
 				break;
 			if (this->map[this->row - i][this->col] != '\0' && this->map[this->row - i][this->col] != '#')
 			{
-				if (this->map[this->row - i][this->col] == 'W'  || (this->map[this->row - i][this->col] == 'U' && this->destruction == false))
+				if ((this->map[this->row - i][this->col] == 'U' && this->destruction == true) || this->map[this->row - i][this->col] == 'W')
 				{
-					this->map[this->row - i][this->col] = 'D';
-					break;
+					//do nothing
 				}
 				else
 					this->map[this->row - i][this->col] = 'D';
@@ -89,6 +92,11 @@ void	Bomb::checkDestruction()
 				int tempZ = -168 - (this->col) *  -21;
 				this->flames[this->activeFlames]->setPos(tempZ, tempX, this->row - i, this->col);
 				this->activeFlames++;
+				if (this->map[this->row - i][this->col] == 'W')
+				{
+					this->map[this->row - i][this->col] = 'D';
+					break;
+				}
 			}
 		}
 	}
@@ -102,10 +110,9 @@ void	Bomb::checkDestruction()
 				break;
 			if (this->map[this->row][this->col  + i] != '\0' && this->map[this->row][this->col + i] != '#')
 			{
-				if (this->map[this->row][this->col + i] == 'W' || (this->map[this->row][this->col + i] == 'U' && this->destruction == false) )
+				if ((this->map[this->row][this->col + i] == 'U' && this->destruction == true) || this->map[this->row][this->col + i] == 'W')
 				{
-					this->map[this->row][this->col + i] = 'D';
-					break;
+					//do nothing
 				}
 				else
 					this->map[this->row][this->col + i] = 'D';
@@ -117,6 +124,11 @@ void	Bomb::checkDestruction()
 				int tempZ = -168 - (this->col + i) *  -21;
 				this->flames[this->activeFlames]->setPos(tempZ, tempX, this->row, this->col + i);
 				this->activeFlames++;
+				if (this->map[this->row][this->col + i] == 'W')
+				{
+					this->map[this->row][this->col + i] = 'D';
+					break;
+				}
 			}
 		}
 	}
@@ -130,10 +142,9 @@ void	Bomb::checkDestruction()
 				break;
 			if (this->map[this->row][this->col - i] != '\0' && this->map[this->row][this->col - i] != '#')
 			{
-				if (this->map[this->row][this->col - i] == 'W'  || (this->map[this->row][this->col - i] == 'U' && this->destruction == false))
+				if ((this->map[this->row][this->col - i] == 'U' && this->destruction == true) || this->map[this->row][this->col - i] == 'W')
 				{
-					this->map[this->row][this->col - i] = 'D';
-					break;
+					//do nothing
 				}
 				else
 					this->map[this->row][this->col - i] = 'D';
@@ -144,6 +155,11 @@ void	Bomb::checkDestruction()
 				int tempZ = -168 - (this->col - i) *  -21;
 				this->flames[this->activeFlames]->setPos(tempZ, tempX, this->row, this->col - i);
 				this->activeFlames++;
+				if (this->map[this->row][this->col - i] == 'W')
+				{
+					this->map[this->row][this->col - i] = 'D';
+					break;
+				}
 			}
 		}
 	}
@@ -153,24 +169,31 @@ void Bomb::draw(void)
 {
 	if ((glfwGetTime() - this->PlantTime) >= this->PlantTimeLength)
 	{
-		this->activeFlames = 0;
+		
+		std::cout << "Bomb check distruction" << std::endl;
+		if (this->destruction == false)
+		{
+			this->checkDestruction();
+			this->destruction = true;
+		}
 		if ((glfwGetTime() - this->PlantTime) >= this->ExplodeTimeLength + this->PlantTimeLength)
 		{
 			this->setActive(false);
 			this->destruction = false;
+			this->activeFlames = 0;
 		}
-		std::cout << "Bomb check distruction" << std::endl;
-		this->checkDestruction();
-		this->destruction = true;
 		std::cout << "Bomb set visible to false" << std::endl;
 
 		std::cout << "Bomb set pos on map to D" << std::endl;
 		this->map[this->row][this->col] = 'D';
+
 		std::cout << "Bomb DRAW THE MODEL" << std::endl;
 		for (int i = 0; i < this->activeFlames; i++)
 		{
+			this->map[this->flames[i]->getRow()][this->flames[i]->getCol()] = 'D';
 			this->flames[i]->draw();
 		}
+		
 		
 	}
 	else
