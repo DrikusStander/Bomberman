@@ -13,7 +13,7 @@ Player::Player( Shader &shader, std::string model) : Character(shader, model + "
 		this->bomb.push_back(new Bomb(shader, "resources/models/bom.obj"));
 	this->speedMult = 1;
 	this->bombCount = 1;
-
+	this->activeMult = 0.5;
 }
 
 
@@ -42,7 +42,10 @@ void Player::draw(void)
 	model = glm::scale( model, glm::vec3(1.2f, 1.2f, 1.2f));									// scale item
 	model = glm::rotate(model, glm::radians(this->rotate), glm::vec3(0, 1, 0)); 				// where x, y, z is axis of rotation (e.g. 0 1 0)
 	glUniformMatrix4fv( glGetUniformLocation(this->_shader->getProgram(), "model"), 1, GL_FALSE, glm::value_ptr(model ));
-	this->characterModelarr[this->active]->Draw(*this->_shader);
+	std::cout << static_cast<int>(this->active) << std::endl;
+	if (this->active > 21)
+		this->active = 0;
+	this->characterModelarr[static_cast<int>(this->active)]->Draw(*this->_shader);
 	for (std::vector<Bomb*>::iterator it = this->bomb.begin() ; it != this->bomb.end(); it++)
 	{
 		if ((*it)->getActive() == true)
@@ -84,8 +87,7 @@ void	Player::clearPosOnMap()
 
 void	Player::ProcessKeyboard(Direction direction)
 {
-	if (this->active == 21)
-		this->active = 0;
+	
 	switch(direction)
 	{
 		case FWD:
@@ -107,7 +109,7 @@ void	Player::ProcessKeyboard(Direction direction)
 						this->z_trans -= 0.5f * this->speedMult;
 						this->clearPosOnMap();
 						this->row = static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21);
-						this->active++;
+						this->active += this->activeMult;
 						this->setPosOnMap();
 					}
 				}
@@ -123,7 +125,7 @@ void	Player::ProcessKeyboard(Direction direction)
 						this->z_trans -= 0.5f * this->speedMult;
 						this->clearPosOnMap();
 						this->row = static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21);
-						this->active++;
+						this->active += this->activeMult;
 						this->setPosOnMap();
 					}
 				}
@@ -134,7 +136,7 @@ void	Player::ProcessKeyboard(Direction direction)
 				this->z_trans -= 0.5f * this->speedMult;
 				this->clearPosOnMap();
 				this->row = static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21);
-				this->active++;
+				this->active += this->activeMult;
 				this->setPosOnMap();
 			}
 			break;
@@ -160,7 +162,7 @@ void	Player::ProcessKeyboard(Direction direction)
 						this->z_trans += 0.5f * this->speedMult;
 						this->clearPosOnMap();
 						this->row = static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21);
-						this->active++;
+						this->active += this->activeMult;
 						this->setPosOnMap();
 					}
 				}
@@ -178,7 +180,7 @@ void	Player::ProcessKeyboard(Direction direction)
 						this->z_trans += 0.5f * this->speedMult;
 						this->clearPosOnMap();
 						this->row = static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21);
-						this->active++;
+						this->active += this->activeMult;
 						this->setPosOnMap();
 					}
 			}
@@ -189,7 +191,7 @@ void	Player::ProcessKeyboard(Direction direction)
 				this->z_trans += 0.5f * this->speedMult;
 				this->clearPosOnMap();
 				this->row = static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21);
-				this->active++;
+				this->active += this->activeMult;
 				this->setPosOnMap();
 			}
 			break;
@@ -213,7 +215,7 @@ void	Player::ProcessKeyboard(Direction direction)
 						this->x_trans -= 0.5f * this->speedMult;
 						this->clearPosOnMap();
 						this->col = static_cast<int>((-168 - (this->x_trans + 10.5)) /  -21);
-						this->active++;
+						this->active += this->activeMult;
 						this->setPosOnMap();
 					}
 				}
@@ -229,7 +231,7 @@ void	Player::ProcessKeyboard(Direction direction)
 						this->x_trans -= 0.5f * this->speedMult;
 						this->clearPosOnMap();
 						this->col = static_cast<int>((-168 - (this->x_trans + 10.5)) /  -21);
-						this->active++;
+						this->active += this->activeMult;
 						this->setPosOnMap();
 					}
 				}
@@ -240,7 +242,7 @@ void	Player::ProcessKeyboard(Direction direction)
 				this->x_trans -= 0.5 * this->speedMult;
 				this->clearPosOnMap();
 				this->col = static_cast<int>((-168 - (this->x_trans + 10.5)) /  -21);
-				this->active++;
+				this->active += this->activeMult;
 				this->setPosOnMap();
 			}
 			break;
@@ -264,7 +266,7 @@ void	Player::ProcessKeyboard(Direction direction)
 						this->x_trans += 0.5f * this->speedMult;
 						this->clearPosOnMap();
 						this->col = static_cast<int>((-168 - (this->x_trans + 10.5)) /  -21);
-						this->active++;
+						this->active += this->activeMult;
 						this->setPosOnMap();
 					}
 				}
@@ -280,7 +282,7 @@ void	Player::ProcessKeyboard(Direction direction)
 						this->x_trans += 0.5f * this->speedMult;
 						this->clearPosOnMap();
 						this->col = static_cast<int>((-168 - (this->x_trans + 10.5)) /  -21);
-						this->active++;
+						this->active += this->activeMult;
 						this->setPosOnMap();
 					}
 				}
@@ -291,7 +293,7 @@ void	Player::ProcessKeyboard(Direction direction)
 				this->x_trans += 0.5f * this->speedMult;
 				this->clearPosOnMap();
 				this->col = static_cast<int>((-168 - (this->x_trans + 10.5)) /  -21);
-				this->active++;
+				this->active += this->activeMult;
 				this->setPosOnMap();
 			}
 			break;
@@ -324,6 +326,8 @@ void	Player::ProcessKeyboard(Direction direction)
 			}
 			break;
 		}
+		if (this->active > 21)
+			this->active = 0;
 	}
 	
 	// std::cout << "* x_trans: " << this->x_trans << std::endl;
@@ -345,7 +349,10 @@ void	Player::handlePowerup(int powerup)
 	else if (powerup == 1)
 	{
 		if (this->speedMult < 7)
+		{
 			this->speedMult += 2;
+			this->activeMult += this->activeMult;
+		}
 	}
 	else if (powerup == 2)
 	{

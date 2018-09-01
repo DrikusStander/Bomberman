@@ -9,8 +9,10 @@ class Player : public Character
 	private:
 		std::vector<Bomb*>	bomb;
 		int		bombCount;
-		int		active;
+		float		active;
 		int		speedMult;
+		float	activeMult;
+
 	protected:
 	public:
 		Player( Shader &shader, std::string model);
