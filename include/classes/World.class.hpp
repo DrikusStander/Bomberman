@@ -18,6 +18,7 @@
 # include "Item.class.hpp"
 # include "Powerup.class.hpp"
 # include "Scoring.class.hpp"
+# include "Camera.class.hpp"
 
 # include <vector>
 
@@ -43,7 +44,7 @@ class World
 		World( World const & src);
 		~World( void );
 		World const & operator=(World const & rhs);
-		void	draw(void);
+		void	draw(Camera &camera);
 		virtual void	ProcessKeyboard(Direction direction);
 		float	player_getX(void);
 		float	player_getZ(void);

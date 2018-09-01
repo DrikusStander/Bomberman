@@ -137,7 +137,7 @@ World const & World::operator=(World const & rhs)
 	return(*this);
 }
 
-void World::draw(void)
+void World::draw(Camera &camera)
 {
 	this->player->setMap(this->map);
 	glm::mat4 model(1);
@@ -150,7 +150,7 @@ void World::draw(void)
 		item->draw();
 	}
 	this->player->draw();
-	this->text->draw();
+	this->text->draw(camera);
 
 	for (Enemy *enemy : *this->enemies)
 	{

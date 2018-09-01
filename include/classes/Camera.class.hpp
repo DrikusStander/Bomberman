@@ -6,7 +6,7 @@
 /*   By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/11 11:20:47 by cnolte            #+#    #+#             */
-/*   Updated: 2018/08/24 12:34:03 by cnolte           ###   ########.fr       */
+/*   Updated: 2018/09/01 15:50:10 by cnolte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,12 @@ class Camera
 
 		// Processes input received from a mouse scroll-wheel event. Only requires input on the vertical wheel-axis
 		void		ProcessMouseScroll(GLfloat yOffset);
+
+		glm::vec3	getPossition(void);
+		glm::vec3	getFront(void);
+		glm::vec3	getUp(void);
+		GLfloat		getYaw(void);
+		GLfloat		getPitch(void);
 
 	private:
 		 // Camera Attributes

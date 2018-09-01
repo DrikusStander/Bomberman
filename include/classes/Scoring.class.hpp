@@ -5,6 +5,7 @@
 
 // GLM Mathemtics
 # include <glm/gtc/type_ptr.hpp>
+# include "Camera.class.hpp"
 
 class Scoring
 {
@@ -21,7 +22,7 @@ class Scoring
 		Scoring(Scoring const & src);
 		~Scoring(void);
 		Scoring const & operator=(Scoring const & rhs);
-		void	draw(void);
+		void	draw(Camera &camera);
 };
 
 #endif

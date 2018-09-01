@@ -157,7 +157,7 @@ Game::Game(const int width, const int height) : s_WIDTH(width), s_HEIGHT(height)
 		glm::mat4 view = camera.GetViewMatrix();
 		glUniformMatrix4fv(glGetUniformLocation(shader.getProgram(), "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 		glUniformMatrix4fv(glGetUniformLocation(shader.getProgram(), "view"), 1, GL_FALSE, glm::value_ptr(view));
-		world->draw();
+		world->draw(camera);
 		int worldStatus = world->getStatus();
 		if (worldStatus == 1)
 		{
