@@ -87,6 +87,9 @@ Game::Game(const int width, const int height) : s_WIDTH(width), s_HEIGHT(height)
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
 	// Create a GLFWwindow object that we can use for GLFW's functions
+	// fullscreen
+	// GLFWwindow	*window = glfwCreateWindow(this->s_WIDTH, this->s_HEIGHT, "Bomberman", glfwGetPrimaryMonitor(), nullptr);
+	// windowed
 	GLFWwindow	*window = glfwCreateWindow(this->s_WIDTH, this->s_HEIGHT, "Bomberman", nullptr, nullptr);
 
 	if (window == nullptr)
