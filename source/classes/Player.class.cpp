@@ -3,10 +3,10 @@
 
 Player::Player( Shader &shader, std::string model) : Character(shader, model + "0.obj")
 {
+	std::cout << "Player - Constructor called " << std::endl;
 	this->active = 0;
 	for (int i = 0; i < 22; i++)
 		this->characterModelarr.push_back(new Model(model + std::to_string(i) + ".obj"));
-	std::cout << "Player - Constructor called " << std::endl;
 	this->x_trans = -168.0f;
 	this->z_trans = -168.0f;
 	for (int i = 0; i < 3; i++)
@@ -37,12 +37,12 @@ Player const & Player::operator=(Player const & rhs)
 
 void Player::draw(void)
 {
+	// std::cout << static_cast<int>(this->active) << std::endl;
 	glm::mat4 model(1);
 	model = glm::translate( model, glm::vec3(this->x_trans, this->y_trans, this->z_trans)); 	// Translate item
 	model = glm::scale( model, glm::vec3(1.2f, 1.2f, 1.2f));									// scale item
 	model = glm::rotate(model, glm::radians(this->rotate), glm::vec3(0, 1, 0)); 				// where x, y, z is axis of rotation (e.g. 0 1 0)
 	glUniformMatrix4fv( glGetUniformLocation(this->_shader->getProgram(), "model"), 1, GL_FALSE, glm::value_ptr(model ));
-	std::cout << static_cast<int>(this->active) << std::endl;
 	if (this->active > 21)
 		this->active = 0;
 	this->characterModelarr[static_cast<int>(this->active)]->Draw(*this->_shader);

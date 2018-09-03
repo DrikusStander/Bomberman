@@ -17,8 +17,7 @@
 # include "Enemy.class.hpp"
 # include "Item.class.hpp"
 # include "Powerup.class.hpp"
-# include "Scoring.class.hpp"
-# include "Camera.class.hpp"
+# include "HUD.class.hpp"
 
 # include <vector>
 
@@ -27,7 +26,7 @@ class World
 	private:
 	protected:
 		Model	*WorldModel;
-		Scoring	*text;
+		HUD		hud;
 		Shader	*_shader;
 		float	x_trans;
 		float	y_trans;
@@ -40,11 +39,11 @@ class World
 		int		worldStatus;
 
 	public:
-		World( Shader &shader, std::string model);
-		World( World const & src);
-		~World( void );
+		World(Shader &shader, std::string model, float screen_x, float screen_y);
+		World(World const & src);
+		~World(void);
 		World const & operator=(World const & rhs);
-		void	draw(Camera &camera);
+		void	draw(glm::mat4 matCamera);
 		virtual void	ProcessKeyboard(Direction direction);
 		float	player_getX(void);
 		float	player_getZ(void);

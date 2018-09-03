@@ -59,12 +59,12 @@ void	MouseCallback(GLFWwindow *window, double xPos, double yPos)
 }
 
 //start canonical form
-Game::Game(void) : s_WIDTH(100), s_HEIGHT(100)
+Game::Game(void) : screen_x(100), screen_y(100)
 {
 	std::cout << "Game - Default Constructor Called" << std::endl;
 }
 
-Game::Game(const int width, const int height) : s_WIDTH(width), s_HEIGHT(height)
+Game::Game(const int width, const int height) : screen_x(width), screen_y(height)
 {
 	std::cout << "Game - Parametric Constructor called" << std::endl;
 
@@ -102,7 +102,7 @@ Game::Game(const int width, const int height) : s_WIDTH(width), s_HEIGHT(height)
 	glfwMakeContextCurrent(window);
 
 	glfwGetFramebufferSize(window, &SCREEN_WIDTH, &SCREEN_HEIGHT);
-
+	// std::cout << "x: " << SCREEN_WIDTH << " y: " << SCREEN_HEIGHT << std::endl;
 	// Set the required callback functions
 	glfwSetKeyCallback(window, KeyCallback);
 	glfwSetCursorPosCallback(window, MouseCallback);
@@ -159,19 +159,21 @@ Game::Game(const int width, const int height) : s_WIDTH(width), s_HEIGHT(height)
 		shader.Use();
 
 		// set the camera view and projection
-		glm::mat4 view = camera.GetViewMatrix();
 		glUniformMatrix4fv(glGetUniformLocation(shader.getProgram(), "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-		glUniformMatrix4fv(glGetUniformLocation(shader.getProgram(), "view"), 1, GL_FALSE, glm::value_ptr(view));
+		glUniformMatrix4fv(glGetUniformLocation(shader.getProgram(), "view"), 1, GL_FALSE, glm::value_ptr(camera.GetViewMatrix()));
+
 		if (menuVisible == true)
 		{
-			MoveMenu();
 			Menus[this->menuActive]->draw();
+			MoveMenu();
 			if (keys[GLFW_KEY_SPACE])
 			{
 				if (this->menuActive == 0)
 				{
 					menuVisible = false;
-					this->world = new World(shader, "resources/models/world.obj");
+
+					this->world = new World(shader, "resources/models/world.obj", this->screen_x, this->screen_y);
+					
 				}
 				else if (this->menuActive == 3)
 				{
@@ -184,17 +186,14 @@ Game::Game(const int width, const int height) : s_WIDTH(width), s_HEIGHT(height)
 		}
 		else
 		{
-			this->world->draw(camera);
+			this->world->draw(camera.GetViewMatrix());
 			DoMovement();
-			int worldStatus = world->getStatus();
-			if (worldStatus == 1)
+			if (world->getStatus() == 1)
 			{
 				glfwSetWindowShouldClose(window, GL_TRUE);
 				delete this->world;
 			}
 		}
-		// temp.draw();
-		// temp2.draw();
 		glfwSwapBuffers(window);
 	}
 	for (std::vector<MainMenu*>::iterator it = this->Menus.begin() ; it != this->Menus.end(); )
@@ -227,8 +226,8 @@ Game	&Game::operator=(Game const &rhs)
 	{
 		this->deltaTime = rhs.deltaTime;
 		this->lastFrame = rhs.lastFrame;
-		this->s_WIDTH = rhs.s_WIDTH;
-		this->s_HEIGHT = rhs.s_HEIGHT;
+		this->screen_x = rhs.screen_x;
+		this->screen_y = rhs.screen_y;
 		this->SCREEN_HEIGHT = rhs.SCREEN_HEIGHT;
 		this->SCREEN_WIDTH = rhs.SCREEN_WIDTH;
 		this->world = rhs.world;

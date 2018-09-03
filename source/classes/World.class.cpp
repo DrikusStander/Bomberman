@@ -1,10 +1,10 @@
 #include "World.class.hpp"
 
-World::World(Shader &shader, std::string model)
+World::World(Shader &shader, std::string model, float screen_x, float screen_y)
 {
 	std::cout << "World - Parametric Constructor called " << std::endl;
 	this->WorldModel =  new Model(model);
-	this->text =  new Scoring(shader, "resources/models/scoring/score.obj");
+	this->hud = HUD(shader, screen_x, screen_y);
 	this->_shader = &shader;
 	this->x_trans = 0.0f;
 	this->y_trans = 0.0f;
@@ -124,7 +124,6 @@ World::~World( void )
 		it = this->powerups->erase(it);
 	}
 	delete this->powerups;
-
 }
 
 World const & World::operator=(World const & rhs)
@@ -137,7 +136,7 @@ World const & World::operator=(World const & rhs)
 	return(*this);
 }
 
-void World::draw(Camera &camera)
+void World::draw(glm::mat4 matCamera)
 {
 	this->player->setMap(this->map);
 	glm::mat4 model(1);
@@ -150,7 +149,7 @@ void World::draw(Camera &camera)
 		item->draw();
 	}
 	this->player->draw();
-	this->text->draw(camera);
+	this->hud.draw(matCamera);
 
 	for (Enemy *enemy : *this->enemies)
 	{
@@ -223,7 +222,7 @@ void World::draw(Camera &camera)
 							}
 							temp->setPos((*it)->getX(), (*it)->getZ(), (*it)->getRow(), (*it)->getCol());
 							this->powerups->push_back(temp);
-							std::cout << "placing newly created Powerup at i: " << i << " j: " << j << std::endl;
+							// std::cout << "placing newly created Powerup at i: " << i << " j: " << j << std::endl;
 							this->map[i][j] = 'U';
 						}
 						std::cout << "delete object" << objCol << std::endl;
