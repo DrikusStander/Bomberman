@@ -5,6 +5,7 @@ int	main(void)
 	try
 	{
 		Game game(2500, 1350);
+		// Game game(1080, 720);
 	}
 	catch (std::exception &e)
 	{

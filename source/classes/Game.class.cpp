@@ -89,9 +89,9 @@ Game::Game(const int width, const int height) : s_WIDTH(width), s_HEIGHT(height)
 
 	// Create a GLFWwindow object that we can use for GLFW's functions
 	// fullscreen
-	// GLFWwindow	*window = glfwCreateWindow(this->s_WIDTH, this->s_HEIGHT, "Bomberman", glfwGetPrimaryMonitor(), nullptr);
+	GLFWwindow	*window = glfwCreateWindow(this->s_WIDTH, this->s_HEIGHT, "Bomberman", glfwGetPrimaryMonitor(), nullptr);
 	// windowed
-	GLFWwindow	*window = glfwCreateWindow(this->s_WIDTH, this->s_HEIGHT, "Bomberman", nullptr, nullptr);
+	// GLFWwindow	*window = glfwCreateWindow(this->s_WIDTH, this->s_HEIGHT, "Bomberman", nullptr, nullptr);
 
 	if (window == nullptr)
 	{
@@ -128,7 +128,7 @@ Game::Game(const int width, const int height) : s_WIDTH(width), s_HEIGHT(height)
 
 	// Load models
 	// this->world = new World(shader, "resources/models/world.obj");
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 6; i++)
 	{
 		this->Menus.push_back(new MainMenu(shader, "resources/models/menu/Menu_" + std::to_string(i) + ".obj"));
 	}
@@ -174,6 +174,11 @@ Game::Game(const int width, const int height) : s_WIDTH(width), s_HEIGHT(height)
 					this->world = new World(shader, "resources/models/world.obj");
 				}
 				else if (this->menuActive == 3)
+				{
+					// menuVisible = false;
+					// Menus[5]->draw();
+				}
+				else if (this->menuActive == 4)
 					glfwSetWindowShouldClose(window, GL_TRUE);
 			}
 		}
@@ -243,7 +248,7 @@ void Game::MoveMenu(void)
 	}
 	else if (keys[GLFW_KEY_DOWN])
 	{
-		if (this->menuActive < 3)
+		if (this->menuActive < 4)
 			this->menuActive++;
 		usleep(100000);
 	}
