@@ -89,9 +89,9 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 
 	// Create a GLFWwindow object that we can use for GLFW's functions
 	// fullscreen
-	GLFWwindow	*window = glfwCreateWindow(this->s_WIDTH, this->s_HEIGHT, "Bomberman", glfwGetPrimaryMonitor(), nullptr);
+	// GLFWwindow	*window = glfwCreateWindow(this->screen_x, this->screen_y, "Bomberman", glfwGetPrimaryMonitor(), nullptr);
 	// windowed
-	// GLFWwindow	*window = glfwCreateWindow(this->s_WIDTH, this->s_HEIGHT, "Bomberman", nullptr, nullptr);
+	GLFWwindow	*window = glfwCreateWindow(this->screen_x, this->screen_y, "Bomberman", nullptr, nullptr);
 
 	if (window == nullptr)
 	{
@@ -173,15 +173,14 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 					menuVisible = false;
 
 					this->world = new World(shader, "resources/models/world.obj", this->screen_x, this->screen_y);
-					
 				}
 				else if (this->menuActive == 3)
-				{
-					// menuVisible = false;
-					// Menus[5]->draw();
-				}
+					this->menuActive = 5;
 				else if (this->menuActive == 4)
 					glfwSetWindowShouldClose(window, GL_TRUE);
+				else if (this->menuActive == 5)
+					this->menuActive = 0;
+				usleep(300000);
 			}
 		}
 		else
@@ -239,17 +238,20 @@ Game	&Game::operator=(Game const &rhs)
 void Game::MoveMenu(void)
 {
 	// Player controls
-	if (keys[GLFW_KEY_UP])
+	if (this->menuActive != 5)
 	{
-		if (this->menuActive > 0)
-			this->menuActive--;
-		usleep(100000);
-	}
-	else if (keys[GLFW_KEY_DOWN])
-	{
-		if (this->menuActive < 4)
-			this->menuActive++;
-		usleep(100000);
+		if (keys[GLFW_KEY_UP])
+		{
+			if (this->menuActive > 0)
+				this->menuActive--;
+			usleep(100000);
+		}
+		else if (keys[GLFW_KEY_DOWN])
+		{
+			if (this->menuActive < 4)
+				this->menuActive++;
+			usleep(100000);
+		}
 	}
 
 }
