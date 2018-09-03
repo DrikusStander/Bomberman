@@ -73,6 +73,7 @@ Game::Game(const int width, const int height) : s_WIDTH(width), s_HEIGHT(height)
 	firstMouse = true;
 	deltaTime = 0.0;
 	lastFrame = 0.0;
+	menuVisible = true;
 
 	camera.ProcessMouseMovement(0, -250);
 
@@ -126,14 +127,19 @@ Game::Game(const int width, const int height) : s_WIDTH(width), s_HEIGHT(height)
 	Shader	shader("resources/shaders/modelLoading.vert", "resources/shaders/modelLoading.frag");
 
 	// Load models
-	this->world = new World(shader, "resources/models/world.obj");
-	
+	// this->world = new World(shader, "resources/models/world.obj");
+	for (int i = 0; i < 4; i++)
+	{
+		this->Menus.push_back(new MainMenu(shader, "resources/models/menu/Menu_" + std::to_string(i) + ".obj"));
+	}
+
 	// Item temp(shader, "resources/models/fire/fire.obj");
 	// Item temp2(shader, "resources/models/fire/fire.obj");
 	// temp2.setPos(168, 168, 0, 0);
 
 	glm::mat4 projection = glm::perspective(camera.GetZoom(), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 1000.0f);
 
+	this->menuActive = 0;
 	// Game loop
 	while (!glfwWindowShouldClose(window))
 	{
@@ -145,7 +151,6 @@ Game::Game(const int width, const int height) : s_WIDTH(width), s_HEIGHT(height)
 
 		// Check and call events
 		glfwPollEvents();
-		DoMovement();
 
 		// Clear the colorbuffer
 		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
@@ -157,17 +162,45 @@ Game::Game(const int width, const int height) : s_WIDTH(width), s_HEIGHT(height)
 		glm::mat4 view = camera.GetViewMatrix();
 		glUniformMatrix4fv(glGetUniformLocation(shader.getProgram(), "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 		glUniformMatrix4fv(glGetUniformLocation(shader.getProgram(), "view"), 1, GL_FALSE, glm::value_ptr(view));
-		world->draw(camera);
-		int worldStatus = world->getStatus();
-		if (worldStatus == 1)
+		if (menuVisible == true)
 		{
-			glfwSetWindowShouldClose(window, GL_TRUE);
+			MoveMenu();
+			Menus[this->menuActive]->draw();
+			if (keys[GLFW_KEY_SPACE])
+			{
+				if (this->menuActive == 0)
+				{
+					menuVisible = false;
+					this->world = new World(shader, "resources/models/world.obj");
+				}
+				else if (this->menuActive == 3)
+					glfwSetWindowShouldClose(window, GL_TRUE);
+			}
+		}
+		else
+		{
+			DoMovement();
+			this->world->draw(camera);
+			int worldStatus = world->getStatus();
+			if (worldStatus == 1)
+			{
+				glfwSetWindowShouldClose(window, GL_TRUE);
+				delete this->world;
+			}
 		}
 		// temp.draw();
 		// temp2.draw();
 		glfwSwapBuffers(window);
 	}
-	delete this->world;
+	for (std::vector<MainMenu*>::iterator it = this->Menus.begin() ; it != this->Menus.end(); )
+	{
+		if (it != this->Menus.end())
+		{
+			delete (*it);
+			it = this->Menus.erase(it);
+		}
+	}
+
 	glfwTerminate();
 }
 
@@ -199,6 +232,23 @@ Game	&Game::operator=(Game const &rhs)
 }
 //end canonical form
 
+void Game::MoveMenu(void)
+{
+	// Player controls
+	if (keys[GLFW_KEY_UP])
+	{
+		if (this->menuActive > 0)
+			this->menuActive--;
+		usleep(100000);
+	}
+	else if (keys[GLFW_KEY_DOWN])
+	{
+		if (this->menuActive < 3)
+			this->menuActive++;
+		usleep(100000);
+	}
+
+}
 // Moves/alters the camera positions based on user input
 void	Game::DoMovement(void)
 {
