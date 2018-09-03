@@ -17,7 +17,7 @@
 # include "Enemy.class.hpp"
 # include "Item.class.hpp"
 # include "Powerup.class.hpp"
-# include "Scoring.class.hpp"
+# include "HUD.class.hpp"
 
 # include <vector>
 
@@ -26,7 +26,7 @@ class World
 	private:
 	protected:
 		Model	*WorldModel;
-		Scoring	*text;
+		HUD		*hud;
 		Shader	*_shader;
 		float	x_trans;
 		float	y_trans;
