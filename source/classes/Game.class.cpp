@@ -189,8 +189,10 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 			DoMovement();
 			if (world->getStatus() == 1)
 			{
-				glfwSetWindowShouldClose(window, GL_TRUE);
 				delete this->world;
+				this->menuActive = 0;
+				menuVisible = true;
+				// glfwSetWindowShouldClose(window, GL_TRUE);
 			}
 		}
 		glfwSwapBuffers(window);
