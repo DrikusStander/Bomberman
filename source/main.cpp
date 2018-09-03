@@ -4,7 +4,9 @@ int	main(void)
 {
 	try
 	{
-		Game game(2500, 1350);
+		// Game game(1024, 576);
+		// Game game(1280, 720);
+		Game game(1920, 1080);
 	}
 	catch (std::exception &e)
 	{
