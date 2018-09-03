@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Game.class.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+        */
+/*   By: dwilliam <dwilliam@42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/11 11:20:47 by cnolte            #+#    #+#             */
-/*   Updated: 2018/08/24 12:28:12 by cnolte           ###   ########.fr       */
+/*   Updated: 2018/09/03 13:07:48 by dwilliam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,9 @@
 
 # include "Exceptions.hpp"
 
+# include "MainMenu.class.hpp"
+#include <unistd.h>
+
 class Game
 {
 	public:
@@ -45,14 +48,18 @@ class Game
 		World	*world;
 
 	private:
+		std::vector<MainMenu*>	Menus;
 		GLfloat	deltaTime;
 		GLfloat	lastFrame;
 		GLuint	s_WIDTH;
 		GLuint	s_HEIGHT;
 		int		SCREEN_HEIGHT;
 		int		SCREEN_WIDTH;
+		int		menuActive;
+		bool	menuVisible;
 
 		void	DoMovement(void);
+		void	MoveMenu(void);
 };
 
 #endif

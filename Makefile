@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+         #
+#    By: dwilliam <dwilliam@42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/07/31 19:21:44 by cnolte            #+#    #+#              #
-#    Updated: 2018/08/24 19:06:50 by cnolte           ###   ########.fr        #
+#    Updated: 2018/09/03 11:17:40 by dwilliam         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,7 @@ SRCS := source/main.cpp source/classes/Game.class.cpp source/classes/Camera.clas
 		source/classes/Shader.class.cpp source/classes/Model.class.cpp source/classes/Character.class.cpp			\
 		source/classes/Player.class.cpp source/classes/Item.class.cpp source/classes/Bomb.class.cpp					\
 		source/classes/World.class.cpp source/classes/Enemy.class.cpp source/Exceptions.cpp							\
-		source/classes/Scoring.class.cpp source/classes/Powerup.class.cpp
+		source/classes/Scoring.class.cpp source/classes/Powerup.class.cpp source/classes/MainMenu.class.cpp
 OBJS := $(SRCS:.cpp=.o)
 
 CXX := clang++ -std=c++11
