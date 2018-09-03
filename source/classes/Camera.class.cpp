@@ -6,7 +6,7 @@
 /*   By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/11 11:26:34 by cnolte            #+#    #+#             */
-/*   Updated: 2018/09/01 17:20:35 by cnolte           ###   ########.fr       */
+/*   Updated: 2018/09/03 15:33:01 by cnolte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,31 +71,6 @@ Camera::Camera(GLfloat posX, GLfloat posY, GLfloat posZ, GLfloat upX, GLfloat up
 glm::mat4	Camera::GetViewMatrix()
 {
 	return (glm::lookAt(this->position, this->position + this->front, this->up));
-}
-
-glm::vec3	Camera::getPossition(void)
-{
-	return (this->position);
-}
-
-glm::vec3	Camera::getFront(void)
-{
-	return (this->front);
-}
-
-glm::vec3	Camera::getUp(void)
-{
-	return (this->up);
-}
-
-GLfloat		Camera::getYaw(void)
-{
-	return (this->yaw);
-}
-
-GLfloat		Camera::getPitch(void)
-{
-	return (this->pitch);
 }
 
 // Processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)

@@ -137,7 +137,7 @@ World const & World::operator=(World const & rhs)
 	return(*this);
 }
 
-void World::draw(Camera &camera)
+void World::draw(glm::mat4 matCamera)
 {
 	this->player->setMap(this->map);
 	glm::mat4 model(1);
@@ -150,7 +150,7 @@ void World::draw(Camera &camera)
 		item->draw();
 	}
 	this->player->draw();
-	this->text->draw(camera);
+	this->text->draw(matCamera);
 
 	for (Enemy *enemy : *this->enemies)
 	{
@@ -223,7 +223,7 @@ void World::draw(Camera &camera)
 							}
 							temp->setPos((*it)->getX(), (*it)->getZ(), (*it)->getRow(), (*it)->getCol());
 							this->powerups->push_back(temp);
-							std::cout << "placing newly created Powerup at i: " << i << " j: " << j << std::endl;
+							// std::cout << "placing newly created Powerup at i: " << i << " j: " << j << std::endl;
 							this->map[i][j] = 'U';
 						}
 						std::cout << "delete object" << objCol << std::endl;

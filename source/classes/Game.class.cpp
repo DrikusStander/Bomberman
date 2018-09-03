@@ -89,9 +89,9 @@ Game::Game(const int width, const int height) : s_WIDTH(width), s_HEIGHT(height)
 
 	// Create a GLFWwindow object that we can use for GLFW's functions
 	// fullscreen
-	// GLFWwindow	*window = glfwCreateWindow(this->s_WIDTH, this->s_HEIGHT, "Bomberman", glfwGetPrimaryMonitor(), nullptr);
+	GLFWwindow	*window = glfwCreateWindow(this->s_WIDTH, this->s_HEIGHT, "Bomberman", glfwGetPrimaryMonitor(), nullptr);
 	// windowed
-	GLFWwindow	*window = glfwCreateWindow(this->s_WIDTH, this->s_HEIGHT, "Bomberman", nullptr, nullptr);
+	//GLFWwindow	*window = glfwCreateWindow(this->s_WIDTH, this->s_HEIGHT, "Bomberman", nullptr, nullptr);
 
 	if (window == nullptr)
 	{
@@ -159,13 +159,13 @@ Game::Game(const int width, const int height) : s_WIDTH(width), s_HEIGHT(height)
 		shader.Use();
 
 		// set the camera view and projection
-		glm::mat4 view = camera.GetViewMatrix();
 		glUniformMatrix4fv(glGetUniformLocation(shader.getProgram(), "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-		glUniformMatrix4fv(glGetUniformLocation(shader.getProgram(), "view"), 1, GL_FALSE, glm::value_ptr(view));
+		glUniformMatrix4fv(glGetUniformLocation(shader.getProgram(), "view"), 1, GL_FALSE, glm::value_ptr(camera.GetViewMatrix()));
+
 		if (menuVisible == true)
 		{
-			MoveMenu();
 			Menus[this->menuActive]->draw();
+			MoveMenu();
 			if (keys[GLFW_KEY_SPACE])
 			{
 				if (this->menuActive == 0)
@@ -179,17 +179,14 @@ Game::Game(const int width, const int height) : s_WIDTH(width), s_HEIGHT(height)
 		}
 		else
 		{
-			this->world->draw(camera);
+			this->world->draw(camera.GetViewMatrix());
 			DoMovement();
-			int worldStatus = world->getStatus();
-			if (worldStatus == 1)
+			if (world->getStatus() == 1)
 			{
 				glfwSetWindowShouldClose(window, GL_TRUE);
 				delete this->world;
 			}
 		}
-		// temp.draw();
-		// temp2.draw();
 		glfwSwapBuffers(window);
 	}
 	for (std::vector<MainMenu*>::iterator it = this->Menus.begin() ; it != this->Menus.end(); )

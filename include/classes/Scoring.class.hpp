@@ -5,7 +5,7 @@
 
 // GLM Mathemtics
 # include <glm/gtc/type_ptr.hpp>
-# include "Camera.class.hpp"
+# include "glm/gtc/matrix_inverse.hpp"
 
 class Scoring
 {
@@ -22,7 +22,7 @@ class Scoring
 		Scoring(Scoring const & src);
 		~Scoring(void);
 		Scoring const & operator=(Scoring const & rhs);
-		void	draw(Camera &camera);
+		void	draw(glm::mat4 matCamera);
 };
 
 #endif
