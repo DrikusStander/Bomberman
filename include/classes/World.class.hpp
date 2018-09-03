@@ -26,7 +26,7 @@ class World
 	private:
 	protected:
 		Model	*WorldModel;
-		HUD		*hud;
+		HUD		hud;
 		Shader	*_shader;
 		float	x_trans;
 		float	y_trans;

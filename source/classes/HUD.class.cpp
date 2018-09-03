@@ -1,18 +1,22 @@
 #include "HUD.class.hpp"
 
-HUD::HUD(Shader &shader, std::string model)
+HUD::HUD(void)
 {
-	std::cout << "HUD - Constructor called " << std::endl;
+	std::cout << "HUD - Default Constructor Called" << std::endl;
+}
+
+HUD::HUD(Shader &shader)
+{
+	std::cout << "HUD - Parametric Constructor called" << std::endl;
 	this->_shader = &shader;
 	HUD_properties	tmp;
-	tmp.model = Model(model);
+	tmp.model = Model("resources/models/HUD/score.obj");
 	tmp.pos.x = -0.135f;
 	tmp.pos.y = 0.0775f;
 	tmp.pos.z = -0.15f;
 	tmp.rotate = 90.0f;
 	HUD_item.push_back(tmp);
 }
-
 
 HUD::HUD(HUD const & src)
 {

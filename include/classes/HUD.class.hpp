@@ -21,7 +21,8 @@ class HUD
 		std::vector<HUD_properties>	HUD_item;
 
 	public:
-		HUD(Shader &shader, std::string model);
+		HUD(void);
+		HUD(Shader &shader);
 		HUD(HUD const & src);
 		~HUD(void);
 		HUD const & operator=(HUD const & rhs);
