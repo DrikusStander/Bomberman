@@ -173,8 +173,8 @@ void Bomb::draw(void)
 		std::cout << "Bomb check distruction" << std::endl;
 		if (this->destruction == false)
 		{
-			this->checkDestruction();
 			this->destruction = true;
+			this->checkDestruction();
 		}
 		if ((glfwGetTime() - this->PlantTime) >= this->ExplodeTimeLength + this->PlantTimeLength)
 		{
