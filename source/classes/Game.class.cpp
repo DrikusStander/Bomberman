@@ -179,8 +179,8 @@ Game::Game(const int width, const int height) : s_WIDTH(width), s_HEIGHT(height)
 		}
 		else
 		{
-			DoMovement();
 			this->world->draw(camera);
+			DoMovement();
 			int worldStatus = world->getStatus();
 			if (worldStatus == 1)
 			{
