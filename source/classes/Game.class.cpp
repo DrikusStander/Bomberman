@@ -59,12 +59,12 @@ void	MouseCallback(GLFWwindow *window, double xPos, double yPos)
 }
 
 //start canonical form
-Game::Game(void) : s_WIDTH(100), s_HEIGHT(100)
+Game::Game(void) : screen_x(100), screen_y(100)
 {
 	std::cout << "Game - Default Constructor Called" << std::endl;
 }
 
-Game::Game(const int width, const int height) : s_WIDTH(width), s_HEIGHT(height)
+Game::Game(const int width, const int height) : screen_x(width), screen_y(height)
 {
 	std::cout << "Game - Parametric Constructor called" << std::endl;
 
@@ -89,9 +89,9 @@ Game::Game(const int width, const int height) : s_WIDTH(width), s_HEIGHT(height)
 
 	// Create a GLFWwindow object that we can use for GLFW's functions
 	// fullscreen
-	GLFWwindow	*window = glfwCreateWindow(this->s_WIDTH, this->s_HEIGHT, "Bomberman", glfwGetPrimaryMonitor(), nullptr);
+	// GLFWwindow	*window = glfwCreateWindow(this->screen_x, this->screen_y, "Bomberman", glfwGetPrimaryMonitor(), nullptr);
 	// windowed
-	//GLFWwindow	*window = glfwCreateWindow(this->s_WIDTH, this->s_HEIGHT, "Bomberman", nullptr, nullptr);
+	GLFWwindow	*window = glfwCreateWindow(this->screen_x, this->screen_y, "Bomberman", nullptr, nullptr);
 
 	if (window == nullptr)
 	{
@@ -102,7 +102,7 @@ Game::Game(const int width, const int height) : s_WIDTH(width), s_HEIGHT(height)
 	glfwMakeContextCurrent(window);
 
 	glfwGetFramebufferSize(window, &SCREEN_WIDTH, &SCREEN_HEIGHT);
-
+	// std::cout << "x: " << SCREEN_WIDTH << " y: " << SCREEN_HEIGHT << std::endl;
 	// Set the required callback functions
 	glfwSetKeyCallback(window, KeyCallback);
 	glfwSetCursorPosCallback(window, MouseCallback);
@@ -171,7 +171,9 @@ Game::Game(const int width, const int height) : s_WIDTH(width), s_HEIGHT(height)
 				if (this->menuActive == 0)
 				{
 					menuVisible = false;
-					this->world = new World(shader, "resources/models/world.obj");
+
+					this->world = new World(shader, "resources/models/world.obj", this->screen_x, this->screen_y);
+					
 				}
 				else if (this->menuActive == 3)
 					glfwSetWindowShouldClose(window, GL_TRUE);
@@ -219,8 +221,8 @@ Game	&Game::operator=(Game const &rhs)
 	{
 		this->deltaTime = rhs.deltaTime;
 		this->lastFrame = rhs.lastFrame;
-		this->s_WIDTH = rhs.s_WIDTH;
-		this->s_HEIGHT = rhs.s_HEIGHT;
+		this->screen_x = rhs.screen_x;
+		this->screen_y = rhs.screen_y;
 		this->SCREEN_HEIGHT = rhs.SCREEN_HEIGHT;
 		this->SCREEN_WIDTH = rhs.SCREEN_WIDTH;
 		this->world = rhs.world;

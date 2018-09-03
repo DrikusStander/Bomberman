@@ -9,20 +9,30 @@
 
 struct	HUD_properties
 {
+	std::string	obj_name;
 	Model		model;
 	glm::vec3	pos;
 	float		rotate;
+};
+
+struct hudPos
+{
+	float	left;
+	float	center;
+	float	right;
 };
 
 class HUD
 {
 	private:
 		Shader		*_shader;
+		hudPos		HUD_Pos;
 		std::vector<HUD_properties>	HUD_item;
+		int	loadOBJ(std::string objName, float pos);
 
 	public:
 		HUD(void);
-		HUD(Shader &shader);
+		HUD(Shader &shader, float screen_x, float screen_y);
 		HUD(HUD const & src);
 		~HUD(void);
 		HUD const & operator=(HUD const & rhs);

@@ -39,9 +39,9 @@ class World
 		int		worldStatus;
 
 	public:
-		World( Shader &shader, std::string model);
-		World( World const & src);
-		~World( void );
+		World(Shader &shader, std::string model, float screen_x, float screen_y);
+		World(World const & src);
+		~World(void);
 		World const & operator=(World const & rhs);
 		void	draw(glm::mat4 matCamera);
 		virtual void	ProcessKeyboard(Direction direction);
