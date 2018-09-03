@@ -4,7 +4,7 @@ World::World(Shader &shader, std::string model)
 {
 	std::cout << "World - Parametric Constructor called " << std::endl;
 	this->WorldModel =  new Model(model);
-	this->text =  new Scoring(shader, "resources/models/scoring/scoring_time.obj");
+	this->text =  new Scoring(shader, "resources/models/scoring/score.obj");
 	this->_shader = &shader;
 	this->x_trans = 0.0f;
 	this->y_trans = 0.0f;
@@ -137,27 +137,40 @@ World const & World::operator=(World const & rhs)
 	return(*this);
 }
 
-void World::draw(void)
+void World::draw(Camera &camera)
 {
 	this->player->setMap(this->map);
-	if (this->map[0][0] != '\0')
-		std::cout << "map[0][0] : " << this->map[0][0] << std::endl;
-
 	glm::mat4 model(1);
 	model = glm::translate( model, glm::vec3(this->x_trans, this->y_trans, this->z_trans)); 	// Translate it down a bit so it's at the center of the scene
 	model = glm::scale( model, glm::vec3(0.2f, 0.2f, 0.2f));									// It's a bit too big for our scene, so scale it down
 	glUniformMatrix4fv( glGetUniformLocation(this->_shader->getProgram(), "model"), 1, GL_FALSE, glm::value_ptr( model ));
 	this->WorldModel->Draw(*this->_shader);
+	for (Item *item : *this->objects)
+	{
+		item->draw();
+	}
+	this->player->draw();
+	this->text->draw(camera);
+
+	for (Enemy *enemy : *this->enemies)
+	{
+		enemy->draw();
+	}
+
+	for (Powerup *powerup : *this->powerups)
+	{
+		powerup->draw();
+	}
 
 	//check what items the bomb affected
-			std::cout << std::endl;
-			std::cout << std::endl;
+	// std::cout << std::endl;
+	// std::cout << std::endl;
 
 	for (int i = 0; i < 17; i++)
 	{
 		for (int j = 0; j < 17; j++)
 		{
-			std::cout << this->map[i][j] << " " ;
+			// std::cout << this->map[i][j] << " " ;
 			if (this->map[i][j] == 'D')
 			{
 				// check if the player was hit
@@ -172,19 +185,48 @@ void World::draw(void)
 					this->worldStatus = 1;
 				}
 
+				// check what powerup was affected
+				for (std::vector<Powerup*>::iterator it = this->powerups->begin() ; it != this->powerups->end(); )
+				{
+					if ((*it)->getRow() == i && (*it)->getCol() == j)
+					{
+						delete (*it);
+						it = this->powerups->erase(it);
+					}
+					else
+						++it;
+				}
+
 				// check what object was affected
 				for (std::vector<Item*>::iterator it = this->objects->begin() ; it != this->objects->end(); )
 				{
+					int objRow = (*it)->getRow();
+					int objCol = (*it)->getCol();
 					if ((*it)->getRow() == i && (*it)->getCol() == j)
 					{
 						// generate a powerup based on random chance
 						if ((rand() % 3) == 0)
 						{
-							Powerup *temp = new Powerup(*this->_shader, "resources/models/coin/bomb/coin");
-							temp->setPos((*it)->getX(), (*it)->getZ(), (*it)->getRow(), (*it)->getCol()); 
+							int powerupOption = rand() % 3;
+							Powerup *temp;
+							if (powerupOption == 0)
+							{
+								temp = new Powerup(*this->_shader, "resources/models/coin/bomb/coin", powerupOption);
+							}
+							else if (powerupOption == 1)
+							{
+								temp = new Powerup(*this->_shader, "resources/models/coin/run/coin", powerupOption);
+							}
+							else
+							{
+								temp =  new Powerup(*this->_shader, "resources/models/coin/bombs/coin", powerupOption);
+							}
+							temp->setPos((*it)->getX(), (*it)->getZ(), (*it)->getRow(), (*it)->getCol());
 							this->powerups->push_back(temp);
+							std::cout << "placing newly created Powerup at i: " << i << " j: " << j << std::endl;
 							this->map[i][j] = 'U';
 						}
+						std::cout << "delete object" << objCol << std::endl;
 						delete (*it);
 						it = this->objects->erase(it);
 					}
@@ -215,8 +257,7 @@ void World::draw(void)
 					{
 						if ((*it)->getRow() == i && (*it)->getCol() == j)
 						{
-							// creater getter on Powerup to display what powerup it represents
-							this->player->handlePowerup(0);
+							this->player->handlePowerup((*it)->getType());
 							delete (*it);
 							it = this->powerups->erase(it);
 						}
@@ -226,27 +267,9 @@ void World::draw(void)
 				}
 			}
 		}
-			std::cout << std::endl;
+		// std::cout << std::endl;
 	}
-	this->player->draw();
-	this->text->draw(camera);
-
-	// std::cout << "drwaing enemies" << std::endl;
-	for (Enemy *enemy : *this->enemies)
-	{
-		enemy->draw();
-	}
-
-	// std::cout << "objects enemies" << std::endl;
-	for (Item *item : *this->objects)
-	{
-		item->draw();
-	}
-
-	for (Powerup *powerup : *this->powerups)
-	{
-		powerup->draw();
-	}
+	
 }
 
 void	World::ProcessKeyboard(Direction direction)
