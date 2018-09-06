@@ -46,7 +46,7 @@ void	Bomb::checkDestruction()
 				break;
 			if (this->map[this->row + i][this->col] != '\0' && this->map[this->row + i][this->col] != '#')
 			{
-				if ((this->map[this->row + i][this->col] == 'U' && this->destruction == true) || this->map[this->row + i][this->col] == 'W')
+				if (this->map[this->row + i][this->col] == 'W')
 				{
 					//do nothing
 				}
@@ -78,7 +78,7 @@ void	Bomb::checkDestruction()
 				break;
 			if (this->map[this->row - i][this->col] != '\0' && this->map[this->row - i][this->col] != '#')
 			{
-				if ((this->map[this->row - i][this->col] == 'U' && this->destruction == true) || this->map[this->row - i][this->col] == 'W')
+				if (this->map[this->row - i][this->col] == 'W')
 				{
 					//do nothing
 				}
@@ -110,7 +110,7 @@ void	Bomb::checkDestruction()
 				break;
 			if (this->map[this->row][this->col  + i] != '\0' && this->map[this->row][this->col + i] != '#')
 			{
-				if ((this->map[this->row][this->col + i] == 'U' && this->destruction == true) || this->map[this->row][this->col + i] == 'W')
+				if (this->map[this->row][this->col + i] == 'W')
 				{
 					//do nothing
 				}
@@ -142,7 +142,7 @@ void	Bomb::checkDestruction()
 				break;
 			if (this->map[this->row][this->col - i] != '\0' && this->map[this->row][this->col - i] != '#')
 			{
-				if ((this->map[this->row][this->col - i] == 'U' && this->destruction == true) || this->map[this->row][this->col - i] == 'W')
+				if (this->map[this->row][this->col - i] == 'W')
 				{
 					//do nothing
 				}
@@ -169,12 +169,18 @@ void Bomb::draw(void)
 {
 	if ((glfwGetTime() - this->PlantTime) >= this->PlantTimeLength)
 	{
-		
-		std::cout << "Bomb check distruction" << std::endl;
 		if (this->destruction == false)
 		{
 			this->destruction = true;
 			this->checkDestruction();
+		}
+		for (int i = 0; i < this->activeFlames; i++)
+		{
+			if (this->map[this->flames[i]->getRow()][this->flames[i]->getCol()] != 'U')
+			{
+				this->map[this->flames[i]->getRow()][this->flames[i]->getCol()] = 'D';
+				this->flames[i]->draw();
+			}
 		}
 		if ((glfwGetTime() - this->PlantTime) >= this->ExplodeTimeLength + this->PlantTimeLength)
 		{
@@ -182,19 +188,7 @@ void Bomb::draw(void)
 			this->destruction = false;
 			this->activeFlames = 0;
 		}
-		std::cout << "Bomb set visible to false" << std::endl;
-
-		std::cout << "Bomb set pos on map to D" << std::endl;
 		this->map[this->row][this->col] = 'D';
-
-		std::cout << "Bomb DRAW THE MODEL" << std::endl;
-		for (int i = 0; i < this->activeFlames; i++)
-		{
-			this->map[this->flames[i]->getRow()][this->flames[i]->getCol()] = 'D';
-			this->flames[i]->draw();
-		}
-		
-		
 	}
 	else
 	{
