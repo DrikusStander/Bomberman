@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Game.class.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dwilliam <dwilliam@42.fr>                  +#+  +:+       +#+        */
+/*   By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/11 11:20:47 by cnolte            #+#    #+#             */
-/*   Updated: 2018/09/03 13:07:48 by dwilliam         ###   ########.fr       */
+/*   Updated: 2018/09/03 19:19:24 by cnolte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,8 @@ class Game
 		std::vector<MainMenu*>	Menus;
 		GLfloat	deltaTime;
 		GLfloat	lastFrame;
-		GLuint	s_WIDTH;
-		GLuint	s_HEIGHT;
+		GLuint	screen_x;
+		GLuint	screen_y;
 		int		SCREEN_HEIGHT;
 		int		SCREEN_WIDTH;
 		int		menuActive;

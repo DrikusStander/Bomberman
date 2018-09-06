@@ -1,10 +1,10 @@
 #include "World.class.hpp"
 
-World::World(Shader &shader, std::string model)
+World::World(Shader &shader, std::string model, float screen_x, float screen_y)
 {
 	std::cout << "World - Parametric Constructor called " << std::endl;
 	this->WorldModel =  new Model(model);
-	this->hud = new HUD(shader, "resources/models/HUD/score.obj");
+	this->hud = HUD(shader, screen_x, screen_y);
 	this->_shader = &shader;
 	this->x_trans = 0.0f;
 	this->y_trans = 0.0f;
@@ -124,7 +124,6 @@ World::~World( void )
 		it = this->powerups->erase(it);
 	}
 	delete this->powerups;
-	delete hud;
 }
 
 World const & World::operator=(World const & rhs)
@@ -150,7 +149,7 @@ void World::draw(glm::mat4 matCamera)
 		item->draw();
 	}
 	this->player->draw();
-	this->hud->draw(matCamera);
+	this->hud.draw(matCamera);
 
 	for (Enemy *enemy : *this->enemies)
 	{

@@ -1,18 +1,21 @@
 #include "HUD.class.hpp"
 
-HUD::HUD(Shader &shader, std::string model)
+HUD::HUD(void)
 {
-	std::cout << "HUD - Constructor called " << std::endl;
-	this->_shader = &shader;
-	HUD_properties	tmp;
-	tmp.model = Model(model);
-	tmp.pos.x = -0.135f;
-	tmp.pos.y = 0.0775f;
-	tmp.pos.z = -0.15f;
-	tmp.rotate = 90.0f;
-	HUD_item.push_back(tmp);
+	std::cout << "HUD - Default Constructor Called" << std::endl;
 }
 
+HUD::HUD(Shader &shader, float screen_x, float screen_y)
+{
+	std::cout << "HUD - Parametric Constructor called" << std::endl;
+	this->_shader = &shader;
+	HUD_Pos.left = -0.135f;
+	HUD_Pos.center = 0.0f;
+	HUD_Pos.right = 0.125f;
+	loadOBJ("time", HUD_Pos.left);
+	loadOBJ("score", HUD_Pos.center);
+	loadOBJ("lives", HUD_Pos.right);
+}
 
 HUD::HUD(HUD const & src)
 {
@@ -33,6 +36,19 @@ HUD const & HUD::operator=(HUD const & rhs)
 		this->_shader = rhs._shader;
 	}
 	return(*this);
+}
+
+int	HUD::loadOBJ(std::string objName, float pos)
+{
+	HUD_properties	tmp;
+	tmp.obj_name = objName;
+	tmp.model = Model("resources/models/HUD/" + objName + ".obj");
+	tmp.pos.x = pos;
+	tmp.pos.y = 0.0775f;
+	tmp.pos.z = -0.15f;
+	tmp.rotate = 90.0f;
+	this->HUD_item.push_back(tmp);
+	return (1);
 }
 
 void HUD::draw(glm::mat4 matCamera)
