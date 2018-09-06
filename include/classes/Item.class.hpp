@@ -18,7 +18,7 @@ class Item
 	private:
 	protected:
 		Model *ItemModel;
-		std::vector<Model*> itemModelarr;
+		std::vector<Model*> *itemModelarr;
 		Shader *_shader;
 		float	x_trans;
 		float	y_trans;
@@ -28,8 +28,10 @@ class Item
 		int		row;
 		int		col;
 		char	**map;
+		int		activeFrame;
 	public:
 		Item( Shader &shader, std::string model);
+		Item( Shader &shader, Model *model);
 		Item( Item const & src);
 		~Item( void );
 		Item const & operator=(Item const & rhs);

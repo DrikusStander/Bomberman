@@ -17,10 +17,9 @@ class Powerup : public Item
 {
 	private:
 	protected:
-		int activeFrame;
 		int powerupType;
 	public:
-		Powerup( Shader &shader, std::string model, int type);
+		Powerup( Shader &shader, std::string model, int type, std::vector<Model*> *modelArr);
 		Powerup( Powerup const & src);
 		~Powerup( void );
 		Powerup const & operator=(Powerup const & rhs);
