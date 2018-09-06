@@ -10,7 +10,6 @@
 struct	HUD_properties
 {
 	std::string	obj_name;
-	bool		is_num;
 	Model		model;
 	glm::vec3	pos;
 	float		rotate;
@@ -39,6 +38,7 @@ class HUD
 		hudPos		HUD_Pos;
 		std::vector<HUD_properties>	HUD_item;
 		void	loadOBJ(std::string objName, float pos);
+		void	drawLives(glm::mat4 matCamera, int value);
 
 		int	lives;
 		int	score;
