@@ -10,6 +10,7 @@
 struct	HUD_properties
 {
 	std::string	obj_name;
+	bool		is_num;
 	Model		model;
 	glm::vec3	pos;
 	float		rotate;
@@ -20,16 +21,11 @@ struct hudPos
 	float	left;
 	float	center;
 	float	right;
+	float	none;
 };
 
 class HUD
 {
-	private:
-		Shader		*_shader;
-		hudPos		HUD_Pos;
-		std::vector<HUD_properties>	HUD_item;
-		int	loadOBJ(std::string objName, float pos);
-
 	public:
 		HUD(void);
 		HUD(Shader &shader, float screen_x, float screen_y);
@@ -37,6 +33,16 @@ class HUD
 		~HUD(void);
 		HUD const & operator=(HUD const & rhs);
 		void	draw(glm::mat4 matCamera);
+
+	private:
+		Shader		*_shader;
+		hudPos		HUD_Pos;
+		std::vector<HUD_properties>	HUD_item;
+		void	loadOBJ(std::string objName, float pos);
+
+		int	lives;
+		int	score;
+		int	time;
 };
 
 #endif

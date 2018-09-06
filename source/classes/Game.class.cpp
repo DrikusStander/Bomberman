@@ -74,6 +74,8 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 	deltaTime = 0.0;
 	lastFrame = 0.0;
 	menuVisible = true;
+	loadVisible = false;
+	this->WorldLoaded = false;
 
 	camera.ProcessMouseMovement(0, -250);
 
@@ -92,7 +94,7 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 	// GLFWwindow	*window = glfwCreateWindow(this->screen_x, this->screen_y, "Bomberman", glfwGetPrimaryMonitor(), nullptr);
 	// windowed
 	GLFWwindow	*window = glfwCreateWindow(this->screen_x, this->screen_y, "Bomberman", nullptr, nullptr);
-
+	this->window = window;
 	if (window == nullptr)
 	{
 		glfwTerminate();
@@ -125,7 +127,7 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 
 	// Setup and compile our shaders
 	Shader	shader("resources/shaders/modelLoading.vert", "resources/shaders/modelLoading.frag");
-
+	this->shader = &shader;
 	// Load models
 	// this->world = new World(shader, "resources/models/world.obj");
 	for (int i = 0; i < 6; i++)
@@ -134,12 +136,20 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 	}
 
 	Item temp(shader, "resources/models/portal/portal.obj");
+	for (int i = 0; i < 3; i++)
+	{
+		this->load.push_back(new LoadingScreen(shader, "resources/models/menu/Loading_screen_" + std::to_string(i) + ".obj"));
+	}
+
+	// Item temp(shader, "resources/models/fire/fire.obj");
 	// Item temp2(shader, "resources/models/fire/fire.obj");
 	temp.setPos(168, 168, 0, 0);
 
 	glm::mat4 projection = glm::perspective(camera.GetZoom(), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 1000.0f);
 
 	this->menuActive = 0;
+	GLfloat old_time = 0.0f;
+	GLfloat old_time_key = 0.0f;
 	// Game loop
 	while (!glfwWindowShouldClose(window))
 	{
@@ -148,7 +158,12 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 		// std::cout << "time: " << currentFrame << std::endl;
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
-
+		if (currentFrame - old_time >= 1.0f)
+		{
+			old_time = currentFrame;
+			std::cout << "FPS: " << std::to_string(1.0f / deltaTime) << std::endl;
+		}
+		
 		// Check and call events
 		glfwPollEvents();
 
@@ -165,35 +180,60 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 		if (menuVisible == true)
 		{
 			Menus[this->menuActive]->draw();
-			MoveMenu();
-			if (keys[GLFW_KEY_SPACE])
+			if (currentFrame - old_time_key >= 0.07f)
 			{
-				if (this->menuActive == 0)
+				old_time_key = currentFrame;
+				
+				MoveMenu();
+			
+			
+				if (keys[GLFW_KEY_SPACE])
 				{
-					menuVisible = false;
+					if (this->menuActive == 0)
+					{
+						menuVisible = false;
 
-					this->world = new World(shader, "resources/models/world.obj", this->screen_x, this->screen_y);
+						this->world = new World(shader, "resources/models/world.obj", this->screen_x, this->screen_y);
+					}
+					else if (this->menuActive == 3)
+						this->menuActive = 5;
+					else if (this->menuActive == 4)
+						glfwSetWindowShouldClose(window, GL_TRUE);
+					else if (this->menuActive == 5)
+						this->menuActive = 0;
+					// usleep(300000);
 				}
-				else if (this->menuActive == 3)
-					this->menuActive = 5;
-				else if (this->menuActive == 4)
-					glfwSetWindowShouldClose(window, GL_TRUE);
-				else if (this->menuActive == 5)
-					this->menuActive = 0;
-				usleep(300000);
+				usleep(10000);
 			}
 		}
 		else
 		{
-			this->world->draw(camera.GetViewMatrix());
-			temp.draw();
-			DoMovement();
-			if (world->getStatus() == 1)
+			if (loadVisible == true)
 			{
-				delete this->world;
-				this->menuActive = 0;
-				menuVisible = true;
-				// glfwSetWindowShouldClose(window, GL_TRUE);
+				std::cout << "drawing loading screen" << std::endl;
+				// std::thread World2 (createWorld, this );
+				// World2.detach();
+				if (this->loadActive == 3)
+				{
+					this->world = new World(shader, "resources/models/world.obj", this->screen_x, this->screen_y);
+					this->loadActive = 0;
+					loadVisible = false;
+				}
+				load[this->loadActive]->draw();
+				usleep(600000);
+				this->loadActive++;
+			}
+			else
+			{
+				this->world->draw(camera.GetViewMatrix());
+				DoMovement();
+				if (world->getStatus() == 1)
+				{
+					delete this->world;
+					this->menuActive = 0;
+					menuVisible = true;
+					// glfwSetWindowShouldClose(window, GL_TRUE);
+				}
 			}
 		}
 		glfwSwapBuffers(window);
@@ -204,6 +244,15 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 		{
 			delete (*it);
 			it = this->Menus.erase(it);
+		}
+	}
+	
+	for (std::vector<LoadingScreen*>::iterator it = this->load.begin() ; it != this->load.end(); )
+	{
+		if (it != this->load.end())
+		{
+			delete (*it);
+			it = this->load.erase(it);
 		}
 	}
 
@@ -247,13 +296,11 @@ void Game::MoveMenu(void)
 		{
 			if (this->menuActive > 0)
 				this->menuActive--;
-			usleep(100000);
 		}
 		else if (keys[GLFW_KEY_DOWN])
 		{
 			if (this->menuActive < 4)
 				this->menuActive++;
-			usleep(100000);
 		}
 	}
 
@@ -290,4 +337,24 @@ void	Game::DoMovement(void)
 	// Plant a bomb
 	if (keys[GLFW_KEY_SPACE])
 		this->world->ProcessKeyboard(SPC);
+}
+
+void 	createWorld(Game *game)
+{
+	std::cout << "inside thread" << std::endl;
+	game->createWorld2();
+}
+
+void 	Game::createWorld2(void )
+{
+	std::cout << "inside thread trying to create world" << std::endl;
+
+	load[this->loadActive]->draw();
+	this->loadActive++;
+					usleep(600000);
+	glfwSwapBuffers(this->window);
+	if (this->loadActive == 3)
+	{
+		this->loadActive = 0;
+	}
 }

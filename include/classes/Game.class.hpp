@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Game.class.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+        */
+/*   By: dwilliam <dwilliam@42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/11 11:20:47 by cnolte            #+#    #+#             */
-/*   Updated: 2018/09/03 19:19:24 by cnolte           ###   ########.fr       */
+/*   Updated: 2018/09/06 16:15:42 by dwilliam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,9 @@
 # include "Exceptions.hpp"
 
 # include "MainMenu.class.hpp"
+# include "LoadingScreen.class.hpp"
 #include <unistd.h>
+#include <thread>
 
 class Game
 {
@@ -46,9 +48,11 @@ class Game
 		//end canonical form
 
 		World	*world;
-
+		void 	createWorld2( void);
+		// static void 	createWorld( Game *game);
 	private:
 		std::vector<MainMenu*>	Menus;
+		std::vector<LoadingScreen*> load;
 		GLfloat	deltaTime;
 		GLfloat	lastFrame;
 		GLuint	screen_x;
@@ -57,9 +61,16 @@ class Game
 		int		SCREEN_WIDTH;
 		int		menuActive;
 		bool	menuVisible;
+		bool	loadVisible;
+		int		loadActive;
 
+		bool 	WorldLoaded;
+		Shader	*shader;
 		void	DoMovement(void);
 		void	MoveMenu(void);
+		GLFWwindow	*window;
+
 };
+void 	createWorld(Game *game);
 
 #endif
