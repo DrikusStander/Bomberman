@@ -130,7 +130,7 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 	this->shader = &shader;
 	// Load models
 	// this->world = new World(shader, "resources/models/world.obj");
-	for (int i = 0; i < 9; i++)
+	for (int i = 0; i < 6; i++)
 	{
 		this->Menus.push_back(new MainMenu(shader, "resources/models/menu/Menu_" + std::to_string(i) + ".obj"));
 	}
