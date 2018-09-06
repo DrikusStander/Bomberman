@@ -182,17 +182,18 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 			if (currentFrame - old_time_key >= 0.07f)
 			{
 				old_time_key = currentFrame;
-				
+
 				MoveMenu();
 			
-			
-				if (keys[GLFW_KEY_SPACE])
+				if (keys[GLFW_KEY_ENTER])
 				{
 					if (this->menuActive == 0)
 					{
 						menuVisible = false;
+						glfwSwapBuffers(window);
+						loadVisible =true;
 
-						this->world = new World(shader, "resources/models/world.obj", this->screen_x, this->screen_y);
+						// this->world = new World(shader, "resources/models/world.obj", this->screen_x, this->screen_y);
 					}
 					else if (this->menuActive == 3)
 						this->menuActive = 5;
@@ -219,13 +220,17 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 					loadVisible = false;
 				}
 				load[this->loadActive]->draw();
-				usleep(600000);
+				usleep(400000);
 				this->loadActive++;
 			}
 			else
 			{
 				this->world->draw(camera.GetViewMatrix());
-				DoMovement();
+				if (currentFrame - old_time_key >= 0.07f)
+				{
+					old_time_key = currentFrame;
+					DoMovement();
+				}
 				if (world->getStatus() == 1)
 				{
 					delete this->world;
@@ -334,6 +339,7 @@ void	Game::DoMovement(void)
 	// Plant a bomb
 	if (keys[GLFW_KEY_SPACE])
 		this->world->ProcessKeyboard(SPC);
+	usleep(10000);
 }
 
 void 	createWorld(Game *game)
