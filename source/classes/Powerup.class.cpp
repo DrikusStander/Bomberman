@@ -1,10 +1,11 @@
 #include "Powerup.class.hpp"
 
-Powerup::Powerup( Shader &shader, std::string model, int type) : Item(shader, model + "0.obj")
+Powerup::Powerup( Shader &shader, std::string model, int type, std::vector<Model*> *modelArr) : Item(shader, model + "0.obj")
 {
 	std::cout << "Powerup - Parametric Constructor called " << std::endl;
-	for (int i = 0; i < 24; i++)
-		this->itemModelarr.push_back(new Model(model + std::to_string(i) + ".obj"));
+	this->itemModelarr = modelArr;
+	// for (int i = 0; i < 24; i++)
+	// 	this->itemModelarr.push_back(new Model(model + std::to_string(i) + ".obj"));
 	this->_shader = &shader;
 	this->x_trans = 0.0f;
 	this->y_trans = 20.0f;
@@ -23,8 +24,8 @@ Powerup::Powerup( Powerup const & src) : Item(src)
 Powerup::~Powerup( void )
 {
 	std::cout << "Powerup - Destructor called " << std::endl;
-	for (int i = 0; i < 24; i++)
-		delete this->itemModelarr[i];
+	// for (int i = 0; i < 24; i++)
+	// 	delete this->itemModelarr[i];
 }
 
 Powerup const & Powerup::operator=(Powerup const & rhs)
@@ -51,7 +52,8 @@ void Powerup::draw(void)
 	model = glm::scale(model, glm::vec3(4.25f, 2.25f, 4.25f));								// scale Powerup
 	model = glm::rotate(model, glm::radians(this->rotate), glm::vec3(0, 1, 0)); 			// where x, y, z is axis of rotation (e.g. 0 1 0)
 	glUniformMatrix4fv( glGetUniformLocation(this->_shader->getProgram(), "model"), 1, GL_FALSE, glm::value_ptr(model ));
-	this->itemModelarr[this->activeFrame]->Draw(*this->_shader);
+	(*this->itemModelarr)[this->activeFrame]->Draw(*this->_shader);
+
 }
 
 int		Powerup::getType(void)

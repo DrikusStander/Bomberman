@@ -15,7 +15,34 @@ World::World(Shader &shader, std::string model, float screen_x, float screen_y)
 	this->powerups = new std::vector<Powerup*>();
 	this->worldStatus = 0;
 
-	std::cout << "World vars initialized" << std::endl;
+	this->bombRaduis_index = 0;
+	this->bombCount_index = 0;
+	this->speed_index = 0;
+
+	// create breakable wall model
+	this->wall_model = new Model("resources/models/wall.obj");
+
+	// create coin models vectors
+	this->bombRaduis_model = new std::vector<Model*>();
+	this->bombCount_model = new std::vector<Model*>();
+	this->speed_model = new std::vector<Model*>();
+
+	// add moels to coin models vectors
+	for (int i = 0; i < 24; i++)
+		this->bombRaduis_model->push_back(new Model("resources/models/coin/bomb/coin" + std::to_string(i) + ".obj"));
+	for (int i = 0; i < 24; i++)
+		this->bombCount_model->push_back(new Model("resources/models/coin/bombs/coin" + std::to_string(i) + ".obj"));
+	for (int i = 0; i < 24; i++)
+		this->speed_model->push_back(new Model("resources/models/coin/run/coin" + std::to_string(i) + ".obj"));
+
+	// set initial powerups
+	for (int i = 0; i < 3 ; i++)
+	{
+		this->speed.push_back( new Powerup(*this->_shader, "resources/models/coin/run/coin", 1, this->speed_model) );
+		this->bombCount.push_back( new Powerup(*this->_shader, "resources/models/coin/bombs/coin", 2, this->bombCount_model) );
+		this->bombRaduis.push_back( new Powerup(*this->_shader, "resources/models/coin/bomb/coin", 0, this->bombRaduis_model) );
+	}
+
 	// initiliaze the map
 	this->map = new char*[17] ;
 	for (int z = 0; z < 17; z++)
@@ -44,7 +71,7 @@ World::World(Shader &shader, std::string model, float screen_x, float screen_y)
 					if ((std::rand() % 3 + 1) == 1)
 					{
 						this->map[i][j] = 'W';
-						Item *temp = new Item(shader, "resources/models/wall.obj");
+						Item *temp = new Item(shader, this->wall_model);
 						float x_transT = ((-168) - (j) * (-21));
 						float z_transT = ((-168) - (i) * (-21));
 						temp->setPos( x_transT, z_transT, i, j);
@@ -95,7 +122,8 @@ World::~World( void )
 	std::cout << "World - Destructor called " << std::endl;
 	delete this->WorldModel;
 	delete this->player;
-
+	delete this->wall_model;
+	
 	// clean up map
 	for (int z = 0; z < 17; z++)
 	{
@@ -123,13 +151,59 @@ World::~World( void )
 	}
 	delete this->enemies;
 
-	// clean up Powerups
-	for (std::vector<Powerup*>::iterator it = this->powerups->begin() ; it != this->powerups->end(); )
+	// // clean up Powerups
+	// for (std::vector<Powerup*>::iterator it = this->powerups->begin() ; it != this->powerups->end(); )
+	// {
+	// 	delete (*it);
+	// 	it = this->powerups->erase(it);
+	// }
+	delete this->powerups;
+
+	// clean up bombRaduis Powerups
+	std::cout << "cleaning Bombraduis vector" << std::endl;
+	for (std::vector<Powerup*>::iterator it = this->bombRaduis.begin() ; it != this->bombRaduis.end(); )
 	{
 		delete (*it);
-		it = this->powerups->erase(it);
+		it = this->bombRaduis.erase(it);
 	}
-	delete this->powerups;
+	// clean up bombRaduis_model Powerup Models
+	for (std::vector<Model*>::iterator it = this->bombRaduis_model->begin() ; it != this->bombRaduis_model->end(); )
+	{
+		delete (*it);
+		it = this->bombRaduis_model->erase(it);
+	}
+	delete this->bombRaduis_model;
+
+	// clean up bombCount Powerups
+	std::cout << "cleaning BomCount vector" << std::endl;
+	for (std::vector<Powerup*>::iterator it = this->bombCount.begin() ; it != this->bombCount.end(); )
+	{
+		delete (*it);
+		it = this->bombCount.erase(it);
+	}
+	// clean up bombCount_model Powerup Models
+	for (std::vector<Model*>::iterator it = this->bombCount_model->begin() ; it != this->bombCount_model->end(); )
+	{
+		delete (*it);
+		it = this->bombCount_model->erase(it);
+	}
+	delete this->bombCount_model;
+
+	// clean up speed Powerups
+	std::cout << "cleaning speed vector" << std::endl;
+	for (std::vector<Powerup*>::iterator it = this->speed.begin() ; it != this->speed.end(); )
+	{
+		delete (*it);
+		it = this->speed.erase(it);
+	}
+	// clean up speed Powerup Models
+	for (std::vector<Model*>::iterator it = this->speed_model->begin() ; it != this->speed_model->end(); )
+	{
+		delete (*it);
+		it = this->speed_model->erase(it);
+	}
+	delete this->speed_model;
+
 }
 
 World const & World::operator=(World const & rhs)
@@ -168,14 +242,10 @@ void World::draw(glm::mat4 matCamera)
 	}
 
 	//check what items the bomb affected
-	// std::cout << std::endl;
-	// std::cout << std::endl;
-
 	for (int i = 0; i < 17; i++)
 	{
 		for (int j = 0; j < 17; j++)
 		{
-			// std::cout << this->map[i][j] << " " ;
 			if (this->map[i][j] == 'D')
 			{
 				// check if the player was hit
@@ -216,20 +286,42 @@ void World::draw(glm::mat4 matCamera)
 							Powerup *temp;
 							if (powerupOption == 0)
 							{
-								temp = new Powerup(*this->_shader, "resources/models/coin/bomb/coin", powerupOption);
+								// temp = new Powerup(*this->_shader, "resources/models/coin/bomb/coin", powerupOption);
+								if (this->bombRaduis_index < 3)
+								{
+									temp = this->bombRaduis[this->bombRaduis_index];
+									this->bombRaduis_index++; 
+								}
 							}
 							else if (powerupOption == 1)
 							{
-								temp = new Powerup(*this->_shader, "resources/models/coin/run/coin", powerupOption);
+								// temp = new Powerup(*this->_shader, "resources/models/coin/run/coin", powerupOption);
+								if (this->speed_index < 3)
+								{
+									temp = this->speed[this->speed_index];
+									this->speed_index++; 
+
+								}
 							}
-							else
+							else if (powerupOption == 2)
 							{
-								temp =  new Powerup(*this->_shader, "resources/models/coin/bombs/coin", powerupOption);
+								// temp =  new Powerup(*this->_shader, "resources/models/coin/bombs/coin", powerupOption);
+								if (this->bombCount_index < 3)
+								{
+									temp = this->bombCount[this->bombCount_index];
+									this->bombCount_index++; 
+								}
 							}
-							temp->setPos((*it)->getX(), (*it)->getZ(), (*it)->getRow(), (*it)->getCol());
-							this->powerups->push_back(temp);
-							// std::cout << "placing newly created Powerup at i: " << i << " j: " << j << std::endl;
-							this->map[i][j] = 'U';
+							else 
+							{
+								temp = NULL;
+							}
+							if (temp != NULL)
+							{
+								temp->setPos((*it)->getX(), (*it)->getZ(), (*it)->getRow(), (*it)->getCol());
+								this->powerups->push_back(temp);
+								this->map[i][j] = 'U';
+							}
 						}
 						std::cout << "delete object" << objCol << std::endl;
 						delete (*it);
@@ -262,8 +354,23 @@ void World::draw(glm::mat4 matCamera)
 					{
 						if ((*it)->getRow() == i && (*it)->getCol() == j)
 						{
-							this->player->handlePowerup((*it)->getType());
-							delete (*it);
+							int type = (*it)->getType();
+							this->player->handlePowerup(type);
+							switch(type)
+							{
+								case 0:
+									this->bombRaduis_index--;
+									break;
+								case 1:
+									this->speed_index--;
+									break;
+								case 2:
+									this->bombCount_index--;
+									break;
+								default:
+									break;
+							}
+							// delete (*it);
 							it = this->powerups->erase(it);
 						}
 						else

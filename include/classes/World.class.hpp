@@ -25,18 +25,31 @@ class World
 {
 	private:
 	protected:
-		Model	*WorldModel;
-		HUD		hud;
-		Shader	*_shader;
-		float	x_trans;
-		float	y_trans;
-		float	z_trans;
-		Player	*player;
-		char	**map;
-		std::vector<Item*>	*objects;
-		std::vector<Enemy*>	*enemies;
+		Model					*WorldModel;
+		HUD						hud;
+		Shader					*_shader;
+		float					x_trans;
+		float					y_trans;
+		float					z_trans;
+		Player					*player;
+		char					**map;
+		std::vector<Item*>		*objects;
+		Model					*wall_model;
+		std::vector<Enemy*>		*enemies;
 		std::vector<Powerup*>	*powerups;
-		int		worldStatus;
+		int						worldStatus;
+		std::vector<Powerup*>	bombRaduis;
+		int						bombRaduis_index;
+		std::vector<Model *>	*bombRaduis_model;
+		std::vector<Powerup*>	bombCount;
+		int						bombCount_index;
+		std::vector<Model *>	*bombCount_model;
+		std::vector<Powerup*>	speed;
+		int						speed_index;
+		std::vector<Model *>	*speed_model;
+
+
+
 
 	public:
 		World(Shader &shader, std::string model, float screen_x, float screen_y);

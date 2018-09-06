@@ -135,6 +135,7 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 		this->Menus.push_back(new MainMenu(shader, "resources/models/menu/Menu_" + std::to_string(i) + ".obj"));
 	}
 
+	Item temp(shader, "resources/models/portal/portal.obj");
 	for (int i = 0; i < 3; i++)
 	{
 		this->load.push_back(new LoadingScreen(shader, "resources/models/menu/Loading_screen_" + std::to_string(i) + ".obj"));
@@ -142,7 +143,7 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 
 	// Item temp(shader, "resources/models/fire/fire.obj");
 	// Item temp2(shader, "resources/models/fire/fire.obj");
-	// temp2.setPos(168, 168, 0, 0);
+	temp.setPos(168, 168, 0, 0);
 
 	glm::mat4 projection = glm::perspective(camera.GetZoom(), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 1000.0f);
 
@@ -328,7 +329,9 @@ void	Game::DoMovement(void)
 
 	// Player controls
 	if (keys[GLFW_KEY_UP])
+	{
 		this->world->ProcessKeyboard(FWD);
+	}
 	else if (keys[GLFW_KEY_DOWN])
 		this->world->ProcessKeyboard(BKW);
 	else if (keys[GLFW_KEY_LEFT])

@@ -192,12 +192,17 @@ void Bomb::draw(void)
 	}
 	else
 	{
+		// if (this->activeFrame == 1)
+		// 	this->activeFrame = 0;
+		// else
+		// 	this->activeFrame++;
 		glm::mat4 model(1);
 		model = glm::translate( model, glm::vec3(this->x_trans, this->y_trans, this->z_trans));		// Translate item
 		model = glm::scale(model, glm::vec3(4.25f, 2.25f, 4.25f));									// scale item
 		model = glm::rotate(model, glm::radians(this->rotate), glm::vec3(0, 1, 0));					// where x, y, z is axis of rotation (e.g. 0 1 0)
 		glUniformMatrix4fv( glGetUniformLocation(this->_shader->getProgram(), "model"), 1, GL_FALSE, glm::value_ptr(model ));
 		this->ItemModel->Draw(*this->_shader);
+		// (*this->itemModelarr)[this->activeFrame]->Draw(*this->_shader);
 	}
 }
 
