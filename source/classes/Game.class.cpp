@@ -225,19 +225,19 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 				this->loadActive++;
 			}
 			else
-			{
-				this->world->draw(camera.GetViewMatrix());
-				if (currentFrame - old_time_key >= 0.07f)
+			{	
+				if (currentFrame - old_time_key >= 0.01f)
 				{
+					this->world->draw(camera.GetViewMatrix());
 					old_time_key = currentFrame;
 					DoMovement();
-				}
-				if (world->getStatus() == 1)
-				{
-					delete this->world;
-					this->menuActive = 0;
-					menuVisible = true;
-					// glfwSetWindowShouldClose(window, GL_TRUE);
+					if (world->getStatus() == 1)
+					{
+						delete this->world;
+						this->menuActive = 0;
+						menuVisible = true;
+						// glfwSetWindowShouldClose(window, GL_TRUE);
+					}
 				}
 			}
 		}
