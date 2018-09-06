@@ -140,6 +140,8 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 	glm::mat4 projection = glm::perspective(camera.GetZoom(), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 1000.0f);
 
 	this->menuActive = 0;
+	GLfloat old_time = 0.0f;
+	GLfloat old_time_key = 0.0f;
 	// Game loop
 	while (!glfwWindowShouldClose(window))
 	{
@@ -148,7 +150,12 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 		// std::cout << "time: " << currentFrame << std::endl;
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
-
+		if (currentFrame - old_time >= 1.0f)
+		{
+			old_time = currentFrame;
+			std::cout << "FPS: " << std::to_string(1.0f / deltaTime) << std::endl;
+		}
+		
 		// Check and call events
 		glfwPollEvents();
 
@@ -165,22 +172,30 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 		if (menuVisible == true)
 		{
 			Menus[this->menuActive]->draw();
-			MoveMenu();
-			if (keys[GLFW_KEY_SPACE])
+			if (currentFrame - old_time_key >= 0.07f)
 			{
-				if (this->menuActive == 0)
+				old_time_key = currentFrame;
+				
+				MoveMenu();
+			
+			
+				if (keys[GLFW_KEY_SPACE])
 				{
-					menuVisible = false;
+					if (this->menuActive == 0)
+					{
+						menuVisible = false;
 
-					this->world = new World(shader, "resources/models/world.obj", this->screen_x, this->screen_y);
+						this->world = new World(shader, "resources/models/world.obj", this->screen_x, this->screen_y);
+					}
+					else if (this->menuActive == 3)
+						this->menuActive = 5;
+					else if (this->menuActive == 4)
+						glfwSetWindowShouldClose(window, GL_TRUE);
+					else if (this->menuActive == 5)
+						this->menuActive = 0;
+					// usleep(300000);
 				}
-				else if (this->menuActive == 3)
-					this->menuActive = 5;
-				else if (this->menuActive == 4)
-					glfwSetWindowShouldClose(window, GL_TRUE);
-				else if (this->menuActive == 5)
-					this->menuActive = 0;
-				usleep(300000);
+				usleep(10000);
 			}
 		}
 		else
@@ -246,13 +261,11 @@ void Game::MoveMenu(void)
 		{
 			if (this->menuActive > 0)
 				this->menuActive--;
-			usleep(100000);
 		}
 		else if (keys[GLFW_KEY_DOWN])
 		{
 			if (this->menuActive < 4)
 				this->menuActive++;
-			usleep(100000);
 		}
 	}
 
