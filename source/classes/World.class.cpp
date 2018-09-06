@@ -15,12 +15,15 @@ World::World(Shader &shader, std::string model, float screen_x, float screen_y)
 	this->powerups = new std::vector<Powerup*>();
 	this->worldStatus = 0;
 
+	std::cout << "World vars initialized" << std::endl;
 	// initiliaze the map
 	this->map = new char*[17] ;
 	for (int z = 0; z < 17; z++)
 	{
 		this->map[z] = new char[17];
 	}
+
+	std::cout << "World map initialized" << std::endl;
 
 	// randomly innitilize breakable walls to the world
 	std::srand(std::time(NULL));
@@ -53,6 +56,7 @@ World::World(Shader &shader, std::string model, float screen_x, float screen_y)
 			}
 		}
 	}
+	std::cout << "World walls initialized" << std::endl;
 
 	// Initialize Enemies into the world
 	int enemy_count = 5;
@@ -76,6 +80,8 @@ World::World(Shader &shader, std::string model, float screen_x, float screen_y)
 		}
 
 	}
+	std::cout << "World enemies initialized" << std::endl;
+
 
 }
 
