@@ -23,6 +23,7 @@ mu.lock();
 	this->y_trans = 0.0f;
 	this->z_trans = 0.0f;
 	this->score = 0;
+	this->time = 200;
 	this->player = new Player(shader, "resources/models/player/player_run_");
 	this->lives = this->player->getLives();
 	glfwMakeContextCurrent(NULL);
@@ -287,8 +288,7 @@ void World::draw(glm::mat4 matCamera)
 		item->draw();
 	}
 	this->player->draw();
-	this->hud.draw(matCamera);
-	this->hud.drawLives(matCamera ,this->lives);
+	this->hud.draw(matCamera, this->time, this->score, this->lives);
 	// this->hud->drawScore(this->score);
 
 

@@ -15,9 +15,9 @@ HUD::HUD(Shader &shader, float screen_x, float screen_y)
 	this->HUD_Pos.center = -0.015f;
 	this->HUD_Pos.right = 0.122f;
 	this->HUD_Pos.none = 0.0f;
-	this->lives = 3;
-	this->time = 299;
-	this->score = 12345;
+	this->lives = 0;
+	this->time = 0;
+	this->score = 0;
 	for (int i = 0; i <= 9; i++)
 		loadOBJ(std::to_string(i), HUD_Pos.none);
 	loadOBJ("time_left", HUD_Pos.left);
@@ -104,8 +104,11 @@ void	HUD::drawNumbers(glm::mat4 matCamera)
 	}
 }
 
-void	HUD::draw(glm::mat4 matCamera)
+void	HUD::draw(glm::mat4 matCamera, const int time, const int score, const int lives)
 {
+	this->time = time;
+	this->score = score;
+	this->lives = lives;
 	for (int i = 10; i <= 12; i++)
 	{
 		glm::mat4 model = glm::affineInverse(matCamera);

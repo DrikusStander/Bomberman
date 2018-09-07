@@ -57,6 +57,7 @@ class World
 		GLFWwindow				*window;
 		int						score;
 		int						lives;
+		int						time;
 
 
 

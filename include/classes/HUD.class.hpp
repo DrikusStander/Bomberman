@@ -34,8 +34,7 @@ class HUD
 		HUD(HUD const & src);
 		~HUD(void);
 		HUD const & operator=(HUD const & rhs);
-		void	draw(glm::mat4 matCamera);
-		void	drawLives(glm::mat4 matCamera, int value);
+		void	draw(glm::mat4 matCamera, const int time, const int score, const int lives);
 
 	private:
 		Shader		*_shader;
@@ -44,9 +43,9 @@ class HUD
 		void	loadOBJ(std::string objName, float pos);
 		void	drawNumbers(glm::mat4 matCamera);
 
-		int	lives;
-		int	score;
-		int	time;
+		int		lives;
+		int		score;
+		int		time;
 };
 
 #endif
