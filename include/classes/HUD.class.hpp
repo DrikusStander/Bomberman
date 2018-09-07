@@ -7,6 +7,9 @@
 # include <glm/gtc/type_ptr.hpp>
 # include "glm/gtc/matrix_inverse.hpp"
 
+# define KERNING 0.0063f
+# define TEXT_SCALE 0.002f
+
 struct	HUD_properties
 {
 	std::string	obj_name;
@@ -38,7 +41,7 @@ class HUD
 		hudPos		HUD_Pos;
 		std::vector<HUD_properties>	HUD_item;
 		void	loadOBJ(std::string objName, float pos);
-		void	drawLives(glm::mat4 matCamera, int value);
+		void	drawNumbers(glm::mat4 matCamera);
 
 		int	lives;
 		int	score;
