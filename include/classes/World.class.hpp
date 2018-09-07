@@ -22,6 +22,8 @@
 # include <vector>
 
 #include <mutex>
+#include <unistd.h>
+
 		
 extern std::mutex mu;
 
@@ -53,6 +55,8 @@ class World
 		int						speed_index;
 		std::vector<Model *>	*speed_model;
 		GLFWwindow				*window;
+		int						score;
+		int						lives;
 
 
 
@@ -69,6 +73,8 @@ class World
 		void	player_clipX(float x_move);
 		void	player_clipZ(float z_move);
 		int		getStatus( void );
+		int		getScore( void );
+		int		getLives( void );
 
 };
 

@@ -8,10 +8,13 @@ class Player : public Character
 {
 	private:
 		std::vector<Bomb*>	bomb;
-		int		bombCount;
-		float		active;
-		int		speedMult;
-		float	activeMult;
+		int					bombCount;
+		float				active;
+		int					speedMult;
+		float				activeMult;
+		int					lives;
+		bool				dead;
+		bool				invincible;
 
 	protected:
 	public:
@@ -31,6 +34,9 @@ class Player : public Character
 		void	setPosOnMap();
 		void	clearPosOnMap();
 		void	handlePowerup(int powerup);
+		int		getLives( void );
+		int		subLife( void );
+		bool	getInvincible( void );
 };
 
 #endif

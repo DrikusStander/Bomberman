@@ -97,7 +97,7 @@ void	HUD::draw(glm::mat4 matCamera)
 		glUniformMatrix4fv(glGetUniformLocation(this->_shader->getProgram(), "model"), 1, GL_FALSE, glm::value_ptr(model));
 		this->HUD_item[i].model.Draw(*this->_shader);
 	}
-	drawLives(matCamera, 1234567890);
+	// drawLives(matCamera, 1234567890);
 	// for (std::vector<HUD_properties>::iterator it = this->HUD_item.begin(); it != this->HUD_item.end(); it++)
 	// {
 	// 	if (it->is_num == true)
