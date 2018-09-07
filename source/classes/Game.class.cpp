@@ -12,6 +12,8 @@
 
 #include "Game.class.hpp"
 
+
+
 Camera	camera;
 
 bool	keys[1024];
@@ -127,6 +129,7 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 
 	// Setup and compile our shaders
 	Shader	shader("resources/shaders/modelLoading.vert", "resources/shaders/modelLoading.frag");
+
 	this->shader = &shader;
 	// Load models
 	// this->world = new World(shader, "resources/models/world.obj");
@@ -140,12 +143,14 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 	{
 		this->load.push_back(new LoadingScreen(shader, "resources/models/menu/Loading_screen_" + std::to_string(i) + ".obj"));
 	}
+	this->loadActive = 0;
 
 	// Item temp(shader, "resources/models/fire/fire.obj");
 	// Item temp2(shader, "resources/models/fire/fire.obj");
 	temp.setPos(168, 168, 0, 0);
 
 	glm::mat4 projection = glm::perspective(camera.GetZoom(), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 1000.0f);
+	this->projection = projection;
 
 	this->menuActive = 0;
 	GLfloat old_time = 0.0f;
@@ -153,6 +158,9 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 	// Game loop
 	while (!glfwWindowShouldClose(window))
 	{
+		mu.lock();
+		glfwMakeContextCurrent(window);
+
 		// Set frame time
 		GLfloat currentFrame = glfwGetTime();
 		// std::cout << "time: " << currentFrame << std::endl;
@@ -176,7 +184,6 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 		// set the camera view and projection
 		glUniformMatrix4fv(glGetUniformLocation(shader.getProgram(), "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 		glUniformMatrix4fv(glGetUniformLocation(shader.getProgram(), "view"), 1, GL_FALSE, glm::value_ptr(camera.GetViewMatrix()));
-
 		if (menuVisible == true)
 		{
 			Menus[this->menuActive]->draw();
@@ -191,10 +198,12 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 					if (this->menuActive == 0)
 					{
 						menuVisible = false;
-						glfwSwapBuffers(window);
+						// std::async(std::launch::async, &Game::createWorld2, this);
 						loadVisible =true;
 
-						// this->world = new World(shader, "resources/models/world.obj", this->screen_x, this->screen_y);
+						std::thread *worldThread =  new std::thread(createWorld, this);
+						worldThread->detach();
+						
 					}
 					else if (this->menuActive == 3)
 						this->menuActive = 5;
@@ -202,30 +211,24 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 						glfwSetWindowShouldClose(window, GL_TRUE);
 					else if (this->menuActive == 5)
 						this->menuActive = 0;
-					// usleep(300000);
 				}
 				usleep(10000);
 			}
 		}
 		else
 		{
+
 			if (loadVisible == true)
 			{
-				std::cout << "drawing loading screen" << std::endl;
-				// std::thread World2 (createWorld, this );
-				// World2.detach();
 				if (this->loadActive == 3)
-				{
-					this->world = new World(shader, "resources/models/world.obj", this->screen_x, this->screen_y);
 					this->loadActive = 0;
-					loadVisible = false;
-				}
 				load[this->loadActive]->draw();
 				usleep(400000);
 				this->loadActive++;
 			}
 			else
 			{	
+
 				if (currentFrame - old_time_key >= 0.01f)
 				{
 					this->world->draw(camera.GetViewMatrix());
@@ -239,9 +242,12 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 						// glfwSetWindowShouldClose(window, GL_TRUE);
 					}
 				}
+
 			}
 		}
 		glfwSwapBuffers(window);
+		glfwMakeContextCurrent(NULL);
+		mu.unlock();
 	}
 	for (std::vector<MainMenu*>::iterator it = this->Menus.begin() ; it != this->Menus.end(); )
 	{
@@ -347,20 +353,11 @@ void	Game::DoMovement(void)
 
 void 	createWorld(Game *game)
 {
-	std::cout << "inside thread" << std::endl;
 	game->createWorld2();
 }
 
 void 	Game::createWorld2(void )
 {
-	std::cout << "inside thread trying to create world" << std::endl;
-
-	load[this->loadActive]->draw();
-	this->loadActive++;
-					usleep(600000);
-	glfwSwapBuffers(this->window);
-	if (this->loadActive == 3)
-	{
-		this->loadActive = 0;
-	}
+	this->world = new World(*(this->shader), "resources/models/world.obj", this->screen_x, this->screen_y, this->window);
+	this->loadVisible = false;
 }

@@ -34,6 +34,12 @@
 # include "LoadingScreen.class.hpp"
 #include <unistd.h>
 #include <thread>
+#include <future>
+
+#include <mutex>
+		
+extern std::mutex mu;
+
 
 class Game
 {
@@ -50,6 +56,7 @@ class Game
 		World	*world;
 		void 	createWorld2( void);
 		// static void 	createWorld( Game *game);
+
 	private:
 		std::vector<MainMenu*>	Menus;
 		std::vector<LoadingScreen*> load;
@@ -69,6 +76,8 @@ class Game
 		void	DoMovement(void);
 		void	MoveMenu(void);
 		GLFWwindow	*window;
+		glm::mat4 projection;
+
 
 };
 void 	createWorld(Game *game);
