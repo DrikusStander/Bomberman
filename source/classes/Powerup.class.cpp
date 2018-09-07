@@ -4,8 +4,6 @@ Powerup::Powerup( Shader &shader, std::string model, int type, std::vector<Model
 {
 	std::cout << "Powerup - Parametric Constructor called " << std::endl;
 	this->itemModelarr = modelArr;
-	// for (int i = 0; i < 24; i++)
-	// 	this->itemModelarr.push_back(new Model(model + std::to_string(i) + ".obj"));
 	this->_shader = &shader;
 	this->x_trans = 0.0f;
 	this->y_trans = 20.0f;
@@ -24,8 +22,6 @@ Powerup::Powerup( Powerup const & src) : Item(src)
 Powerup::~Powerup( void )
 {
 	std::cout << "Powerup - Destructor called " << std::endl;
-	// for (int i = 0; i < 24; i++)
-	// 	delete this->itemModelarr[i];
 }
 
 Powerup const & Powerup::operator=(Powerup const & rhs)

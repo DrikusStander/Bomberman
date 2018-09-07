@@ -23,13 +23,7 @@ class Powerup : public Item
 		Powerup( Powerup const & src);
 		~Powerup( void );
 		Powerup const & operator=(Powerup const & rhs);
-		// void	setPos(float x, float z, int row, int col);
 		void	draw(void);
-		// void	setActive( bool active );
-		// bool	getActive( void );
-		// void	setMap( char **map);
-		// int		getCol();
-		// int		getRow();
 		int		getType(void);
 };
 

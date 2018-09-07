@@ -35,6 +35,7 @@ class HUD
 		~HUD(void);
 		HUD const & operator=(HUD const & rhs);
 		void	draw(glm::mat4 matCamera);
+		void	drawLives(glm::mat4 matCamera, int value);
 
 	private:
 		Shader		*_shader;

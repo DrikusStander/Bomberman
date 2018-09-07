@@ -1,15 +1,35 @@
 #include "World.class.hpp"
+std::mutex mu;
 
-World::World(Shader &shader, std::string model, float screen_x, float screen_y)
+World::World(Shader &shader, std::string model, float screen_x, float screen_y, GLFWwindow	*window)
 {
 	std::cout << "World - Parametric Constructor called " << std::endl;
+mu.lock();
+	glfwMakeContextCurrent(window);	
 	this->WorldModel =  new Model(model);
+	glfwMakeContextCurrent(NULL);
+mu.unlock();
+
+mu.lock();
+	glfwMakeContextCurrent(window);	
 	this->hud = HUD(shader, screen_x, screen_y);
+	glfwMakeContextCurrent(NULL);
+mu.unlock();
+
+mu.lock();
+	glfwMakeContextCurrent(window);	
 	this->_shader = &shader;
 	this->x_trans = 0.0f;
 	this->y_trans = 0.0f;
 	this->z_trans = 0.0f;
+	this->score = 0;
 	this->player = new Player(shader, "resources/models/player/player_run_");
+	this->lives = this->player->getLives();
+	glfwMakeContextCurrent(NULL);
+mu.unlock();
+
+mu.lock();
+	glfwMakeContextCurrent(window);	
 	this->objects = new std::vector<Item*>();
 	this->enemies = new std::vector<Enemy*>();
 	this->powerups = new std::vector<Powerup*>();
@@ -21,28 +41,57 @@ World::World(Shader &shader, std::string model, float screen_x, float screen_y)
 
 	// create breakable wall model
 	this->wall_model = new Model("resources/models/wall.obj");
+	glfwMakeContextCurrent(NULL);
+mu.unlock();
 
+mu.lock();
+	glfwMakeContextCurrent(window);	
 	// create coin models vectors
 	this->bombRaduis_model = new std::vector<Model*>();
 	this->bombCount_model = new std::vector<Model*>();
 	this->speed_model = new std::vector<Model*>();
+	glfwMakeContextCurrent(NULL);
+mu.unlock();
 
+mu.lock();
+	glfwMakeContextCurrent(window);	
 	// add moels to coin models vectors
 	for (int i = 0; i < 24; i++)
 		this->bombRaduis_model->push_back(new Model("resources/models/coin/bomb/coin" + std::to_string(i) + ".obj"));
+	glfwMakeContextCurrent(NULL);
+mu.unlock();
+
+mu.lock();
+	glfwMakeContextCurrent(window);	
 	for (int i = 0; i < 24; i++)
 		this->bombCount_model->push_back(new Model("resources/models/coin/bombs/coin" + std::to_string(i) + ".obj"));
+	glfwMakeContextCurrent(NULL);
+mu.unlock();
+
+mu.lock();
+	glfwMakeContextCurrent(window);	
 	for (int i = 0; i < 24; i++)
 		this->speed_model->push_back(new Model("resources/models/coin/run/coin" + std::to_string(i) + ".obj"));
+	glfwMakeContextCurrent(NULL);
+mu.unlock();
 
+mu.lock();
+	glfwMakeContextCurrent(window);	
 	// set initial powerups
+
 	for (int i = 0; i < 3 ; i++)
 	{
 		this->speed.push_back( new Powerup(*this->_shader, "resources/models/coin/run/coin", 1, this->speed_model) );
 		this->bombCount.push_back( new Powerup(*this->_shader, "resources/models/coin/bombs/coin", 2, this->bombCount_model) );
 		this->bombRaduis.push_back( new Powerup(*this->_shader, "resources/models/coin/bomb/coin", 0, this->bombRaduis_model) );
 	}
+	std::cout << "World powerups initialized" << std::endl;
 
+	glfwMakeContextCurrent(NULL);
+mu.unlock();
+
+mu.lock();
+	glfwMakeContextCurrent(window);	
 	// initiliaze the map
 	this->map = new char*[17] ;
 	for (int z = 0; z < 17; z++)
@@ -51,7 +100,11 @@ World::World(Shader &shader, std::string model, float screen_x, float screen_y)
 	}
 
 	std::cout << "World map initialized" << std::endl;
+	glfwMakeContextCurrent(NULL);
+mu.unlock();
 
+mu.lock();
+	glfwMakeContextCurrent(window);	
 	// randomly innitilize breakable walls to the world
 	std::srand(std::time(NULL));
 	for (int i = 0; i < 17; i++)
@@ -72,6 +125,7 @@ World::World(Shader &shader, std::string model, float screen_x, float screen_y)
 					{
 						this->map[i][j] = 'W';
 						Item *temp = new Item(shader, this->wall_model);
+
 						float x_transT = ((-168) - (j) * (-21));
 						float z_transT = ((-168) - (i) * (-21));
 						temp->setPos( x_transT, z_transT, i, j);
@@ -84,6 +138,12 @@ World::World(Shader &shader, std::string model, float screen_x, float screen_y)
 		}
 	}
 	std::cout << "World walls initialized" << std::endl;
+
+	glfwMakeContextCurrent(NULL);
+mu.unlock();
+
+mu.lock();
+	glfwMakeContextCurrent(window);	
 
 	// Initialize Enemies into the world
 	int enemy_count = 5;
@@ -98,7 +158,9 @@ World::World(Shader &shader, std::string model, float screen_x, float screen_y)
 				this->map[row][col] = 'E';
 				float x_transT = ((-168) - (col) * (-21));
 				float z_transT = ((-168) - (row) * (-21));
+
 				Enemy *temp = new Enemy(shader, "resources/models/enemy.obj");
+
 				temp->setPos(x_transT, z_transT, row, col);
 				temp->setMap(this->map);
 				this->enemies->push_back(temp);
@@ -108,7 +170,8 @@ World::World(Shader &shader, std::string model, float screen_x, float screen_y)
 
 	}
 	std::cout << "World enemies initialized" << std::endl;
-
+	glfwMakeContextCurrent(NULL);
+mu.unlock();
 
 }
 
@@ -152,11 +215,6 @@ World::~World( void )
 	delete this->enemies;
 
 	// // clean up Powerups
-	// for (std::vector<Powerup*>::iterator it = this->powerups->begin() ; it != this->powerups->end(); )
-	// {
-	// 	delete (*it);
-	// 	it = this->powerups->erase(it);
-	// }
 	delete this->powerups;
 
 	// clean up bombRaduis Powerups
@@ -230,6 +288,9 @@ void World::draw(glm::mat4 matCamera)
 	}
 	this->player->draw();
 	this->hud.draw(matCamera);
+	this->hud.drawLives(matCamera ,this->lives);
+	// this->hud->drawScore(this->score);
+
 
 	for (Enemy *enemy : *this->enemies)
 	{
@@ -249,15 +310,19 @@ void World::draw(glm::mat4 matCamera)
 			if (this->map[i][j] == 'D')
 			{
 				// check if the player was hit
-				if (this->player->getRow() == i && this->player->getCol() == j)
+				if (this->player->getRow() == i && this->player->getCol() == j && this->player->getInvincible() == false)
 				{
-					/* 
+					/*
 						handle this event diffrently
 						check lives of the player
 							-> if lives left respawn
 							-> if no lives left Gameover splash screen and send to menu
 					*/
-					this->worldStatus = 1;
+					this->lives = this->player->subLife();
+					this->player->setPos(-168, -168, 0, 0);
+					// usleep(3000000);
+					if (this->player->getLives() == 0)
+						this->worldStatus = 1;
 				}
 
 				// check what powerup was affected
@@ -336,6 +401,7 @@ void World::draw(glm::mat4 matCamera)
 				{
 					if ((*it)->getRow() == i && (*it)->getCol() == j)
 					{
+						this->score += 100;
 						delete (*it);
 						it = this->enemies->erase(it);
 					}
@@ -412,4 +478,14 @@ void	World::player_clipZ(float z_move)
 int		World::getStatus( void )
 {
 	return (this->worldStatus);
+}
+
+int		World::getScore( void )
+{
+	return(this->score);
+}
+
+int		World::getLives( void )
+{
+	return(this->lives);
 }

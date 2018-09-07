@@ -21,6 +21,13 @@
 
 # include <vector>
 
+#include <mutex>
+#include <unistd.h>
+
+		
+extern std::mutex mu;
+
+
 class World
 {
 	private:
@@ -47,12 +54,15 @@ class World
 		std::vector<Powerup*>	speed;
 		int						speed_index;
 		std::vector<Model *>	*speed_model;
+		GLFWwindow				*window;
+		int						score;
+		int						lives;
 
 
 
 
 	public:
-		World(Shader &shader, std::string model, float screen_x, float screen_y);
+		World(Shader &shader, std::string model, float screen_x, float screen_y, GLFWwindow	*window);
 		World(World const & src);
 		~World(void);
 		World const & operator=(World const & rhs);
@@ -63,6 +73,9 @@ class World
 		void	player_clipX(float x_move);
 		void	player_clipZ(float z_move);
 		int		getStatus( void );
+		int		getScore( void );
+		int		getLives( void );
+
 };
 
 #endif

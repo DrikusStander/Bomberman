@@ -14,6 +14,9 @@ Player::Player( Shader &shader, std::string model) : Character(shader, model + "
 	this->speedMult = 1;
 	this->bombCount = 1;
 	this->activeMult = 0.5;
+	this->lives = 3;
+	this->dead = false;
+	this->invincible = false;
 }
 
 
@@ -26,7 +29,10 @@ Player::Player( Player const & src) : Character(src)
 Player::~Player( void )
 {
 	std::cout << "Player - Destructor called " << std::endl;
-	// delete this->bomb;
+	for (int i = 0; i < 3; i++)
+		delete this->bomb[i];
+	for (int i = 0; i < 22; i++)
+		delete this->characterModelarr[i];
 }
 
 Player const & Player::operator=(Player const & rhs)
@@ -37,7 +43,6 @@ Player const & Player::operator=(Player const & rhs)
 
 void Player::draw(void)
 {
-	// std::cout << static_cast<int>(this->active) << std::endl;
 	glm::mat4 model(1);
 	model = glm::translate( model, glm::vec3(this->x_trans, this->y_trans, this->z_trans)); 	// Translate item
 	model = glm::scale( model, glm::vec3(1.2f, 1.2f, 1.2f));									// scale item
@@ -46,6 +51,65 @@ void Player::draw(void)
 	if (this->active > 21)
 		this->active = 0;
 	this->characterModelarr[static_cast<int>(this->active)]->Draw(*this->_shader);
+	switch(this->bombCount)
+	{
+		case 1:
+		{
+			if (this->bomb[0]->getActive() == true && this->dead == true)
+			{
+				this->invincible = true;
+			}
+			else if ((this->bomb[0]->getActive() == false ) && this->dead == true)
+			{
+				this->dead = false;
+				this->invincible = false;
+			}
+			// else
+			// {
+			// 	this->invincible = false;
+			// 	// this->dead = false;
+			// }
+			break;
+		}
+		case 2:
+		{
+			if ((this->bomb[0]->getActive() == true || this->bomb[1]->getActive() == true ) && this->dead == true)
+			{
+				this->invincible = true;
+			}
+			else if ((this->bomb[0]->getActive() == false && this->bomb[1]->getActive() == false ) && this->dead == true)
+			{
+				this->dead = false;
+				this->invincible = false;
+			}
+			// else
+			// {
+			// 	this->invincible = false;
+			// 	// this->dead = false;
+			// }
+			break;
+		}
+		case 3:
+		{
+			if ((this->bomb[0]->getActive() == true || this->bomb[1]->getActive() == true || this->bomb[2]->getActive() == true ) && this->dead == true)
+			{
+				this->invincible = true;
+			}
+			else if ((this->bomb[0]->getActive() == false && this->bomb[1]->getActive() == false && this->bomb[2]->getActive() == false ) && this->dead == true)
+			{
+				this->dead = false;
+				this->invincible = false;
+			}
+			// else
+			// {
+			// 	this->invincible = false;
+			// 	// this->dead = false;
+			// }
+			break;
+		}
+		default:
+			break;
+	}
 	for (std::vector<Bomb*>::iterator it = this->bomb.begin() ; it != this->bomb.end(); it++)
 	{
 		if ((*it)->getActive() == true)
@@ -359,4 +423,23 @@ void	Player::handlePowerup(int powerup)
 		if (this->bombCount < 3)
 			this->bombCount++;
 	}
+}
+
+int		Player::getLives( void )
+{
+	return(this->lives);
+}
+
+int		Player::subLife( void )
+{
+	this->lives -= 1;
+	this->dead = true;
+	if (this->lives <= 0)
+		this->lives = 0;
+	return(this->lives);
+}
+
+bool Player::getInvincible( void )
+{
+	return(this->invincible);
 }
