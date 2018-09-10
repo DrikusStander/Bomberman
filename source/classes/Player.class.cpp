@@ -403,6 +403,7 @@ void	Player::ProcessKeyboard(Direction direction)
 
 void	Player::handlePowerup(int powerup)
 {
+	std::cout << "in handle powerup" << std::endl;
 	if (powerup == 0)
 	{
 		for (std::vector<Bomb*>::iterator it = this->bomb.begin() ; it != this->bomb.end(); it++)
@@ -423,6 +424,7 @@ void	Player::handlePowerup(int powerup)
 		if (this->bombCount < 3)
 			this->bombCount++;
 	}
+	std::cout << "leaving handle powerup" << std::endl;
 }
 
 int		Player::getLives( void )

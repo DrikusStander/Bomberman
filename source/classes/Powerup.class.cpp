@@ -39,7 +39,7 @@ Powerup const & Powerup::operator=(Powerup const & rhs)
 
 void Powerup::draw(void)
 {
-	if (this->activeFrame == 23)
+	if (this->activeFrame == 23 || 23 > this->itemModelarr->size())
 		this->activeFrame = 0;
 	else
 		this->activeFrame++;

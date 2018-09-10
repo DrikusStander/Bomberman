@@ -198,9 +198,7 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 					if (this->menuActive == 0)
 					{
 						menuVisible = false;
-						// std::async(std::launch::async, &Game::createWorld2, this);
 						loadVisible =true;
-
 						std::thread *worldThread =  new std::thread(createWorld, this);
 						worldThread->detach();
 						

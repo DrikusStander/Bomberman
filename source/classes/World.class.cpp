@@ -18,12 +18,16 @@ mu.unlock();
 
 mu.lock();
 	glfwMakeContextCurrent(window);	
+	std::cout << "World: setting vars" << std::endl;
 	this->_shader = &shader;
 	this->x_trans = 0.0f;
 	this->y_trans = 0.0f;
 	this->z_trans = 0.0f;
 	this->score = 0;
 	this->time = 200;
+	this->wallCount = 0;
+	this->enemyCount = 0;
+	this->portalActive = false;
 	this->player = new Player(shader, "resources/models/player/player_run_");
 	this->lives = this->player->getLives();
 	glfwMakeContextCurrent(NULL);
@@ -31,6 +35,7 @@ mu.unlock();
 
 mu.lock();
 	glfwMakeContextCurrent(window);	
+	std::cout << "World: creating vectors" << std::endl;
 	this->objects = new std::vector<Item*>();
 	this->enemies = new std::vector<Enemy*>();
 	this->powerups = new std::vector<Powerup*>();
@@ -48,13 +53,16 @@ mu.unlock();
 mu.lock();
 	glfwMakeContextCurrent(window);	
 	// create coin models vectors
+	std::cout << "World: creating Models Vectors" << std::endl;
 	this->bombRaduis_model = new std::vector<Model*>();
 	this->bombCount_model = new std::vector<Model*>();
 	this->speed_model = new std::vector<Model*>();
+	this->portal_model = new std::vector<Model*>();
 	glfwMakeContextCurrent(NULL);
 mu.unlock();
 
 mu.lock();
+	std::cout << "World: creating adding Models to bombRaduis Vector" << std::endl;
 	glfwMakeContextCurrent(window);	
 	// add moels to coin models vectors
 	for (int i = 0; i < 24; i++)
@@ -63,6 +71,7 @@ mu.lock();
 mu.unlock();
 
 mu.lock();
+	std::cout << "World: adding Models to BombCount Vector" << std::endl;
 	glfwMakeContextCurrent(window);	
 	for (int i = 0; i < 24; i++)
 		this->bombCount_model->push_back(new Model("resources/models/coin/bombs/coin" + std::to_string(i) + ".obj"));
@@ -70,6 +79,7 @@ mu.lock();
 mu.unlock();
 
 mu.lock();
+	std::cout << "World: adding Models to Speed Vector" << std::endl;
 	glfwMakeContextCurrent(window);	
 	for (int i = 0; i < 24; i++)
 		this->speed_model->push_back(new Model("resources/models/coin/run/coin" + std::to_string(i) + ".obj"));
@@ -77,6 +87,16 @@ mu.lock();
 mu.unlock();
 
 mu.lock();
+	std::cout << "World: adding Models to portal Vector" << std::endl;
+	glfwMakeContextCurrent(window);
+	// set models for portal
+	for (int i = 0; i < 1; i++)
+		this->portal_model->push_back(new Model("resources/models/portal/portal" + std::to_string(i) + ".obj"));
+	glfwMakeContextCurrent(NULL);
+mu.unlock();
+
+mu.lock();
+	std::cout << "World: adding new intital Powerups to their Vectors" << std::endl;
 	glfwMakeContextCurrent(window);	
 	// set initial powerups
 
@@ -86,12 +106,14 @@ mu.lock();
 		this->bombCount.push_back( new Powerup(*this->_shader, "resources/models/coin/bombs/coin", 2, this->bombCount_model) );
 		this->bombRaduis.push_back( new Powerup(*this->_shader, "resources/models/coin/bomb/coin", 0, this->bombRaduis_model) );
 	}
+	this->portal = new Powerup(*this->_shader, "resources/models/portal/portal", 3, this->portal_model);
 	std::cout << "World powerups initialized" << std::endl;
 
 	glfwMakeContextCurrent(NULL);
 mu.unlock();
 
 mu.lock();
+	std::cout << "World: Initializing Map" << std::endl;
 	glfwMakeContextCurrent(window);	
 	// initiliaze the map
 	this->map = new char*[17] ;
@@ -106,6 +128,7 @@ mu.unlock();
 
 mu.lock();
 	glfwMakeContextCurrent(window);	
+	std::cout << "World: Initializing Breakable walls on Map" << std::endl;
 	// randomly innitilize breakable walls to the world
 	std::srand(std::time(NULL));
 	for (int i = 0; i < 17; i++)
@@ -124,6 +147,7 @@ mu.lock();
 				{
 					if ((std::rand() % 3 + 1) == 1)
 					{
+						this->wallCount++;
 						this->map[i][j] = 'W';
 						Item *temp = new Item(shader, this->wall_model);
 
@@ -146,6 +170,7 @@ mu.unlock();
 mu.lock();
 	glfwMakeContextCurrent(window);	
 
+	std::cout << "World: Initializing Enemies on Map" << std::endl;
 	// Initialize Enemies into the world
 	int enemy_count = 5;
 	while (enemy_count > 0)
@@ -156,6 +181,7 @@ mu.lock();
 		{
 			if (this->map[row][col] == '\0')
 			{
+				this->enemyCount++;
 				this->map[row][col] = 'E';
 				float x_transT = ((-168) - (col) * (-21));
 				float z_transT = ((-168) - (row) * (-21));
@@ -289,8 +315,6 @@ void World::draw(glm::mat4 matCamera)
 	}
 	this->player->draw();
 	this->hud.draw(matCamera, this->time, this->score, this->lives);
-	// this->hud->drawScore(this->score);
-
 
 	for (Enemy *enemy : *this->enemies)
 	{
@@ -330,8 +354,16 @@ void World::draw(glm::mat4 matCamera)
 				{
 					if ((*it)->getRow() == i && (*it)->getCol() == j)
 					{
-						delete (*it);
-						it = this->powerups->erase(it);
+						if ((*it)->getType() != 3)
+						{
+							delete (*it);
+							it = this->powerups->erase(it);
+						}
+						else
+						{
+							++it;
+							this->map[i][j] = 'U';
+						}
 					}
 					else
 						++it;
@@ -345,13 +377,21 @@ void World::draw(glm::mat4 matCamera)
 					if ((*it)->getRow() == i && (*it)->getCol() == j)
 					{
 						// generate a powerup based on random chance
-						if ((rand() % 3) == 0)
+						// if ((rand() % 2 + 1) == 1 && this->portalActive == false)
+						if ((rand() % this->wallCount) == 0 && this->portalActive == false)
+						{
+							this->portalActive = true;
+							std::cout << "-----------> portal " << std::endl;
+							this->portal->setPos((*it)->getX(), (*it)->getZ(), (*it)->getRow(), (*it)->getCol());
+							this->map[i][j] = 'U';
+							this->powerups->push_back(this->portal);
+						}
+						else if ((rand() % 3) == 0)
 						{
 							int powerupOption = rand() % 3;
 							Powerup *temp;
 							if (powerupOption == 0)
 							{
-								// temp = new Powerup(*this->_shader, "resources/models/coin/bomb/coin", powerupOption);
 								if (this->bombRaduis_index < 3)
 								{
 									temp = this->bombRaduis[this->bombRaduis_index];
@@ -360,7 +400,6 @@ void World::draw(glm::mat4 matCamera)
 							}
 							else if (powerupOption == 1)
 							{
-								// temp = new Powerup(*this->_shader, "resources/models/coin/run/coin", powerupOption);
 								if (this->speed_index < 3)
 								{
 									temp = this->speed[this->speed_index];
@@ -370,7 +409,6 @@ void World::draw(glm::mat4 matCamera)
 							}
 							else if (powerupOption == 2)
 							{
-								// temp =  new Powerup(*this->_shader, "resources/models/coin/bombs/coin", powerupOption);
 								if (this->bombCount_index < 3)
 								{
 									temp = this->bombCount[this->bombCount_index];
@@ -388,6 +426,7 @@ void World::draw(glm::mat4 matCamera)
 								this->map[i][j] = 'U';
 							}
 						}
+						this->wallCount--;
 						std::cout << "delete object" << objCol << std::endl;
 						delete (*it);
 						it = this->objects->erase(it);
@@ -395,12 +434,14 @@ void World::draw(glm::mat4 matCamera)
 					else
 						++it;
 				}
+				// std::cout << "end of Oject Check" << std::endl;
 
 				// check what enemy was affected
 				for (std::vector<Enemy*>::iterator it = this->enemies->begin() ; it != this->enemies->end(); )
 				{
 					if ((*it)->getRow() == i && (*it)->getCol() == j)
 					{
+						this->enemyCount--;
 						this->score += 100;
 						delete (*it);
 						it = this->enemies->erase(it);
@@ -425,29 +466,46 @@ void World::draw(glm::mat4 matCamera)
 							switch(type)
 							{
 								case 0:
+									it = this->powerups->erase(it);
 									this->bombRaduis_index--;
 									break;
 								case 1:
+									it = this->powerups->erase(it);
 									this->speed_index--;
 									break;
 								case 2:
+									it = this->powerups->erase(it);
 									this->bombCount_index--;
 									break;
+								case 3:
+								{
+									if (this->enemyCount == 0)
+									{
+										/*
+											also load next level here
+										*/
+										it = this->powerups->erase(it);
+										this->worldStatus = 1;
+									}
+									else
+										++it;
+									break;
+								}
 								default:
 									break;
 							}
 							// delete (*it);
-							it = this->powerups->erase(it);
 						}
 						else
 							++it;
 					}
 				}
+
 			}
 		}
 		// std::cout << std::endl;
 	}
-	
+	// std::cout << "end of world Draw" << std::endl;
 }
 
 void	World::ProcessKeyboard(Direction direction)

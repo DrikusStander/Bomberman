@@ -58,6 +58,11 @@ class World
 		int						score;
 		int						lives;
 		int						time;
+		int						wallCount;
+		bool					portalActive;
+		std::vector<Model *>	*portal_model;
+		Powerup *				portal;
+		int						enemyCount;
 
 
 
