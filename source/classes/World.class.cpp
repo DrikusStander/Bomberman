@@ -25,6 +25,7 @@ mu.lock();
 	this->z_trans = 0.0f;
 	this->score = 0;
 	this->time = 200;
+	timeSinceNewFrame = 0.0f;
 	this->wallCount = 0;
 	this->enemyCount = 0;
 	this->portalActive = false;
@@ -301,7 +302,7 @@ World const & World::operator=(World const & rhs)
 	return(*this);
 }
 
-void World::draw(glm::mat4 matCamera)
+void World::draw(glm::mat4 matCamera, const GLfloat glfwTime)
 {
 	this->player->setMap(this->map);
 	glm::mat4 model(1);
@@ -314,6 +315,16 @@ void World::draw(glm::mat4 matCamera)
 		item->draw();
 	}
 	this->player->draw();
+	if (glfwTime - this->timeSinceNewFrame >= 1.0f)
+	{
+		this->timeSinceNewFrame = glfwTime;
+		if (this->time > 0)
+			this->time--;
+		else
+			this->worldStatus = 1;
+
+	}
+
 	this->hud.draw(matCamera, this->time, this->score, this->lives);
 
 	for (Enemy *enemy : *this->enemies)
