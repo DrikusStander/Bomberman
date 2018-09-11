@@ -495,8 +495,8 @@ void World::draw(glm::mat4 matCamera, const GLfloat glfwTime)
 										/*
 											also load next level here
 										*/
-										it = this->powerups->erase(it);
-										this->worldStatus = 1;
+											it = this->powerups->erase(it);
+											this->worldStatus = 2;
 									}
 									else
 										++it;
