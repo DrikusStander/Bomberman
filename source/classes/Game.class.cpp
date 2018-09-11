@@ -134,15 +134,11 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 	// Load models
 	// this->world = new World(shader, "resources/models/world.obj");
 	for (int i = 0; i < 16; i++)
-	{
 		this->Menus.push_back(new MainMenu(shader, "resources/models/menu/Menu_" + std::to_string(i) + ".obj"));
-	}
 
 	Item temp(shader, "resources/models/portal/portal.obj");
 	for (int i = 0; i < 3; i++)
-	{
 		this->load.push_back(new LoadingScreen(shader, "resources/models/menu/Loading_screen_" + std::to_string(i) + ".obj"));
-	}
 	this->loadActive = 0;
 
 	// Item temp(shader, "resources/models/fire/fire.obj");
@@ -266,31 +262,28 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 			}
 			usleep(10000);
 		}
-	}
-	else
-	{
-		if (loadVisible == true)
-		{
-			if (this->loadActive == 3)
-				this->loadActive = 0;
-			load[this->loadActive]->draw();
-			usleep(400000);
-			this->loadActive++;
-		}
 		else
-		{	
-			if (currentFrame - old_time_key >= 0.01f)
+		{
+			if (loadVisible == true)
 			{
-				this->world->draw(camera.GetViewMatrix());
-				old_time_key = currentFrame;
-				DoMovement();
-				if (world->getStatus() == 1)
+				if (this->loadActive == 3)
+					this->loadActive = 0;
+				load[this->loadActive]->draw();
+				usleep(400000);
+				this->loadActive++;
+			}
+			else
+			{	
+				if (currentFrame - old_time_key >= 0.01f)
 				{
-					this->world->draw(camera.GetViewMatrix(), currentFrame);
 					old_time_key = currentFrame;
+					this->world->draw(camera.GetViewMatrix(), currentFrame);
 					DoMovement();
 					if (world->getStatus() == 1)
 					{
+						// this->world->draw(camera.GetViewMatrix(), currentFrame);
+						// old_time_key = currentFrame;
+						// DoMovement();
 						delete this->world;
 						camera.moveCamForMenu();
 						camera.ProcessMouseMovement(0, -250);
@@ -300,14 +293,10 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 					}
 				}
 			}
-
 		}
-	}
-
-	glfwSwapBuffers(window);
-	glfwMakeContextCurrent(NULL);
-	mu.unlock();
-
+		glfwSwapBuffers(window);
+		glfwMakeContextCurrent(NULL);
+		mu.unlock();
 	}
 	for (std::vector<MainMenu*>::iterator it = this->Menus.begin() ; it != this->Menus.end(); )
 	{
@@ -326,7 +315,6 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 			it = this->load.erase(it);
 		}
 	}
-
 	glfwTerminate();
 }
 
