@@ -137,7 +137,7 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 	for (int i = 0; i < 16; i++)
 		this->Menus.push_back(new MainMenu(shader, "resources/models/menu/Menu_" + std::to_string(i) + ".obj"));
 
-	Item temp(shader, "resources/models/portal/portal.obj");
+	// Item temp(shader, "resources/models/portal/portal.obj");
 
 	for (int i = 0; i < 9; i++)
 		this->load.push_back(new LoadingScreen(shader, "resources/models/menu/LoadingScreen/Loading_screen_" + std::to_string(i) + ".obj"));
