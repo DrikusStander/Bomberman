@@ -69,7 +69,7 @@ Game::Game(void) : screen_x(100), screen_y(100)
 Game::Game(const int width, const int height) : screen_x(width), screen_y(height)
 {
 	std::cout << "Game - Parametric Constructor called" << std::endl;
-
+	int temp22 = 2;
 	lastX = 400;
 	lastY = 300;
 	firstMouse = true;
@@ -133,7 +133,7 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 	this->shader = &shader;
 	// Load models
 	// this->world = new World(shader, "resources/models/world.obj");
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < 16; i++)
 	{
 		this->Menus.push_back(new MainMenu(shader, "resources/models/menu/Menu_" + std::to_string(i) + ".obj"));
 	}
@@ -187,65 +187,119 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 		if (menuVisible == true)
 		{
 			Menus[this->menuActive]->draw();
-			if (currentFrame - old_time_key >= 0.07f)
+			MoveMenu();
+		
+			if (keys[GLFW_KEY_ENTER])
 			{
-				old_time_key = currentFrame;
-
-				MoveMenu();
-			
-				if (keys[GLFW_KEY_ENTER])
+				keys[GLFW_KEY_ENTER] = false;
+				if (this->menuActive == 0)
 				{
-					if (this->menuActive == 0)
-					{
-						menuVisible = false;
-						loadVisible =true;
-						std::thread *worldThread =  new std::thread(createWorld, this);
-						worldThread->detach();
-						
-					}
-					else if (this->menuActive == 3)
-						this->menuActive = 5;
-					else if (this->menuActive == 4)
-						glfwSetWindowShouldClose(window, GL_TRUE);
-					else if (this->menuActive == 5)
-						this->menuActive = 0;
+					menuVisible = false;
+					loadVisible =true;
+					std::thread *worldThread =  new std::thread(createWorld, this);
+					worldThread->detach();
 				}
-				usleep(10000);
+				else if (this->menuActive == 3)
+					this->menuActive = 5;
+				else if (this->menuActive == 4)
+					glfwSetWindowShouldClose(window, GL_TRUE);
+				else if (this->menuActive == 2)//Options
+					this->menuActive = 6;
+				else if (this->menuActive == 3)
+					this->menuActive = 5;
+				else if (this->menuActive == 4)
+					glfwSetWindowShouldClose(window, GL_TRUE);
+				else if (this->menuActive == 6)//Resolution
+					this->menuActive = 10;
+				else if (this->menuActive == 7) //Sound
+					this->menuActive = 0;
+				else if (this->menuActive == 8) //Key Bindings
+					this->menuActive = 0;
+				else if ((this->menuActive == 5) || (this->menuActive == 9)) //Back to Main Menu
+					this->menuActive = 0;
+				else if (this->menuActive == 15) //Going back to Options
+					this->menuActive = 6;
+				//-------------------Changing Resolutions--------------------------------------------------------
+				else if (this->menuActive == 10) //Resolution change
+				{
+					this->screen_x = 1024;
+					this->screen_y = 576;
+					glfwSetWindowSize(window, this->screen_x, this->screen_y);
+				}
+				else if (this->menuActive == 11) //Resolution change
+				{
+					this->screen_x = 1280;
+					this->screen_y = 720;
+					glfwSetWindowSize(window, this->screen_x, this->screen_y);
+				}
+				else if (this->menuActive == 12) //Resolution change
+				{
+					this->screen_x = 1920;
+					this->screen_y = 1080;
+					glfwSetWindowSize(window, this->screen_x, this->screen_y);
+				}
+				else if (this->menuActive == 13) //Window Mode
+				{
+					glfwSetWindowMonitor(window, nullptr, 0, 0, this->screen_x, this->screen_y, GLFW_DONT_CARE);
+					keys[GLFW_KEY_ENTER] = true;
+					// glfwSetWindowSize(window, this->screen_x, this->screen_y);
+				}
+				else if (this->menuActive == 14) //Full Screen Mode 
+				{
+					if (glfwGetWindowMonitor(window) == nullptr)
+						temp22 = 0;
+					if (temp22 < 2)
+					{
+						GLFWmonitor *monitor = glfwGetPrimaryMonitor();
+						const GLFWvidmode *mode = glfwGetVideoMode(monitor);
+
+						glfwSetWindowMonitor(window, monitor, 0, 0, 2300, 1920, mode->refreshRate);
+						glfwSetWindowMonitor(window, monitor, 0, 0, this->screen_x, this->screen_y, mode->refreshRate);
+						// sleep(3);
+						// glfwSetWindowMonitor(window, monitor, 0, 0, this->screen_x, this->screen_y, mode->refreshRate);
+						
+						// if (!((mode->width == this->screen_x + 128) && (mode->height == this->screen_y + 72)))
+						temp22++;
+						// keys[GLFW_KEY_ENTER] = true;
+					}
+				}
 			}
+			usleep(10000);
+		}
+	}
+	else
+	{
+		if (loadVisible == true)
+		{
+			if (this->loadActive == 3)
+				this->loadActive = 0;
+			load[this->loadActive]->draw();
+			usleep(400000);
+			this->loadActive++;
 		}
 		else
-		{
-
-			if (loadVisible == true)
+		{	
+			if (currentFrame - old_time_key >= 0.01f)
 			{
-				if (this->loadActive == 3)
-					this->loadActive = 0;
-				load[this->loadActive]->draw();
-				usleep(400000);
-				this->loadActive++;
-			}
-			else
-			{	
-
-				if (currentFrame - old_time_key >= 0.01f)
+				this->world->draw(camera.GetViewMatrix());
+				old_time_key = currentFrame;
+				DoMovement();
+				if (world->getStatus() == 1)
 				{
-					this->world->draw(camera.GetViewMatrix());
-					old_time_key = currentFrame;
-					DoMovement();
-					if (world->getStatus() == 1)
-					{
-						delete this->world;
-						this->menuActive = 0;
-						menuVisible = true;
-						// glfwSetWindowShouldClose(window, GL_TRUE);
-					}
+					delete this->world;
+					this->menuActive = 0;
+					menuVisible = true;
+					// glfwSetWindowShouldClose(window, GL_TRUE);
 				}
-
 			}
+
 		}
-		glfwSwapBuffers(window);
-		glfwMakeContextCurrent(NULL);
-		mu.unlock();
+	}
+
+	glfwSwapBuffers(window);
+	glfwMakeContextCurrent(NULL);
+	mu.unlock();
+	
 	}
 	for (std::vector<MainMenu*>::iterator it = this->Menus.begin() ; it != this->Menus.end(); )
 	{
@@ -303,17 +357,32 @@ void Game::MoveMenu(void)
 	{
 		if (keys[GLFW_KEY_UP])
 		{
+			keys[GLFW_KEY_UP] = false;
 			if (this->menuActive > 0)
-				this->menuActive--;
+			{
+				if ((this->menuActive < 5) || (this->menuActive > 6) || (this->menuActive > 10))
+					this->menuActive--;
+			}
 		}
 		else if (keys[GLFW_KEY_DOWN])
 		{
+			keys[GLFW_KEY_DOWN] = false;
 			if (this->menuActive < 4)
 				this->menuActive++;
+			if (this->menuActive >= 6)
+			{
+				if (this->menuActive < 9)
+					this->menuActive++;
+			}
+			if (this->menuActive >= 10)
+			{
+				if (this->menuActive < 15)
+					this->menuActive++;
+			}
 		}
 	}
-
 }
+
 // Moves/alters the camera positions based on user input
 void	Game::DoMovement(void)
 {
@@ -345,7 +414,10 @@ void	Game::DoMovement(void)
 
 	// Plant a bomb
 	if (keys[GLFW_KEY_SPACE])
+	{
+		keys[GLFW_KEY_SPACE] = false;
 		this->world->ProcessKeyboard(SPC);
+	}
 	usleep(10000);
 }
 
