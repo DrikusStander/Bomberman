@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Camera.class.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dwilliam <dwilliam@42.fr>                  +#+  +:+       +#+        */
+/*   By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/11 11:26:34 by cnolte            #+#    #+#             */
-/*   Updated: 2018/09/03 19:59:40 by dwilliam         ###   ########.fr       */
+/*   Updated: 2018/09/11 16:50:43 by cnolte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,4 +155,19 @@ void Camera::updateCameraVectors(void)
 	// Also re-calculate the Right and Up vector
 	this->right = glm::normalize(glm::cross(this->front, this->worldUp));  // Normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
 	this->up = glm::normalize(glm::cross(this->right, this->front));
+}
+
+void	Camera::moveCamForMenu(void)
+{
+	this->movementSpeed = SPEED;
+	this->mouseSensitivity = SENSITIVTY;
+	this->zoom = ZOOM;
+	this->front.x = 0.0f;
+	this->front.y = 0.0f;
+	this->front.z = 0.0f;
+	this->position = glm::vec3(0.0f, 300.0f, 200.0f);
+	this->worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
+	this->yaw = YAW;
+	this->pitch = PITCH;
+	this->updateCameraVectors();
 }

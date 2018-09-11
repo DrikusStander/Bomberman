@@ -6,7 +6,7 @@
 /*   By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/11 11:20:47 by cnolte            #+#    #+#             */
-/*   Updated: 2018/09/03 15:32:54 by cnolte           ###   ########.fr       */
+/*   Updated: 2018/09/11 16:11:17 by cnolte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,9 @@ class Camera
 
 		// Processes input received from a mouse scroll-wheel event. Only requires input on the vertical wheel-axis
 		void		ProcessMouseScroll(GLfloat yOffset);
+
+		// Move camera to default position for menu
+		void		moveCamForMenu(void);
 
 	private:
 		 // Camera Attributes

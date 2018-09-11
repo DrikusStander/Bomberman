@@ -286,10 +286,18 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 				DoMovement();
 				if (world->getStatus() == 1)
 				{
-					delete this->world;
-					this->menuActive = 0;
-					menuVisible = true;
-					// glfwSetWindowShouldClose(window, GL_TRUE);
+					this->world->draw(camera.GetViewMatrix(), currentFrame);
+					old_time_key = currentFrame;
+					DoMovement();
+					if (world->getStatus() == 1)
+					{
+						delete this->world;
+						camera.moveCamForMenu();
+						camera.ProcessMouseMovement(0, -250);
+						this->menuActive = 0;
+						menuVisible = true;
+						// glfwSetWindowShouldClose(window, GL_TRUE);
+					}
 				}
 			}
 
@@ -299,7 +307,7 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 	glfwSwapBuffers(window);
 	glfwMakeContextCurrent(NULL);
 	mu.unlock();
-	
+
 	}
 	for (std::vector<MainMenu*>::iterator it = this->Menus.begin() ; it != this->Menus.end(); )
 	{

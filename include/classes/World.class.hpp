@@ -63,6 +63,7 @@ class World
 		std::vector<Model *>	*portal_model;
 		Powerup *				portal;
 		int						enemyCount;
+		int						timeSinceNewFrame;
 
 
 
@@ -72,7 +73,7 @@ class World
 		World(World const & src);
 		~World(void);
 		World const & operator=(World const & rhs);
-		void	draw(glm::mat4 matCamera);
+		void	draw(glm::mat4 matCamera, const GLfloat glfwTime);
 		virtual void	ProcessKeyboard(Direction direction);
 		float	player_getX(void);
 		float	player_getZ(void);
