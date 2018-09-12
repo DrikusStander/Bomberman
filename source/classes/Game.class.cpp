@@ -381,7 +381,7 @@ void Game::MoveMenu(void)
 			keys[GLFW_KEY_UP] = false;
 			if (this->menuActive > 0)
 			{
-				if ((this->menuActive < 5) || (this->menuActive > 6) || (this->menuActive > 10))
+				if ((this->menuActive < 5) || (this->menuActive > 6 && this->menuActive <= 9) || (this->menuActive > 10))
 					this->menuActive--;
 			}
 		}
