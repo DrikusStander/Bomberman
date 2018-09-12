@@ -145,7 +145,7 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 
 	// Item temp(shader, "resources/models/fire/fire.obj");
 	// Item temp2(shader, "resources/models/fire/fire.obj");
-	temp.setPos(168, 168, 0, 0);
+	// temp.setPos(168, 168, 0, 0);
 
 	glm::mat4 projection = glm::perspective(camera.GetZoom(), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 1000.0f);
 	this->projection = projection;
