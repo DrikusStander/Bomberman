@@ -79,6 +79,7 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 	menuVisible = true;
 	loadVisible = false;
 	this->WorldLoaded = false;
+	this->loadActive = 0;
 
 	camera.ProcessMouseMovement(0, -250);
 
@@ -133,15 +134,11 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 
 	this->shader = &shader;
 	// Load models
-	// this->world = new World(shader, "resources/models/world.obj");
 	for (int i = 0; i < 16; i++)
 		this->Menus.push_back(new MainMenu(shader, "resources/models/menu/Menu_" + std::to_string(i) + ".obj"));
 
-	// Item temp(shader, "resources/models/portal/portal.obj");
-
 	for (int i = 0; i < 9; i++)
 		this->load.push_back(new LoadingScreen(shader, "resources/models/menu/LoadingScreen/Loading_screen_" + std::to_string(i) + ".obj"));
-	this->loadActive = 0;
 
 	// Item temp(shader, "resources/models/fire/fire.obj");
 	// Item temp2(shader, "resources/models/fire/fire.obj");
@@ -241,7 +238,6 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 				{
 					glfwSetWindowMonitor(window, nullptr, 0, 0, this->screen_x, this->screen_y, GLFW_DONT_CARE);
 					keys[GLFW_KEY_ENTER] = true;
-					// glfwSetWindowSize(window, this->screen_x, this->screen_y);
 				}
 				else if (this->menuActive == 14) //Full Screen Mode 
 				{
@@ -255,10 +251,6 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 						glfwSetWindowMonitor(window, monitor, 0, 0, 2300, 1920, mode->refreshRate);
 						glfwSetWindowMonitor(window, monitor, 0, 0, this->screen_x, this->screen_y, mode->refreshRate);
 						keys[GLFW_KEY_ENTER] = true;
-						// sleep(3);
-						// glfwSetWindowMonitor(window, monitor, 0, 0, this->screen_x, this->screen_y, mode->refreshRate);
-						
-						// if (!((mode->width == this->screen_x + 128) && (mode->height == this->screen_y + 72)))
 						temp22++;
 					}
 				}
@@ -282,7 +274,7 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 				if (this->loadActive == 9)
 				{
 					this->loadActive = 7;
-					stage = 2;
+					stage = 4;
 				}
 				load[this->loadActive]->draw();
 				usleep(400000);
@@ -309,6 +301,14 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 							this->loadActive = 4;
 						if (stage == 3)
 							this->loadActive = 7;
+						if (stage == 4)
+						{
+							delete this->world;
+							camera.moveCamForMenu();
+							camera.ProcessMouseMovement(0, -250);
+							this->menuActive = 0;
+							menuVisible = true;
+						}
 						delete this->world;
 						camera.moveCamForMenu();
 						camera.ProcessMouseMovement(0, -250);
