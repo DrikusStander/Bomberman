@@ -3,14 +3,16 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: dwilliam <dwilliam@42.fr>                  +#+  +:+       +#+         #
+#    By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/07/31 19:21:44 by cnolte            #+#    #+#              #
-#    Updated: 2018/09/06 13:56:09 by dwilliam         ###   ########.fr        #
+#    Updated: 2018/09/14 12:16:52 by cnolte           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 .DEFAULT_GOAL := install_dependencies
+
+ROOT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
 NAME := bomberman
 SRCS := source/main.cpp source/classes/Game.class.cpp source/classes/Camera.class.cpp source/classes/Mesh.class.cpp \
@@ -18,21 +20,27 @@ SRCS := source/main.cpp source/classes/Game.class.cpp source/classes/Camera.clas
 		source/classes/Player.class.cpp source/classes/Item.class.cpp source/classes/Bomb.class.cpp					\
 		source/classes/World.class.cpp source/classes/Enemy.class.cpp source/Exceptions.cpp							\
 		source/classes/HUD.class.cpp source/classes/Powerup.class.cpp source/classes/MainMenu.class.cpp				\
-		source/classes/LoadingScreen.class.cpp
+		source/classes/LoadingScreen.class.cpp source/classes/Sound.class.cpp
+
 OBJS := $(SRCS:.cpp=.o)
 
 CXX := clang++ -std=c++11
 
-INC_DIRS = include/ include/classes $(HOME)/.brew/include resources/SOIL2
+INC_DIRS = include/ include/classes $(HOME)/.brew/include resources/SOIL2 resources/Sound/include
 CXXFLAGS += $(addprefix -I, $(INC_DIRS))
 
 $(NAME): $(OBJS)
 	@$(MAKE) -C resources/SOIL2 all
 	mv resources/SOIL2/libSOIL2.a .
-	@$(CXX) $(OBJS) -o $@ -L ~/.brew/lib -lGLEW -lGLFW -lassimp -framework OpenGL -L . -lSOIL2 -framework CoreFoundation
+	@$(CXX) $(OBJS) -o $@ -L ~/.brew/lib -lGLEW -lGLFW -lassimp -framework OpenGL -L . -L resources/Sound/lib -lSOIL2 -framework CoreFoundation -lIrrKlang
 	@echo [INFO] $@ "compiled successfully."
 
 install_dependencies:
+ifneq ($(DYLD_LIBRARY_PATH),$(ROOT_DIR)/resources/Sound/lib)
+	@echo "export DYLD_LIBRARY_PATH="$(ROOT_DIR)"/resources/Sound/lib" >> ~/.zshrc
+	@echo "Added missing environment variable. Please run 'make' again."
+	@exec zsh;
+endif
 	@if ! test -d ~/.brew/Library; \
 	then if ! test -s resources/install_brew.sh; \
 	then echo "ERROR: Brew install script missing."; \

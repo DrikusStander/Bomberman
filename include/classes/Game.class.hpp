@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Game.class.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dwilliam <dwilliam@42.fr>                  +#+  +:+       +#+        */
+/*   By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/11 11:20:47 by cnolte            #+#    #+#             */
-/*   Updated: 2018/09/06 16:15:42 by dwilliam         ###   ########.fr       */
+/*   Updated: 2018/09/14 12:25:22 by cnolte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,14 +32,15 @@
 
 # include "MainMenu.class.hpp"
 # include "LoadingScreen.class.hpp"
-#include <unistd.h>
-#include <thread>
-#include <future>
+# include <unistd.h>
+# include <thread>
+# include <future>
 
-#include <mutex>
-		
+# include "Sound.class.hpp"
+
+# include <mutex>
+
 extern std::mutex mu;
-
 
 class Game
 {
@@ -71,12 +72,13 @@ class Game
 		bool	loadVisible;
 		int		loadActive;
 
-		bool 	WorldLoaded;
-		Shader	*shader;
-		void	DoMovement(void);
-		void	MoveMenu(void);
+		bool 		WorldLoaded;
+		Shader		*shader;
+		void		DoMovement(void);
+		void		MoveMenu(void);
 		GLFWwindow	*window;
-		glm::mat4 projection;
+		glm::mat4	projection;
+		Sound		sound;
 
 
 };

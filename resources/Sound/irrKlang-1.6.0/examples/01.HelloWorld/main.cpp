@@ -23,13 +23,13 @@
 // to put irrklang:: before of the name of every class, we tell the compiler that
 // we use that namespaces here.
 
-using namespace irrklang;
+// using namespace irrklang;
 
 // To be able to use the irrKlang.dll file, we need to link with the irrKlang.lib.
 // We could set this option in the project settings, but to make it easy we use
 // a pragma comment:
 
-#pragma comment(lib, "irrKlang.lib") // link with irrKlang.dll
+// #pragma comment(lib, "irrKlang.lib") // link with irrKlang.dll
 
 // Now lets start with irrKlang 3D sound engine example 01, demonstrating simple 2D sound.
 // Start up the sound engine using createIrrKlangDevice(). You can specify several
@@ -39,7 +39,7 @@ using namespace irrklang;
 int main(int argc, const char** argv)
 {
 	// start the sound engine with default parameters
-	ISoundEngine* engine = createIrrKlangDevice();
+	irrklang::ISoundEngine* engine = irrklang::createIrrKlangDevice();
 
 	if (!engine)
 	{
@@ -51,11 +51,11 @@ int main(int argc, const char** argv)
 	// tells the engine to play it looped.
 
 	// play some sound stream, looped
-	ISoundSource* shootSound = engine->addSoundSourceFromFile("../../media/getout.ogg");
-	ISoundSource* shootSound2 = engine->addSoundSourceAlias(shootSound, "silentShoot");
+	irrklang::ISoundSource* shootSound = engine->addSoundSourceFromFile("../../media/getout.ogg");
+	irrklang::ISoundSource* shootSound2 = engine->addSoundSourceAlias(shootSound, "silentShoot");
 
-	ISoundSource* shootSound3 = engine->addSoundSourceFromFile("Bass-Drum-1.wav");
-	ISoundSource* shootSound4 = engine->addSoundSourceAlias(shootSound3, "silentShoot2");
+	irrklang::ISoundSource* shootSound3 = engine->addSoundSourceFromFile("Bass-Drum-1.wav");
+	irrklang::ISoundSource* shootSound4 = engine->addSoundSourceAlias(shootSound3, "silentShoot2");
 	double vol = 0.02;
 	shootSound2->setDefaultVolume(vol);
 	shootSound3->setDefaultVolume(1.0);
@@ -78,7 +78,7 @@ int main(int argc, const char** argv)
 		{
 			vol += 0.04;
 			engine->drop();
-			engine = createIrrKlangDevice();
+			engine = irrklang::createIrrKlangDevice();
 			shootSound = engine->addSoundSourceFromFile("../../media/getout.ogg");
 			shootSound2 = engine->addSoundSourceAlias(shootSound, "silentShoot");
 			shootSound3 = engine->addSoundSourceFromFile("Bass-Drum-1.wav");
@@ -92,7 +92,7 @@ int main(int argc, const char** argv)
 		{
 			vol -= 0.04;
 			engine->drop();
-			engine = createIrrKlangDevice();
+			engine = irrklang::createIrrKlangDevice();
 			shootSound = engine->addSoundSourceFromFile("../../media/getout.ogg");
 			shootSound2 = engine->addSoundSourceAlias(shootSound, "silentShoot");
 			shootSound3 = engine->addSoundSourceFromFile("Bass-Drum-1.wav");

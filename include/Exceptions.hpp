@@ -6,7 +6,7 @@
 /*   By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/16 16:21:59 by cnolte            #+#    #+#             */
-/*   Updated: 2018/08/24 12:22:30 by cnolte           ###   ########.fr       */
+/*   Updated: 2018/09/14 11:43:53 by cnolte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,12 @@ namespace Exceptions
 	};
 
 	class InitializeGlewFailed: public std::exception
+	{
+		public:
+			const char	*what(void) const throw();
+	};
+
+	class InitializeSoundEngineFailed: public std::exception
 	{
 		public:
 			const char	*what(void) const throw();

@@ -12,8 +12,6 @@
 
 #include "Game.class.hpp"
 
-
-
 Camera	camera;
 
 bool	keys[1024];
@@ -69,6 +67,7 @@ Game::Game(void) : screen_x(100), screen_y(100)
 Game::Game(const int width, const int height) : screen_x(width), screen_y(height)
 {
 	std::cout << "Game - Parametric Constructor called" << std::endl;
+
 	int temp22 = 2;
 	lastX = 400;
 	lastY = 300;
@@ -151,6 +150,15 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 	this->menuActive = 0;
 	GLfloat old_time = 0.0f;
 	GLfloat old_time_key = 0.0f;
+
+	// ---------Sound-----------
+	sound.playMusic();
+	// sound.setVolEffects(0.1);
+	// sound.setVolMusic(0.1);
+	sound.playBombExplode();
+	// sound.stopMusic();
+	// -------------------------
+
 	// Game loop
 	while (!glfwWindowShouldClose(window))
 	{

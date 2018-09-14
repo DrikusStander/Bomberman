@@ -6,7 +6,7 @@
 /*   By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/16 16:28:27 by cnolte            #+#    #+#             */
-/*   Updated: 2018/08/24 12:22:25 by cnolte           ###   ########.fr       */
+/*   Updated: 2018/09/14 11:43:58 by cnolte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,11 @@ const char	*Exceptions::CreateWindowFailed::what(void) const throw()
 const char	*Exceptions::InitializeGlewFailed::what(void) const throw()
 {
 	return ("Failed to initialize GLEW.");
+}
+
+const char	*Exceptions::InitializeSoundEngineFailed::what(void) const throw()
+{
+	return ("Failed to initialize Sound engine.");
 }
 
 // const char	*Exceptions::ArgumentSizeOutOfRange::what(void) const throw()
