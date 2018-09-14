@@ -69,6 +69,7 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 	std::cout << "Game - Parametric Constructor called" << std::endl;
 
 	int temp22 = 2;
+	int stage = 2;
 	lastX = 400;
 	lastY = 300;
 	firstMouse = true;
@@ -77,6 +78,7 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 	menuVisible = true;
 	loadVisible = false;
 	this->WorldLoaded = false;
+	this->loadActive = 0;
 
 	camera.ProcessMouseMovement(0, -250);
 
@@ -131,18 +133,15 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 
 	this->shader = &shader;
 	// Load models
-	// this->world = new World(shader, "resources/models/world.obj");
 	for (int i = 0; i < 16; i++)
 		this->Menus.push_back(new MainMenu(shader, "resources/models/menu/Menu_" + std::to_string(i) + ".obj"));
 
-	Item temp(shader, "resources/models/portal/portal.obj");
-	for (int i = 0; i < 3; i++)
-		this->load.push_back(new LoadingScreen(shader, "resources/models/menu/Loading_screen_" + std::to_string(i) + ".obj"));
-	this->loadActive = 0;
+	for (int i = 0; i < 9; i++)
+		this->load.push_back(new LoadingScreen(shader, "resources/models/menu/LoadingScreen/Loading_screen_" + std::to_string(i) + ".obj"));
 
 	// Item temp(shader, "resources/models/fire/fire.obj");
 	// Item temp2(shader, "resources/models/fire/fire.obj");
-	temp.setPos(168, 168, 0, 0);
+	// temp.setPos(168, 168, 0, 0);
 
 	glm::mat4 projection = glm::perspective(camera.GetZoom(), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 1000.0f);
 	this->projection = projection;
@@ -198,6 +197,7 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 				keys[GLFW_KEY_ENTER] = false;
 				if (this->menuActive == 0)
 				{
+					this->loadActive = 0;
 					menuVisible = false;
 					loadVisible =true;
 					std::thread *worldThread =  new std::thread(createWorld, this);
@@ -246,7 +246,6 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 				{
 					glfwSetWindowMonitor(window, nullptr, 0, 0, this->screen_x, this->screen_y, GLFW_DONT_CARE);
 					keys[GLFW_KEY_ENTER] = true;
-					// glfwSetWindowSize(window, this->screen_x, this->screen_y);
 				}
 				else if (this->menuActive == 14) //Full Screen Mode 
 				{
@@ -259,12 +258,8 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 
 						glfwSetWindowMonitor(window, monitor, 0, 0, 2300, 1920, mode->refreshRate);
 						glfwSetWindowMonitor(window, monitor, 0, 0, this->screen_x, this->screen_y, mode->refreshRate);
-						// sleep(3);
-						// glfwSetWindowMonitor(window, monitor, 0, 0, this->screen_x, this->screen_y, mode->refreshRate);
-						
-						// if (!((mode->width == this->screen_x + 128) && (mode->height == this->screen_y + 72)))
+						keys[GLFW_KEY_ENTER] = true;
 						temp22++;
-						// keys[GLFW_KEY_ENTER] = true;
 					}
 				}
 			}
@@ -275,7 +270,20 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 			if (loadVisible == true)
 			{
 				if (this->loadActive == 3)
+				{
 					this->loadActive = 0;
+					stage = 2;
+				}
+				if (this->loadActive == 6)
+				{
+					this->loadActive = 4;
+					stage = 3;
+				}
+				if (this->loadActive == 9)
+				{
+					this->loadActive = 7;
+					stage = 4;
+				}
 				load[this->loadActive]->draw();
 				usleep(400000);
 				this->loadActive++;
@@ -289,15 +297,32 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 					DoMovement();
 					if (world->getStatus() == 1)
 					{
-						// this->world->draw(camera.GetViewMatrix(), currentFrame);
-						// old_time_key = currentFrame;
-						// DoMovement();
 						delete this->world;
 						camera.moveCamForMenu();
 						camera.ProcessMouseMovement(0, -250);
 						this->menuActive = 0;
 						menuVisible = true;
-						// glfwSetWindowShouldClose(window, GL_TRUE);
+					}
+					else if (world->getStatus() == 2)
+					{
+						if (stage == 2)
+							this->loadActive = 4;
+						if (stage == 3)
+							this->loadActive = 7;
+						if (stage == 4)
+						{
+							delete this->world;
+							camera.moveCamForMenu();
+							camera.ProcessMouseMovement(0, -250);
+							this->menuActive = 0;
+							menuVisible = true;
+						}
+						delete this->world;
+						camera.moveCamForMenu();
+						camera.ProcessMouseMovement(0, -250);
+						loadVisible = true;
+						std::thread *worldThread =  new std::thread(createWorld, this);
+						worldThread->detach();
 					}
 				}
 			}
@@ -364,7 +389,7 @@ void Game::MoveMenu(void)
 			keys[GLFW_KEY_UP] = false;
 			if (this->menuActive > 0)
 			{
-				if ((this->menuActive < 5) || (this->menuActive > 6) || (this->menuActive > 10))
+				if ((this->menuActive < 5) || (this->menuActive > 6 && this->menuActive <= 9) || (this->menuActive > 10))
 					this->menuActive--;
 			}
 		}
