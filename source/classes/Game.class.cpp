@@ -157,10 +157,6 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 
 	// ---------Sound-----------
 	sound.playMusic();
-	// sound.setVolEffects(0.1);
-	// sound.setVolMusic(0.1);
-	sound.playBombExplode();
-	// sound.stopMusic();
 	// -------------------------
 
 	// Game loop
@@ -300,6 +296,41 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 						this->soundActive = 1;
 				}
 			}
+			else if (keys[GLFW_KEY_SPACE]) // Changing volume in-game
+			{
+				if (this->soundActive >= 3 && this->soundActive <= 10)
+				{
+					switch (this->soundActive)
+					{
+						case 3:
+							sound.setVolMusic(0);
+							break ;
+						case 4:
+							sound.setVolMusic(0.2);
+							break ;
+						case 5:
+							sound.setVolMusic(0.5);
+							break ;
+						case 6:
+							sound.setVolMusic(1.0);
+							break ;
+						case 7:
+							sound.setVolEffects(0);
+							break ;
+						case 8:
+							sound.setVolEffects(0.2);
+							break ;
+						case 9:
+							sound.setVolEffects(0.5);
+							break ;
+						case 10:
+							sound.setVolEffects(1.0);
+							break ;
+						default:
+							break ;
+					}
+				}
+			}
 			usleep(10000);
 		}
 		else
@@ -368,6 +399,8 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 		glfwMakeContextCurrent(NULL);
 		mu.unlock();
 	}
+	mu.lock();
+	glfwMakeContextCurrent(window);
 	for (std::vector<MainMenu*>::iterator it = this->Menus.begin() ; it != this->Menus.end(); )
 	{
 		if (it != this->Menus.end())
@@ -383,6 +416,15 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 		{
 			delete (*it);
 			it = this->load.erase(it);
+		}
+	}
+
+	for (std::vector<SoundMenu*>::iterator it = this->soundMenu.begin() ; it != this->soundMenu.end(); )
+	{
+		if (it != this->soundMenu.end())
+		{
+			delete (*it);
+			it = this->soundMenu.erase(it);
 		}
 	}
 	glfwTerminate();

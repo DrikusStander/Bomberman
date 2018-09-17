@@ -163,6 +163,8 @@ void	Bomb::checkDestruction()
 			}
 		}
 	}
+	std::cout << "Bomb Exploded" << std::endl;
+	sound.playBombExplode();
 }
 
 void Bomb::draw(void)
