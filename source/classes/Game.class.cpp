@@ -86,6 +86,7 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 	this->WorldLoaded = false;
 	this->menuActive = 0;
 	this->loadActive = 0;
+	// this->sound = new Sound();
 	this->soundActive = 0;
 	this->pauseActive = 0;
 	this->check = 0;
@@ -96,6 +97,8 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 	this->keyRIGHT = GLFW_KEY_RIGHT;
 	this->keyBOMB = GLFW_KEY_SPACE;
 
+	this->sound = World::sound;
+	// World::sound = this->sound;
 	camera.ProcessMouseMovement(0, -250);
 
 	// Init GLFW
@@ -168,7 +171,11 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 	GLfloat old_time_key = 0.0f;
 
 	// ---------Sound-----------
-	sound.playMusic();
+	this->sound->playMusic();
+	// sound.setVolEffects(0.1);
+	// sound.setVolMusic(0.1);
+	// this->sound->playBombExplode();
+	// sound.stopMusic();
 	// -------------------------
 
 	// Game loop
@@ -328,28 +335,28 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 					switch (this->soundActive)
 					{
 						case 3:
-							sound.setVolMusic(0);
+							this->sound->setVolMusic(0);
 							break ;
 						case 4:
-							sound.setVolMusic(0.2);
+							this->sound->setVolMusic(0.2);
 							break ;
 						case 5:
-							sound.setVolMusic(0.5);
+							this->sound->setVolMusic(0.5);
 							break ;
 						case 6:
-							sound.setVolMusic(1.0);
+							this->sound->setVolMusic(1.0);
 							break ;
 						case 7:
-							sound.setVolEffects(0);
+							this->sound->setVolEffects(0);
 							break ;
 						case 8:
-							sound.setVolEffects(0.2);
+							this->sound->setVolEffects(0.2);
 							break ;
 						case 9:
-							sound.setVolEffects(0.5);
+							this->sound->setVolEffects(0.5);
 							break ;
 						case 10:
-							sound.setVolEffects(1.0);
+							this->sound->setVolEffects(1.0);
 							break ;
 						default:
 							break ;
@@ -448,12 +455,15 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 							this->menuActive = 0;
 							menuVisible = true;
 						}
-						delete this->world;
-						camera.moveCamForMenu();
-						camera.ProcessMouseMovement(0, -250);
-						loadVisible = true;
-						std::thread *worldThread = new std::thread(createWorld, this);
-						worldThread->detach();
+						else
+						{
+							loadVisible = true;
+							delete this->world;
+							camera.moveCamForMenu();
+							camera.ProcessMouseMovement(0, -250);
+							std::thread *worldThread =  new std::thread(createWorld, this);
+							worldThread->detach();
+						}
 					}
 				}
 			}

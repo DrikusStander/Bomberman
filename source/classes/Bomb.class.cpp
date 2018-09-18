@@ -1,5 +1,6 @@
 
 #include "Bomb.class.hpp"
+# include "World.class.hpp"
 
 
 Bomb::Bomb( Shader &shader, std::string model) : Item(shader, model)
@@ -174,6 +175,7 @@ void Bomb::draw(void)
 		if (this->destruction == false)
 		{
 			this->destruction = true;
+			World::sound->playBombExplode();
 			this->checkDestruction();
 		}
 		for (int i = 0; i < this->activeFlames; i++)
