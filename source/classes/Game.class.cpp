@@ -77,9 +77,12 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 	lastFrame = 0.0;
 	menuVisible = true;
 	loadVisible = false;
+	soundMenuVisible = false;
 	this->WorldLoaded = false;
+	this->menuActive = 0;
 	this->loadActive = 0;
 	// this->sound = new Sound();
+	this->soundActive = 0;
 
 	this->sound = World::sound;
 	// World::sound = this->sound;
@@ -142,6 +145,9 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 	for (int i = 0; i < 9; i++)
 		this->load.push_back(new LoadingScreen(shader, "resources/models/menu/LoadingScreen/Loading_screen_" + std::to_string(i) + ".obj"));
 
+	for (int i = 0; i < 11; i++)
+		this->soundMenu.push_back(new SoundMenu(shader, "resources/models/menu/SoundScreen/SoundScreen_" + std::to_string(i) + ".obj"));
+
 	// Item temp(shader, "resources/models/fire/fire.obj");
 	// Item temp2(shader, "resources/models/fire/fire.obj");
 	// temp.setPos(168, 168, 0, 0);
@@ -149,7 +155,6 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 	glm::mat4 projection = glm::perspective(camera.GetZoom(), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 1000.0f);
 	this->projection = projection;
 
-	this->menuActive = 0;
 	GLfloat old_time = 0.0f;
 	GLfloat old_time_key = 0.0f;
 
@@ -190,79 +195,147 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 		// set the camera view and projection
 		glUniformMatrix4fv(glGetUniformLocation(shader.getProgram(), "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 		glUniformMatrix4fv(glGetUniformLocation(shader.getProgram(), "view"), 1, GL_FALSE, glm::value_ptr(camera.GetViewMatrix()));
-		if (menuVisible == true)
+		if (menuVisible == true || soundMenuVisible == true)
 		{
-			Menus[this->menuActive]->draw();
-			MoveMenu();
+			if (soundMenuVisible == true)
+			{
+				soundMenu[this->soundActive]->draw();
+				MoveSoundMenu();
+			}
+			else
+			{
+				Menus[this->menuActive]->draw();
+				MoveMenu();
+			}
 		
 			if (keys[GLFW_KEY_ENTER])
 			{
 				keys[GLFW_KEY_ENTER] = false;
-				if (this->menuActive == 0)
+				if (menuVisible == true)
 				{
-					this->loadActive = 0;
-					menuVisible = false;
-					loadVisible =true;
-					std::thread *worldThread =  new std::thread(createWorld, this);
-					worldThread->detach();
-				}
-				else if (this->menuActive == 3)
-					this->menuActive = 5;
-				else if (this->menuActive == 4)
-					glfwSetWindowShouldClose(window, GL_TRUE);
-				else if (this->menuActive == 2)//Options
-					this->menuActive = 6;
-				else if (this->menuActive == 3)
-					this->menuActive = 5;
-				else if (this->menuActive == 4)
-					glfwSetWindowShouldClose(window, GL_TRUE);
-				else if (this->menuActive == 6)//Resolution
-					this->menuActive = 10;
-				else if (this->menuActive == 7) //Sound
-					this->menuActive = 0;
-				else if (this->menuActive == 8) //Key Bindings
-					this->menuActive = 0;
-				else if ((this->menuActive == 5) || (this->menuActive == 9)) //Back to Main Menu
-					this->menuActive = 0;
-				else if (this->menuActive == 15) //Going back to Options
-					this->menuActive = 6;
-				//-------------------Changing Resolutions--------------------------------------------------------
-				else if (this->menuActive == 10) //Resolution change
-				{
-					this->screen_x = 1024;
-					this->screen_y = 576;
-					glfwSetWindowSize(window, this->screen_x, this->screen_y);
-				}
-				else if (this->menuActive == 11) //Resolution change
-				{
-					this->screen_x = 1280;
-					this->screen_y = 720;
-					glfwSetWindowSize(window, this->screen_x, this->screen_y);
-				}
-				else if (this->menuActive == 12) //Resolution change
-				{
-					this->screen_x = 1920;
-					this->screen_y = 1080;
-					glfwSetWindowSize(window, this->screen_x, this->screen_y);
-				}
-				else if (this->menuActive == 13) //Window Mode
-				{
-					glfwSetWindowMonitor(window, nullptr, 0, 0, this->screen_x, this->screen_y, GLFW_DONT_CARE);
-					keys[GLFW_KEY_ENTER] = true;
-				}
-				else if (this->menuActive == 14) //Full Screen Mode 
-				{
-					if (glfwGetWindowMonitor(window) == nullptr)
-						temp22 = 0;
-					if (temp22 < 2)
+					if (this->menuActive == 0)
 					{
-						GLFWmonitor *monitor = glfwGetPrimaryMonitor();
-						const GLFWvidmode *mode = glfwGetVideoMode(monitor);
-
-						glfwSetWindowMonitor(window, monitor, 0, 0, 2300, 1920, mode->refreshRate);
-						glfwSetWindowMonitor(window, monitor, 0, 0, this->screen_x, this->screen_y, mode->refreshRate);
+						this->loadActive = 0;
+						menuVisible = false;
+						loadVisible =true;
+						std::thread *worldThread =  new std::thread(createWorld, this);
+						worldThread->detach();
+					}
+					else if (this->menuActive == 3)
+						this->menuActive = 5;
+					else if (this->menuActive == 4)
+						glfwSetWindowShouldClose(window, GL_TRUE);
+					else if (this->menuActive == 2)//Options
+						this->menuActive = 6;
+					else if (this->menuActive == 3)
+						this->menuActive = 5;
+					else if (this->menuActive == 4)
+						glfwSetWindowShouldClose(window, GL_TRUE);
+					else if (this->menuActive == 6)//Resolution
+						this->menuActive = 10;
+					else if (this->menuActive == 7) //Sound
+					{
+						menuVisible = false;
+						soundMenuVisible = true;
+					}
+					else if (this->menuActive == 8) //Key Bindings
+						this->menuActive = 0;
+					else if ((this->menuActive == 5) || (this->menuActive == 9)) //Back to Main Menu
+						this->menuActive = 0;
+					else if (this->menuActive == 15) //Going back to Options
+						this->menuActive = 6;
+					//-------------------Changing Resolutions--------------------------------------------------------
+					else if (this->menuActive == 10) //Resolution change
+					{
+						this->screen_x = 1024;
+						this->screen_y = 576;
+						glfwSetWindowSize(window, this->screen_x, this->screen_y);
+					}
+					else if (this->menuActive == 11) //Resolution change
+					{
+						this->screen_x = 1280;
+						this->screen_y = 720;
+						glfwSetWindowSize(window, this->screen_x, this->screen_y);
+					}
+					else if (this->menuActive == 12) //Resolution change
+					{
+						this->screen_x = 1920;
+						this->screen_y = 1080;
+						glfwSetWindowSize(window, this->screen_x, this->screen_y);
+					}
+					else if (this->menuActive == 13) //Window Mode
+					{
+						glfwSetWindowMonitor(window, nullptr, 0, 0, this->screen_x, this->screen_y, GLFW_DONT_CARE);
 						keys[GLFW_KEY_ENTER] = true;
-						temp22++;
+					}
+					else if (this->menuActive == 14) //Full Screen Mode 
+					{
+						if (glfwGetWindowMonitor(window) == nullptr)
+							temp22 = 0;
+						if (temp22 < 2)
+						{
+							GLFWmonitor *monitor = glfwGetPrimaryMonitor();
+							const GLFWvidmode *mode = glfwGetVideoMode(monitor);
+
+							glfwSetWindowMonitor(window, monitor, 0, 0, 2300, 1920, mode->refreshRate);
+							glfwSetWindowMonitor(window, monitor, 0, 0, this->screen_x, this->screen_y, mode->refreshRate);
+							keys[GLFW_KEY_ENTER] = true;
+							temp22++;
+						}
+					}
+				}
+				//--------------------Changing Sound--------------------------------------------------------------------
+				else if (soundMenuVisible == true)
+				{
+					if (this->soundActive == 0)
+						this->soundActive = 3;
+					else if (this->soundActive == 1)
+						this->soundActive = 7;
+					else if (this->soundActive == 2)
+					{
+						this->menuActive = 7;
+						soundMenuVisible = false;
+						menuVisible = true;
+					}
+					else if ((this->soundActive >= 3) && (this->soundActive <= 6))
+						this->soundActive = 0;
+					else if ((this->soundActive >= 7) && (this->soundActive <= 10))
+						this->soundActive = 1;
+				}
+			}
+			else if (keys[GLFW_KEY_SPACE]) // Changing volume in-game
+			{
+				if (this->soundActive >= 3 && this->soundActive <= 10)
+				{
+					keys[GLFW_KEY_SPACE] = false;
+					switch (this->soundActive)
+					{
+						case 3:
+							sound.setVolMusic(0);
+							break ;
+						case 4:
+							sound.setVolMusic(0.2);
+							break ;
+						case 5:
+							sound.setVolMusic(0.5);
+							break ;
+						case 6:
+							sound.setVolMusic(1.0);
+							break ;
+						case 7:
+							sound.setVolEffects(0);
+							break ;
+						case 8:
+							sound.setVolEffects(0.2);
+							break ;
+						case 9:
+							sound.setVolEffects(0.5);
+							break ;
+						case 10:
+							sound.setVolEffects(1.0);
+							break ;
+						default:
+							break ;
 					}
 				}
 			}
@@ -356,6 +429,15 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 			it = this->load.erase(it);
 		}
 	}
+
+	for (std::vector<SoundMenu*>::iterator it = this->soundMenu.begin() ; it != this->soundMenu.end(); )
+	{
+		if (it != this->soundMenu.end())
+		{
+			delete (*it);
+			it = this->soundMenu.erase(it);
+		}
+	}
 	glfwTerminate();
 }
 
@@ -387,9 +469,49 @@ Game	&Game::operator=(Game const &rhs)
 }
 //end canonical form
 
+void Game::MoveSoundMenu(void)
+{
+	//SoundMenu controls
+	if (keys[GLFW_KEY_UP])
+	{
+		keys[GLFW_KEY_UP] = false;
+		if ((this->soundActive > 0) && (this->soundActive < 3))
+			this->soundActive--;
+	}
+	else if (keys[GLFW_KEY_DOWN])
+	{
+		keys[GLFW_KEY_DOWN] = false;
+		if (this->soundActive < 2)
+			this->soundActive++;
+	}
+	else if (keys[GLFW_KEY_LEFT])
+	{
+		keys[GLFW_KEY_LEFT] = false;
+			if (this->soundActive > 3)
+			{
+				if (soundActive <= 6)
+					this->soundActive--;
+			}
+			if (this->soundActive > 7)
+			{
+				if (this->soundActive <= 10)
+					this->soundActive--;
+			}
+	}
+	else if (this->soundActive >= 3)
+	{
+		if (keys[GLFW_KEY_RIGHT])
+		{
+			keys[GLFW_KEY_RIGHT] = false;
+			if ((this->soundActive < 6) || (this->soundActive >= 7 && this->soundActive < 10))
+				this->soundActive++;
+		}
+	}
+}
+
 void Game::MoveMenu(void)
 {
-	// Player controls
+	// Menu controls
 	if (this->menuActive != 5)
 	{
 		if (keys[GLFW_KEY_UP])

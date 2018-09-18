@@ -3,6 +3,7 @@
 # define BOMB_CLASS_HPP
 
 # include "Item.class.hpp"
+# include "Sound.class.hpp"
 
 class Bomb : public Item
 {
@@ -14,6 +15,7 @@ class Bomb : public Item
 		int		activeFlames;
 		bool	destruction;
 		std::vector<Item*> flames;
+		Sound	sound;
 	protected:
 
 	public:

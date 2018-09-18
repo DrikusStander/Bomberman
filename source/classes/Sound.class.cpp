@@ -1,7 +1,7 @@
 #include "Sound.class.hpp"
 
 //start canonical form
-Sound::Sound(void) : volMusic(1.0), volEffects(0.4)
+Sound::Sound(void) : volMusic(0.5), volEffects(0.5)
 {
 	std::cout << "Sound - Default Constructor Called" << std::endl;
 
