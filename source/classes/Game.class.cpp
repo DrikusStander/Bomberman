@@ -162,7 +162,7 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 	this->sound->playMusic();
 	// sound.setVolEffects(0.1);
 	// sound.setVolMusic(0.1);
-	this->sound->playBombExplode();
+	// this->sound->playBombExplode();
 	// sound.stopMusic();
 	// -------------------------
 
