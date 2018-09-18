@@ -78,7 +78,7 @@ class Game
 		void		MoveMenu(void);
 		GLFWwindow	*window;
 		glm::mat4	projection;
-		Sound		sound;
+		Sound		*sound;
 
 
 };

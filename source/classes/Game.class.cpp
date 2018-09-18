@@ -79,7 +79,10 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 	loadVisible = false;
 	this->WorldLoaded = false;
 	this->loadActive = 0;
+	// this->sound = new Sound();
 
+	this->sound = World::sound;
+	// World::sound = this->sound;
 	camera.ProcessMouseMovement(0, -250);
 
 	// Init GLFW
@@ -151,10 +154,10 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 	GLfloat old_time_key = 0.0f;
 
 	// ---------Sound-----------
-	sound.playMusic();
+	this->sound->playMusic();
 	// sound.setVolEffects(0.1);
 	// sound.setVolMusic(0.1);
-	sound.playBombExplode();
+	this->sound->playBombExplode();
 	// sound.stopMusic();
 	// -------------------------
 
@@ -317,12 +320,15 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 							this->menuActive = 0;
 							menuVisible = true;
 						}
-						delete this->world;
-						camera.moveCamForMenu();
-						camera.ProcessMouseMovement(0, -250);
-						loadVisible = true;
-						std::thread *worldThread =  new std::thread(createWorld, this);
-						worldThread->detach();
+						else
+						{
+							loadVisible = true;
+							delete this->world;
+							camera.moveCamForMenu();
+							camera.ProcessMouseMovement(0, -250);
+							std::thread *worldThread =  new std::thread(createWorld, this);
+							worldThread->detach();
+						}
 					}
 				}
 			}
@@ -331,6 +337,8 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 		glfwMakeContextCurrent(NULL);
 		mu.unlock();
 	}
+	mu.lock();
+	glfwMakeContextCurrent(window);
 	for (std::vector<MainMenu*>::iterator it = this->Menus.begin() ; it != this->Menus.end(); )
 	{
 		if (it != this->Menus.end())
