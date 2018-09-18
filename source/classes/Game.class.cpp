@@ -311,28 +311,28 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 					switch (this->soundActive)
 					{
 						case 3:
-							sound.setVolMusic(0);
+							this->sound->setVolMusic(0);
 							break ;
 						case 4:
-							sound.setVolMusic(0.2);
+							this->sound->setVolMusic(0.2);
 							break ;
 						case 5:
-							sound.setVolMusic(0.5);
+							this->sound->setVolMusic(0.5);
 							break ;
 						case 6:
-							sound.setVolMusic(1.0);
+							this->sound->setVolMusic(1.0);
 							break ;
 						case 7:
-							sound.setVolEffects(0);
+							this->sound->setVolEffects(0);
 							break ;
 						case 8:
-							sound.setVolEffects(0.2);
+							this->sound->setVolEffects(0.2);
 							break ;
 						case 9:
-							sound.setVolEffects(0.5);
+							this->sound->setVolEffects(0.5);
 							break ;
 						case 10:
-							sound.setVolEffects(1.0);
+							this->sound->setVolEffects(1.0);
 							break ;
 						default:
 							break ;
