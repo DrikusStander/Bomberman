@@ -300,6 +300,7 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 			{
 				if (this->soundActive >= 3 && this->soundActive <= 10)
 				{
+					keys[GLFW_KEY_SPACE] = false;
 					switch (this->soundActive)
 					{
 						case 3:
