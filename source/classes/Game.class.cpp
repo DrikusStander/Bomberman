@@ -132,7 +132,8 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 	glEnable(GL_DEPTH_TEST);
 
 	// Setup and compile our shaders
-	Shader	shader("resources/shaders/modelLoading.vert", "resources/shaders/modelLoading.frag");
+	 //Shader	shader("resources/shaders/modelLoading.vert", "resources/shaders/modelLoading.frag");
+	Shader	shader("resources/shaders/lighting.vs", "resources/shaders/lighting.frag");
 
 	this->shader = &shader;
 	// Load models
@@ -184,7 +185,7 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		shader.Use();
-
+		this->placeSpotLight();
 		// set the camera view and projection
 		glUniformMatrix4fv(glGetUniformLocation(shader.getProgram(), "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 		glUniformMatrix4fv(glGetUniformLocation(shader.getProgram(), "view"), 1, GL_FALSE, glm::value_ptr(camera.GetViewMatrix()));
@@ -551,20 +552,20 @@ void	Game::DoMovement(void)
 	// Player controls
 	if (keys[GLFW_KEY_UP])
 	{
-		this->world->ProcessKeyboard(FWD);
+		this->world->ProcessKeyboard(FWD, camera);
 	}
 	else if (keys[GLFW_KEY_DOWN])
-		this->world->ProcessKeyboard(BKW);
+		this->world->ProcessKeyboard(BKW, camera);
 	else if (keys[GLFW_KEY_LEFT])
-		this->world->ProcessKeyboard(LFT);
+		this->world->ProcessKeyboard(LFT, camera);
 	else if (keys[GLFW_KEY_RIGHT])
-		this->world->ProcessKeyboard(RGT);
+		this->world->ProcessKeyboard(RGT, camera);
 
 	// Plant a bomb
 	if (keys[GLFW_KEY_SPACE])
 	{
 		keys[GLFW_KEY_SPACE] = false;
-		this->world->ProcessKeyboard(SPC);
+		this->world->ProcessKeyboard(SPC, camera);
 	}
 	usleep(10000);
 }
@@ -578,4 +579,18 @@ void 	Game::createWorld2(void )
 {
 	this->world = new World(*(this->shader), "resources/models/world.obj", this->screen_x, this->screen_y, this->window);
 	this->loadVisible = false;
+}
+
+void	Game::placeSpotLight(void)
+{
+	glUniform3f(glGetUniformLocation(this->shader->getProgram(), "spotLight.position"), camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
+	glUniform3f(glGetUniformLocation(this->shader->getProgram(), "spotLight.direction"), camera.getFront().x, camera.getFront().y, camera.getFront().z);
+	glUniform3f(glGetUniformLocation(this->shader->getProgram(), "spotLight.ambient"), 0.0f, 0.0f, 0.0f);
+	glUniform3f(glGetUniformLocation(this->shader->getProgram(), "spotLight.diffuse"), 1.0f, 1.0f, 1.0f);
+	glUniform3f(glGetUniformLocation(this->shader->getProgram(), "spotLight.specular"), 1.0f, 1.0f, 1.0f);
+	glUniform1f(glGetUniformLocation(this->shader->getProgram(), "spotLight.constant"), 1.0f);
+	glUniform1f(glGetUniformLocation(this->shader->getProgram(), "spotLight.linear"), 0.0009f);
+	glUniform1f(glGetUniformLocation(this->shader->getProgram(), "spotLight.quadratic"), 0.00032f);
+	glUniform1f(glGetUniformLocation(this->shader->getProgram(), "spotLight.cutOff"), glm::cos(glm::radians(25.0f)));
+	glUniform1f(glGetUniformLocation(this->shader->getProgram(), "spotLight.outerCutOff"), glm::cos(glm::radians(27.0f)));
 }

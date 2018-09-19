@@ -6,7 +6,7 @@
 /*   By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/11 11:26:34 by cnolte            #+#    #+#             */
-/*   Updated: 2018/09/11 16:50:43 by cnolte           ###   ########.fr       */
+/*   Updated: 2018/09/18 13:45:42 by cnolte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,4 +170,41 @@ void	Camera::moveCamForMenu(void)
 	this->yaw = YAW;
 	this->pitch = PITCH;
 	this->updateCameraVectors();
+}
+
+void	Camera::setPos(const glm::vec3 pos)
+{
+	this->position = pos;
+}
+
+GLfloat	Camera::getYaw(void)
+{
+	float	dir = this->yaw + 90;
+	if (dir > 360.0f)
+	{
+		std::cout << "1" << std::endl;
+		return (fmod(dir, 360.0f));
+	}
+	else if ((dir < 0.0f) && (dir > -360.0f))
+	{
+		std::cout << "2" << std::endl;
+		return (360.0f - (-dir));
+	}
+	else if (dir < -360.0f)
+	{
+		std::cout << "3" << std::endl;
+		return (360.0f + fmod(dir, -360.0f));
+	}
+	std::cout << "end" << std::endl;
+	return (dir);
+}
+
+glm::vec3	Camera::getPosition(void) const
+{
+	return (this->position);
+}
+
+glm::vec3	Camera::getFront(void) const
+{
+	return (this->front);
 }

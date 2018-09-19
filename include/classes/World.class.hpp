@@ -18,6 +18,7 @@
 # include "Item.class.hpp"
 # include "Powerup.class.hpp"
 # include "HUD.class.hpp"
+# include "Camera.class.hpp"
 
 # include <vector>
 
@@ -74,7 +75,7 @@ class World
 		~World(void);
 		World const & operator=(World const & rhs);
 		void	draw(glm::mat4 matCamera, const GLfloat glfwTime);
-		virtual void	ProcessKeyboard(Direction direction);
+		virtual void	ProcessKeyboard(Direction direction, Camera &camera);
 		float	player_getX(void);
 		float	player_getZ(void);
 		void	player_clipX(float x_move);

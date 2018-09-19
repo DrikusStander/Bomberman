@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Game.class.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dwilliam <dwilliam@42.fr>                  +#+  +:+       +#+        */
+/*   By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/11 11:20:47 by cnolte            #+#    #+#             */
-/*   Updated: 2018/09/17 18:53:20 by dwilliam         ###   ########.fr       */
+/*   Updated: 2018/09/18 13:43:20 by cnolte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,7 @@ class Game
 		void		DoMovement(void);
 		void		MoveMenu(void);
 		void		MoveSoundMenu(void);
+		void		placeSpotLight(void);
 		GLFWwindow	*window;
 		glm::mat4	projection;
 		Sound		sound;

@@ -50,7 +50,7 @@ void Player::draw(void)
 	glUniformMatrix4fv( glGetUniformLocation(this->_shader->getProgram(), "model"), 1, GL_FALSE, glm::value_ptr(model ));
 	if (this->active > 21)
 		this->active = 0;
-	this->characterModelarr[static_cast<int>(this->active)]->Draw(*this->_shader);
+	//this->characterModelarr[static_cast<int>(this->active)]->Draw(*this->_shader);
 	switch(this->bombCount)
 	{
 		case 1:
