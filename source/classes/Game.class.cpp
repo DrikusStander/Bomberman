@@ -175,7 +175,6 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 	// Game loop
 	while (!glfwWindowShouldClose(window))
 	{
-		std::cout << "strat of game loop" << std::endl;
 		mu.lock();
 		glfwMakeContextCurrent(window);
 
@@ -196,8 +195,6 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 		// Clear the colorbuffer
 		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		std::cout << "after GLFW function calls" << std::endl;
 
 		shader.Use();
 		this->placeSpotLight();
