@@ -57,6 +57,7 @@ class Game
 
 		World	*world;
 		void 	createWorld2( void);
+		void 	loadStage1(void );
 		// static void 	createWorld( Game *game);
 
 	private:
@@ -83,10 +84,9 @@ class Game
 		void		MoveSoundMenu(void);
 		GLFWwindow	*window;
 		glm::mat4	projection;
-		Sound		*sound;
-
 
 };
 void 	createWorld(Game *game);
+void 	loadStage(Game *game);
 
 #endif

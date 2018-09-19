@@ -82,6 +82,7 @@ class World
 		int		getStatus( void );
 		int		getScore( void );
 		int		getLives( void );
+		void	loadStage( void );
 		static Sound			*sound;
 
 };

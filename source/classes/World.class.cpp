@@ -17,7 +17,8 @@ mu.lock();
 mu.unlock();
 
 mu.lock();
-	glfwMakeContextCurrent(window);	
+	glfwMakeContextCurrent(window);
+	this->window = window;
 	this->_shader = &shader;
 	this->x_trans = 0.0f;
 	this->y_trans = 0.0f;
@@ -117,9 +118,10 @@ mu.lock();
 mu.unlock();
 
 mu.lock();
-	glfwMakeContextCurrent(window);	
-	// randomly innitilize breakable walls to the world
+	glfwMakeContextCurrent(window);
 	std::srand(std::time(NULL));
+
+	// randomly innitilize map and breakable walls to the world
 	for (int i = 0; i < 17; i++)
 	{
 		for(int j = 0; j < 17; j++)
@@ -201,30 +203,19 @@ World::~World( void )
 	delete this->player;
 	delete this->wall_model;
 	
-
-
-	
 	// clean up objects
 	for (std::vector<Item*>::iterator it = this->objects->begin() ; it != this->objects->end(); it++)
 	{
-		// if (it != this->objects->end())
-		{
-			if (*it)
-				delete (*it);
-			// it = this->objects->erase(it);
-		}
+		if (*it)
+			delete (*it);
 	}
 	delete this->objects;
 
 	// clean up enemies
 	for (std::vector<Enemy*>::iterator it = this->enemies->begin() ; it != this->enemies->end(); it++)
 	{
-		// if (it != this->enemies->end())
-		{
-			if (*it)
-				delete (*it);
-			// it = this->enemies->erase(it);
-		}
+		if (*it)
+			delete (*it);
 	}
 	delete this->enemies;
 
@@ -239,7 +230,6 @@ World::~World( void )
 			std::cout << "Type: " << (*it)->getType() << std::endl;
 			delete (*it);
 		}
-		// it = this->bombRaduis.erase(it);
 	}
 
 
@@ -249,7 +239,6 @@ World::~World( void )
 		std::cout << "cleaning Bombraduis Model vector" << std::endl;
 		if (*it)
 			delete (*it);
-		// it = this->bombRaduis_model->erase(it);
 	}
 	delete this->bombRaduis_model;
 
@@ -257,14 +246,10 @@ World::~World( void )
 	for (std::vector<Powerup*>::iterator it = this->bombCount.begin() ; it != this->bombCount.end(); it++)
 	{
 		std::cout << "cleaning BomCount vector" << std::endl;
-		// if (it != this->bombCount.end())
+		if (*it)
 		{
-			if (*it)
-			{
-				std::cout << "Type: " << (*it)->getType() << std::endl;
-				delete (*it);
-			}
-			// it = this->bombCount.erase(it);
+			std::cout << "Type: " << (*it)->getType() << std::endl;
+			delete (*it);
 		}
 	}
 	// clean up bombCount_model Powerup Models
@@ -273,7 +258,6 @@ World::~World( void )
 		std::cout << "cleaning BomCount model vector" << std::endl;
 		if (*it)
 			delete (*it);
-		// it = this->bombCount_model->erase(it);
 	}
 	delete this->bombCount_model;
 
@@ -281,14 +265,10 @@ World::~World( void )
 	for (std::vector<Powerup*>::iterator it = this->speed.begin() ; it != this->speed.end(); it++)
 	{
 		std::cout << "cleaning speed vector" << std::endl;
-		// if (it != this->speed.end())
+		if (*it)
 		{
-			if (*it)
-			{
-				std::cout << "Type: " << (*it)->getType() << std::endl;
-				delete (*it);
-			}
-			// it = this->speed.erase(it);
+			std::cout << "Type: " << (*it)->getType() << std::endl;
+			delete (*it);
 		}
 	}
 	// clean up speed Powerup Models
@@ -297,7 +277,6 @@ World::~World( void )
 		std::cout << "cleaning speed model vector" << std::endl;
 		if (*it)
 			delete (*it);
-		// it = this->speed_model->erase(it);
 	}
 	delete this->speed_model;
 
@@ -362,7 +341,7 @@ void World::draw(glm::mat4 matCamera, const GLfloat glfwTime)
 	{
 		for (int j = 0; j < 17; j++)
 		{
-			std::cout << "Check if current pos on map is to be destroyed: " << std::endl;
+			// std::cout << "Check if current pos on map is to be destroyed: " << std::endl;
 			if (this->map[i][j] == 'D')
 			{
 				// check if the player was hit
@@ -382,7 +361,7 @@ void World::draw(glm::mat4 matCamera, const GLfloat glfwTime)
 				}
 
 				// check what powerup was affected
-				std::cout << "Check if current pos on map is PowerUp " << std::endl;
+				// std::cout << "Check if current pos on map is PowerUp " << std::endl;
 				for (std::vector<Powerup*>::iterator it = this->powerups->begin() ; it != this->powerups->end(); )
 				{
 					if ((*it)->getRow() == i && (*it)->getCol() == j)
@@ -414,7 +393,7 @@ void World::draw(glm::mat4 matCamera, const GLfloat glfwTime)
 
 						break;
 					}
-					std::cout << "Check Objects vectro for affected object: " << std::endl;
+					// std::cout << "Check Objects vectro for affected object: " << std::endl;
 					int objRow = (*it)->getRow();
 					std::cout << "Row: " << objRow << std::endl;
 
@@ -427,7 +406,7 @@ void World::draw(glm::mat4 matCamera, const GLfloat glfwTime)
 						if ((rand() % this->wallCount) == 0 && this->portalActive == false)
 						{
 							this->portalActive = true;
-							std::cout << "-----------> portal " << std::endl;
+							// std::cout << "-----------> portal " << std::endl;
 							this->portal->setPos((*it)->getX(), (*it)->getZ(), (*it)->getRow(), (*it)->getCol());
 							this->map[i][j] = 'U';
 							this->powerups->push_back(this->portal);
@@ -473,9 +452,9 @@ void World::draw(glm::mat4 matCamera, const GLfloat glfwTime)
 							}
 						}
 						this->wallCount--;
-						std::cout << "delete object at: " << objRow << " " << objCol << std::endl;
+						// std::cout << "delete object at: " << objRow << " " << objCol << std::endl;
 						delete (*it);
-						std::cout << "remove object pointer from vector"  << std::endl;
+						// std::cout << "remove object pointer from vector"  << std::endl;
 						it = this->objects->erase(it);
 					}
 					else
@@ -601,5 +580,126 @@ int		World::getLives( void )
 {
 	return(this->lives);
 }
+
+
+void	World::loadStage()
+{
+	std::cout << "in World::loadStage" << std::endl;
+
+mu.lock();
+	std::cout << "Setting contextcurret to the window" << std::endl;
+	glfwMakeContextCurrent(this->window);	
+	// clean up objects
+	this->worldStatus = 0;
+	this->time = 200;
+	this->player->setPos(-168, -168, 0, 0);
+	for (std::vector<Item*>::iterator it = this->objects->begin() ; it != this->objects->end(); )
+	{
+		if (*it)
+			delete (*it);
+		it = this->objects->erase(it);
+	}
+
+glfwMakeContextCurrent(NULL);
+mu.unlock();
+
+mu.lock();
+	glfwMakeContextCurrent(this->window);	
+
+	// clean up enemies
+	for (std::vector<Enemy*>::iterator it = this->enemies->begin() ; it != this->enemies->end(); )
+	{
+		if (*it)
+			delete (*it);
+		it = this->enemies->erase(it);
+	}
+
+	glfwMakeContextCurrent(NULL);
+mu.unlock();
+
+mu.lock();
+	glfwMakeContextCurrent(this->window);	
+
+	for (std::vector<Powerup*>::iterator it = this->powerups->begin() ; it != this->powerups->end(); )
+	{
+		it = this->powerups->erase(it);
+	}
+	
+	glfwMakeContextCurrent(NULL);
+mu.unlock();
+
+
+mu.lock();
+	glfwMakeContextCurrent(this->window);	
+
+	// randomly innitilize map and breakable walls to the world
+	for (int i = 0; i < 17; i++)
+	{
+		for(int j = 0; j < 17; j++)
+		{
+			if ((i % 2) != 0 && (j % 2) != 0)
+			{
+				this->map[i][j] = '#';
+			}
+			else
+			{
+				if (i < 2 && j <  2)
+					this->map[i][j] = '\0';
+				else
+				{
+					if ((std::rand() % 3 + 1) == 1)
+					{
+						this->wallCount++;
+						this->map[i][j] = 'W';
+						Item *temp = new Item(*this->_shader, this->wall_model);
+
+						float x_transT = ((-168) - (j) * (-21));
+						float z_transT = ((-168) - (i) * (-21));
+						temp->setPos( x_transT, z_transT, i, j);
+						this->objects->push_back(temp);
+						temp = NULL;
+					}
+					else
+						this->map[i][j] = '\0';
+				}
+			}
+		}
+	}
+
+	glfwMakeContextCurrent(NULL);
+mu.unlock();
+
+mu.lock();
+	glfwMakeContextCurrent(this->window);	
+
+	// Initialize Enemies into the world
+	int enemy_count = 5;
+	while (enemy_count > 0)
+	{
+		int row = (rand() % 16);
+		int col = (rand() % 16);
+		if ( (row > 2) && (col > 2))
+		{
+			if (this->map[row][col] == '\0')
+			{
+				this->enemyCount++;
+				this->map[row][col] = 'E';
+				float x_transT = ((-168) - (col) * (-21));
+				float z_transT = ((-168) - (row) * (-21));
+
+				Enemy *temp = new Enemy(*this->_shader, "resources/models/enemy2.obj");
+
+				temp->setPos(x_transT, z_transT, row, col);
+				temp->setMap(this->map);
+				this->enemies->push_back(temp);
+				enemy_count--;
+			}
+		}
+	}
+
+glfwMakeContextCurrent(NULL);
+mu.unlock();
+}
+
 
 Sound * World::sound = new Sound();

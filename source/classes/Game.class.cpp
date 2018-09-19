@@ -81,11 +81,8 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 	this->WorldLoaded = false;
 	this->menuActive = 0;
 	this->loadActive = 0;
-	// this->sound = new Sound();
 	this->soundActive = 0;
 
-	this->sound = World::sound;
-	// World::sound = this->sound;
 	camera.ProcessMouseMovement(0, -250);
 
 	// Init GLFW
@@ -159,16 +156,13 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 	GLfloat old_time_key = 0.0f;
 
 	// ---------Sound-----------
-	this->sound->playMusic();
-	// sound.setVolEffects(0.1);
-	// sound.setVolMusic(0.1);
-	// this->sound->playBombExplode();
-	// sound.stopMusic();
+	World::sound->playMusic();
 	// -------------------------
 
 	// Game loop
 	while (!glfwWindowShouldClose(window))
 	{
+		std::cout << "strat of game loop" << std::endl;
 		mu.lock();
 		glfwMakeContextCurrent(window);
 
@@ -189,6 +183,8 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 		// Clear the colorbuffer
 		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		std::cout << "after GLFW function calls" << std::endl;
 
 		shader.Use();
 
@@ -311,28 +307,28 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 					switch (this->soundActive)
 					{
 						case 3:
-							this->sound->setVolMusic(0);
+							World::sound->setVolMusic(0);
 							break ;
 						case 4:
-							this->sound->setVolMusic(0.2);
+							World::sound->setVolMusic(0.2);
 							break ;
 						case 5:
-							this->sound->setVolMusic(0.5);
+							World::sound->setVolMusic(0.5);
 							break ;
 						case 6:
-							this->sound->setVolMusic(1.0);
+							World::sound->setVolMusic(1.0);
 							break ;
 						case 7:
-							this->sound->setVolEffects(0);
+							World::sound->setVolEffects(0);
 							break ;
 						case 8:
-							this->sound->setVolEffects(0.2);
+							World::sound->setVolEffects(0.2);
 							break ;
 						case 9:
-							this->sound->setVolEffects(0.5);
+							World::sound->setVolEffects(0.5);
 							break ;
 						case 10:
-							this->sound->setVolEffects(1.0);
+							World::sound->setVolEffects(1.0);
 							break ;
 						default:
 							break ;
@@ -381,6 +377,7 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 					}
 					else if (world->getStatus() == 2)
 					{
+						std::cout << "world status = 2" << std::endl;
 						if (stage == 2)
 							this->loadActive = 4;
 						if (stage == 3)
@@ -395,11 +392,16 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 						}
 						else
 						{
+							std::cout << "setting load visible to true" << std::endl;
 							loadVisible = true;
-							delete this->world;
+							// delete this->world;
+							std::cout << "Move cam for menu" << std::endl;
 							camera.moveCamForMenu();
+						std::cout << "ProcessMouseMovement" << std::endl;
 							camera.ProcessMouseMovement(0, -250);
-							std::thread *worldThread =  new std::thread(createWorld, this);
+						std::cout << "creating new thread for loading the stage" << std::endl;
+							std::thread *worldThread =  new std::thread(loadStage, this);
+						std::cout << "detaching the new thread" << std::endl;
 							worldThread->detach();
 						}
 					}
@@ -588,5 +590,20 @@ void 	createWorld(Game *game)
 void 	Game::createWorld2(void )
 {
 	this->world = new World(*(this->shader), "resources/models/world.obj", this->screen_x, this->screen_y, this->window);
+	this->loadVisible = false;
+}
+
+void 	loadStage(Game *game)
+{
+	std::cout << "in Load stage calling load stage from Game" << std::endl;
+	game->loadStage1();
+}
+
+void 	Game::loadStage1(void )
+{
+	std::cout << "in Load stage1 calling load stage from World" << std::endl;
+
+	this->world->loadStage();
+	std::cout << "set LoadVisible to false" << std::endl;
 	this->loadVisible = false;
 }
