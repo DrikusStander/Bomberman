@@ -145,8 +145,8 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 	glEnable(GL_DEPTH_TEST);
 
 	// Setup and compile our shaders
-	 //Shader	shader("resources/shaders/modelLoading.vert", "resources/shaders/modelLoading.frag");
-	Shader	shader("resources/shaders/lighting.vs", "resources/shaders/lighting.frag");
+	Shader	shader("resources/shaders/modelLoading.vert", "resources/shaders/modelLoading.frag");
+	//Shader	shader("resources/shaders/lighting.vs", "resources/shaders/lighting.frag");
 
 	this->shader = &shader;
 	// Load models

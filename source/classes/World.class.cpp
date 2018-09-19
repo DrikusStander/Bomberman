@@ -543,52 +543,52 @@ void World::draw(glm::mat4 matCamera, const GLfloat glfwTime)
 
 void	World::ProcessKeyboard(Direction direction, Camera &camera)
 {
-	camera.setPos(glm::vec3(this->player->getX(), 35.0f, this->player->getZ()));
-	float	yaw = camera.getYaw();
-	if (direction == FWD)
-	{
-		if ((yaw >= 315.0f) && (yaw <= 45.0f))
-			direction = FWD;
-		else if ((yaw >= 135.0f) && (yaw <= 225.0f))
-			direction = BKW;
-		else if ((yaw > 45.0f) && (yaw < 135.0f))
-			direction = RGT;
-		else if ((yaw > 225.0f) && (yaw < 315.0f))
-			direction = LFT;
-	}
-	else if (direction == BKW)
-	{
-		if ((yaw >= 315.0f) && (yaw <= 45.0f))
-			direction = BKW;
-		else if ((yaw >= 135.0f) && (yaw <= 225.0f))
-			direction = FWD;
-		else if ((yaw > 45.0f) && (yaw < 135.0f))
-			direction = LFT;
-		else if ((yaw > 225.0f) && (yaw < 315.0f))
-			direction = RGT;
-	}
-	else if (direction == LFT)
-	{
-		if ((yaw >= 315.0f) && (yaw <= 45.0f))
-			direction = LFT;
-		else if ((yaw >= 135.0f) && (yaw <= 225.0f))
-			direction = RGT;
-		else if ((yaw > 45.0f) && (yaw < 135.0f))
-			direction = FWD;
-		else if ((yaw > 225.0f) && (yaw < 315.0f))
-			direction = BKW;
-	}
-	else if (direction == RGT)
-	{
-		if ((yaw >= 315.0f) && (yaw <= 45.0f))
-			direction = RGT;
-		else if ((yaw >= 135.0f) && (yaw <= 225.0f))
-			direction = LFT;
-		else if ((yaw > 45.0f) && (yaw < 135.0f))
-			direction = BKW;
-		else if ((yaw > 225.0f) && (yaw < 315.0f))
-			direction = FWD;
-	}
+	// camera.setPos(glm::vec3(this->player->getX(), 35.0f, this->player->getZ()));
+	// float	yaw = camera.getYaw();
+	// if (direction == FWD)
+	// {
+	// 	if ((yaw >= 315.0f) && (yaw <= 45.0f))
+	// 		direction = FWD;
+	// 	else if ((yaw >= 135.0f) && (yaw <= 225.0f))
+	// 		direction = BKW;
+	// 	else if ((yaw > 45.0f) && (yaw < 135.0f))
+	// 		direction = RGT;
+	// 	else if ((yaw > 225.0f) && (yaw < 315.0f))
+	// 		direction = LFT;
+	// }
+	// else if (direction == BKW)
+	// {
+	// 	if ((yaw >= 315.0f) && (yaw <= 45.0f))
+	// 		direction = BKW;
+	// 	else if ((yaw >= 135.0f) && (yaw <= 225.0f))
+	// 		direction = FWD;
+	// 	else if ((yaw > 45.0f) && (yaw < 135.0f))
+	// 		direction = LFT;
+	// 	else if ((yaw > 225.0f) && (yaw < 315.0f))
+	// 		direction = RGT;
+	// }
+	// else if (direction == LFT)
+	// {
+	// 	if ((yaw >= 315.0f) && (yaw <= 45.0f))
+	// 		direction = LFT;
+	// 	else if ((yaw >= 135.0f) && (yaw <= 225.0f))
+	// 		direction = RGT;
+	// 	else if ((yaw > 45.0f) && (yaw < 135.0f))
+	// 		direction = FWD;
+	// 	else if ((yaw > 225.0f) && (yaw < 315.0f))
+	// 		direction = BKW;
+	// }
+	// else if (direction == RGT)
+	// {
+	// 	if ((yaw >= 315.0f) && (yaw <= 45.0f))
+	// 		direction = RGT;
+	// 	else if ((yaw >= 135.0f) && (yaw <= 225.0f))
+	// 		direction = LFT;
+	// 	else if ((yaw > 45.0f) && (yaw < 135.0f))
+	// 		direction = BKW;
+	// 	else if ((yaw > 225.0f) && (yaw < 315.0f))
+	// 		direction = FWD;
+	// }
 	this->player->ProcessKeyboard(direction);
 }
 
