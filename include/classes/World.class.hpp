@@ -24,7 +24,7 @@
 
 #include <mutex>
 #include <unistd.h>
-
+#include "Sound.class.hpp"
 		
 extern std::mutex mu;
 
@@ -83,6 +83,8 @@ class World
 		int		getStatus( void );
 		int		getScore( void );
 		int		getLives( void );
+		void	loadStage( void );
+		static Sound			*sound;
 
 };
 

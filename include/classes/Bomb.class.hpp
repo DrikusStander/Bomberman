@@ -15,7 +15,6 @@ class Bomb : public Item
 		int		activeFlames;
 		bool	destruction;
 		std::vector<Item*> flames;
-		Sound	sound;
 	protected:
 
 	public:

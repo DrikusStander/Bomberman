@@ -6,7 +6,7 @@
 /*   By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/11 11:20:47 by cnolte            #+#    #+#             */
-/*   Updated: 2018/09/18 13:43:20 by cnolte           ###   ########.fr       */
+/*   Updated: 2018/09/19 12:41:10 by cnolte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@
 # include "MainMenu.class.hpp"
 # include "LoadingScreen.class.hpp"
 # include "SoundMenu.class.hpp"
+# include "PauseMenu.class.hpp"
 # include <unistd.h>
 # include <thread>
 # include <future>
@@ -57,12 +58,14 @@ class Game
 
 		World	*world;
 		void 	createWorld2( void);
+		void 	loadStage1(void );
 		// static void 	createWorld( Game *game);
 
 	private:
 		std::vector<MainMenu*>	Menus;
 		std::vector<LoadingScreen*> load;
 		std::vector<SoundMenu*> soundMenu;
+		std::vector<PauseMenu*> pauseMenu;
 		GLfloat	deltaTime;
 		GLfloat	lastFrame;
 		GLuint	screen_x;
@@ -75,6 +78,16 @@ class Game
 		int		loadActive;
 		bool	soundMenuVisible;
 		int		soundActive;
+		bool	pauseVisible;
+		int		pauseActive;
+		int		check;
+		int		keyUP;
+		int		keyDOWN;
+		int		keyLEFT;
+		int		keyRIGHT;
+		int		keyBOMB;
+		int		keyFLASH;
+		int		keyCHANGEVIEW;
 
 		bool 		WorldLoaded;
 		Shader		*shader;
@@ -84,10 +97,9 @@ class Game
 		void		placeSpotLight(void);
 		GLFWwindow	*window;
 		glm::mat4	projection;
-		Sound		sound;
-
 
 };
 void 	createWorld(Game *game);
+void 	loadStage(Game *game);
 
 #endif

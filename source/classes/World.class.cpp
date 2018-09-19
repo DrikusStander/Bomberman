@@ -17,8 +17,8 @@ mu.lock();
 mu.unlock();
 
 mu.lock();
-	glfwMakeContextCurrent(window);	
-	std::cout << "World: setting vars" << std::endl;
+	glfwMakeContextCurrent(window);
+	this->window = window;
 	this->_shader = &shader;
 	this->x_trans = 0.0f;
 	this->y_trans = 0.0f;
@@ -36,7 +36,6 @@ mu.unlock();
 
 mu.lock();
 	glfwMakeContextCurrent(window);	
-	std::cout << "World: creating vectors" << std::endl;
 	this->objects = new std::vector<Item*>();
 	this->enemies = new std::vector<Enemy*>();
 	this->powerups = new std::vector<Powerup*>();
@@ -54,7 +53,6 @@ mu.unlock();
 mu.lock();
 	glfwMakeContextCurrent(window);	
 	// create coin models vectors
-	std::cout << "World: creating Models Vectors" << std::endl;
 	this->bombRaduis_model = new std::vector<Model*>();
 	this->bombCount_model = new std::vector<Model*>();
 	this->speed_model = new std::vector<Model*>();
@@ -63,7 +61,6 @@ mu.lock();
 mu.unlock();
 
 mu.lock();
-	std::cout << "World: creating adding Models to bombRaduis Vector" << std::endl;
 	glfwMakeContextCurrent(window);	
 	// add moels to coin models vectors
 	for (int i = 0; i < 24; i++)
@@ -72,7 +69,6 @@ mu.lock();
 mu.unlock();
 
 mu.lock();
-	std::cout << "World: adding Models to BombCount Vector" << std::endl;
 	glfwMakeContextCurrent(window);	
 	for (int i = 0; i < 24; i++)
 		this->bombCount_model->push_back(new Model("resources/models/coin/bombs/coin" + std::to_string(i) + ".obj"));
@@ -80,7 +76,6 @@ mu.lock();
 mu.unlock();
 
 mu.lock();
-	std::cout << "World: adding Models to Speed Vector" << std::endl;
 	glfwMakeContextCurrent(window);	
 	for (int i = 0; i < 24; i++)
 		this->speed_model->push_back(new Model("resources/models/coin/run/coin" + std::to_string(i) + ".obj"));
@@ -88,7 +83,6 @@ mu.lock();
 mu.unlock();
 
 mu.lock();
-	std::cout << "World: adding Models to portal Vector" << std::endl;
 	glfwMakeContextCurrent(window);
 	// set models for portal
 	for (int i = 0; i < 1; i++)
@@ -97,7 +91,6 @@ mu.lock();
 mu.unlock();
 
 mu.lock();
-	std::cout << "World: adding new intital Powerups to their Vectors" << std::endl;
 	glfwMakeContextCurrent(window);	
 	// set initial powerups
 
@@ -108,13 +101,11 @@ mu.lock();
 		this->bombRaduis.push_back( new Powerup(*this->_shader, "resources/models/coin/bomb/coin", 0, this->bombRaduis_model) );
 	}
 	this->portal = new Powerup(*this->_shader, "resources/models/portal/portal", 3, this->portal_model);
-	std::cout << "World powerups initialized" << std::endl;
 
 	glfwMakeContextCurrent(NULL);
 mu.unlock();
 
 mu.lock();
-	std::cout << "World: Initializing Map" << std::endl;
 	glfwMakeContextCurrent(window);	
 	// initiliaze the map
 	this->map = new char*[17] ;
@@ -123,15 +114,14 @@ mu.lock();
 		this->map[z] = new char[17];
 	}
 
-	std::cout << "World map initialized" << std::endl;
 	glfwMakeContextCurrent(NULL);
 mu.unlock();
 
 mu.lock();
-	glfwMakeContextCurrent(window);	
-	std::cout << "World: Initializing Breakable walls on Map" << std::endl;
-	// randomly innitilize breakable walls to the world
+	glfwMakeContextCurrent(window);
 	std::srand(std::time(NULL));
+
+	// randomly innitilize map and breakable walls to the world
 	for (int i = 0; i < 17; i++)
 	{
 		for(int j = 0; j < 17; j++)
@@ -156,6 +146,7 @@ mu.lock();
 						float z_transT = ((-168) - (i) * (-21));
 						temp->setPos( x_transT, z_transT, i, j);
 						this->objects->push_back(temp);
+						temp = NULL;
 					}
 					else
 						this->map[i][j] = '\0';
@@ -163,7 +154,6 @@ mu.lock();
 			}
 		}
 	}
-	std::cout << "World walls initialized" << std::endl;
 
 	glfwMakeContextCurrent(NULL);
 mu.unlock();
@@ -171,7 +161,6 @@ mu.unlock();
 mu.lock();
 	glfwMakeContextCurrent(window);	
 
-	std::cout << "World: Initializing Enemies on Map" << std::endl;
 	// Initialize Enemies into the world
 	int enemy_count = 5;
 	while (enemy_count > 0)
@@ -197,7 +186,6 @@ mu.lock();
 		}
 
 	}
-	std::cout << "World enemies initialized" << std::endl;
 	glfwMakeContextCurrent(NULL);
 mu.unlock();
 
@@ -215,80 +203,92 @@ World::~World( void )
 	delete this->player;
 	delete this->wall_model;
 	
+	// clean up objects
+	for (std::vector<Item*>::iterator it = this->objects->begin() ; it != this->objects->end(); it++)
+	{
+		if (*it)
+			delete (*it);
+	}
+	delete this->objects;
+
+	// clean up enemies
+	for (std::vector<Enemy*>::iterator it = this->enemies->begin() ; it != this->enemies->end(); it++)
+	{
+		if (*it)
+			delete (*it);
+	}
+	delete this->enemies;
+
+	
+
+	// clean up bombRaduis Powerups
+	for (std::vector<Powerup*>::iterator it = this->bombRaduis.begin() ; it != this->bombRaduis.end(); it++ )
+	{
+		std::cout << "cleaning Bombraduis vector" << std::endl;
+		if (*it)
+		{
+			std::cout << "Type: " << (*it)->getType() << std::endl;
+			delete (*it);
+		}
+	}
+
+
+	// clean up bombRaduis_model Powerup Models
+	for (std::vector<Model*>::iterator it = this->bombRaduis_model->begin() ; it != this->bombRaduis_model->end(); it++)
+	{
+		std::cout << "cleaning Bombraduis Model vector" << std::endl;
+		if (*it)
+			delete (*it);
+	}
+	delete this->bombRaduis_model;
+
+	// clean up bombCount Powerups
+	for (std::vector<Powerup*>::iterator it = this->bombCount.begin() ; it != this->bombCount.end(); it++)
+	{
+		std::cout << "cleaning BomCount vector" << std::endl;
+		if (*it)
+		{
+			std::cout << "Type: " << (*it)->getType() << std::endl;
+			delete (*it);
+		}
+	}
+	// clean up bombCount_model Powerup Models
+	for (std::vector<Model*>::iterator it = this->bombCount_model->begin() ; it != this->bombCount_model->end(); it++)
+	{
+		std::cout << "cleaning BomCount model vector" << std::endl;
+		if (*it)
+			delete (*it);
+	}
+	delete this->bombCount_model;
+
+	// clean up speed Powerups
+	for (std::vector<Powerup*>::iterator it = this->speed.begin() ; it != this->speed.end(); it++)
+	{
+		std::cout << "cleaning speed vector" << std::endl;
+		if (*it)
+		{
+			std::cout << "Type: " << (*it)->getType() << std::endl;
+			delete (*it);
+		}
+	}
+	// clean up speed Powerup Models
+	for (std::vector<Model*>::iterator it = this->speed_model->begin() ; it != this->speed_model->end(); it++ )
+	{
+		std::cout << "cleaning speed model vector" << std::endl;
+		if (*it)
+			delete (*it);
+	}
+	delete this->speed_model;
+
+	// // clean up Powerups
+	delete this->powerups;
+
 	// clean up map
 	for (int z = 0; z < 17; z++)
 	{
 		delete [] this->map[z];
 	}
 	delete [] this->map;
-
-	
-	// clean up objects
-	for (std::vector<Item*>::iterator it = this->objects->begin() ; it != this->objects->end(); )
-	{
-		if (it != this->objects->end())
-		{
-			delete (*it);
-			it = this->objects->erase(it);
-		}
-	}
-	delete this->objects;
-
-	// clean up enemies
-	for (std::vector<Enemy*>::iterator it = this->enemies->begin() ; it != this->enemies->end(); )
-	{
-		delete (*it);
-		it = this->enemies->erase(it);
-	}
-	delete this->enemies;
-
-	// // clean up Powerups
-	delete this->powerups;
-
-	// clean up bombRaduis Powerups
-	std::cout << "cleaning Bombraduis vector" << std::endl;
-	for (std::vector<Powerup*>::iterator it = this->bombRaduis.begin() ; it != this->bombRaduis.end(); )
-	{
-		delete (*it);
-		it = this->bombRaduis.erase(it);
-	}
-	// clean up bombRaduis_model Powerup Models
-	for (std::vector<Model*>::iterator it = this->bombRaduis_model->begin() ; it != this->bombRaduis_model->end(); )
-	{
-		delete (*it);
-		it = this->bombRaduis_model->erase(it);
-	}
-	delete this->bombRaduis_model;
-
-	// clean up bombCount Powerups
-	std::cout << "cleaning BomCount vector" << std::endl;
-	for (std::vector<Powerup*>::iterator it = this->bombCount.begin() ; it != this->bombCount.end(); )
-	{
-		delete (*it);
-		it = this->bombCount.erase(it);
-	}
-	// clean up bombCount_model Powerup Models
-	for (std::vector<Model*>::iterator it = this->bombCount_model->begin() ; it != this->bombCount_model->end(); )
-	{
-		delete (*it);
-		it = this->bombCount_model->erase(it);
-	}
-	delete this->bombCount_model;
-
-	// clean up speed Powerups
-	std::cout << "cleaning speed vector" << std::endl;
-	for (std::vector<Powerup*>::iterator it = this->speed.begin() ; it != this->speed.end(); )
-	{
-		delete (*it);
-		it = this->speed.erase(it);
-	}
-	// clean up speed Powerup Models
-	for (std::vector<Model*>::iterator it = this->speed_model->begin() ; it != this->speed_model->end(); )
-	{
-		delete (*it);
-		it = this->speed_model->erase(it);
-	}
-	delete this->speed_model;
 
 }
 
@@ -322,7 +322,6 @@ void World::draw(glm::mat4 matCamera, const GLfloat glfwTime)
 			this->time--;
 		else
 			this->worldStatus = 1;
-
 	}
 
 	this->hud.draw(matCamera, this->time, this->score, this->lives);
@@ -342,6 +341,7 @@ void World::draw(glm::mat4 matCamera, const GLfloat glfwTime)
 	{
 		for (int j = 0; j < 17; j++)
 		{
+			// std::cout << "Check if current pos on map is to be destroyed: " << std::endl;
 			if (this->map[i][j] == 'D')
 			{
 				// check if the player was hit
@@ -361,13 +361,17 @@ void World::draw(glm::mat4 matCamera, const GLfloat glfwTime)
 				}
 
 				// check what powerup was affected
+				// std::cout << "Check if current pos on map is PowerUp " << std::endl;
 				for (std::vector<Powerup*>::iterator it = this->powerups->begin() ; it != this->powerups->end(); )
 				{
 					if ((*it)->getRow() == i && (*it)->getCol() == j)
 					{
 						if ((*it)->getType() != 3)
 						{
-							delete (*it);
+							std::cout << "Deleting Powerup " << std::endl;
+
+							// delete (*it);
+
 							it = this->powerups->erase(it);
 						}
 						else
@@ -383,8 +387,18 @@ void World::draw(glm::mat4 matCamera, const GLfloat glfwTime)
 				// check what object was affected
 				for (std::vector<Item*>::iterator it = this->objects->begin() ; it != this->objects->end(); )
 				{
+					if (it == this->objects->end())
+					{
+						std::cout << "Break!!!" << std::endl;
+
+						break;
+					}
+					// std::cout << "Check Objects vectro for affected object: " << std::endl;
 					int objRow = (*it)->getRow();
+					std::cout << "Row: " << objRow << std::endl;
+
 					int objCol = (*it)->getCol();
+					std::cout << "Col: " << objCol << std::endl;
 					if ((*it)->getRow() == i && (*it)->getCol() == j)
 					{
 						// generate a powerup based on random chance
@@ -392,7 +406,7 @@ void World::draw(glm::mat4 matCamera, const GLfloat glfwTime)
 						if ((rand() % this->wallCount) == 0 && this->portalActive == false)
 						{
 							this->portalActive = true;
-							std::cout << "-----------> portal " << std::endl;
+							// std::cout << "-----------> portal " << std::endl;
 							this->portal->setPos((*it)->getX(), (*it)->getZ(), (*it)->getRow(), (*it)->getCol());
 							this->map[i][j] = 'U';
 							this->powerups->push_back(this->portal);
@@ -400,7 +414,7 @@ void World::draw(glm::mat4 matCamera, const GLfloat glfwTime)
 						else if ((rand() % 3) == 0)
 						{
 							int powerupOption = rand() % 3;
-							Powerup *temp;
+							Powerup *temp = NULL;
 							if (powerupOption == 0)
 							{
 								if (this->bombRaduis_index < 3)
@@ -423,7 +437,7 @@ void World::draw(glm::mat4 matCamera, const GLfloat glfwTime)
 								if (this->bombCount_index < 3)
 								{
 									temp = this->bombCount[this->bombCount_index];
-									this->bombCount_index++; 
+									this->bombCount_index++;
 								}
 							}
 							else 
@@ -438,8 +452,9 @@ void World::draw(glm::mat4 matCamera, const GLfloat glfwTime)
 							}
 						}
 						this->wallCount--;
-						std::cout << "delete object" << objCol << std::endl;
+						// std::cout << "delete object at: " << objRow << " " << objCol << std::endl;
 						delete (*it);
+						// std::cout << "remove object pointer from vector"  << std::endl;
 						it = this->objects->erase(it);
 					}
 					else
@@ -448,6 +463,7 @@ void World::draw(glm::mat4 matCamera, const GLfloat glfwTime)
 				// std::cout << "end of Oject Check" << std::endl;
 
 				// check what enemy was affected
+				std::cout << "Check enemies affected"  << std::endl;
 				for (std::vector<Enemy*>::iterator it = this->enemies->begin() ; it != this->enemies->end(); )
 				{
 					if ((*it)->getRow() == i && (*it)->getCol() == j)
@@ -463,16 +479,22 @@ void World::draw(glm::mat4 matCamera, const GLfloat glfwTime)
 				if (this->map[i][j] == 'D')
 					this->map[i][j] = '\0';
 			}
-			if (this->map[i][j] == 'U')
+			// std::cout << "Map[16][16]:  " << this->map[16][16] << std::endl;
+			// std::cout << "Check if current pos on map is a Power up: " << i << " " << j << std::endl;
+			if (this->map[i][j] == 'U' && (this->player->getRow() == i && this->player->getCol() == j))
 			{
 				// check if the player is on powerup
-				if (this->player->getRow() == i && this->player->getCol() == j)
+				std::cout << "Check if player is on Power up"  << std::endl;
+				// if (this->player->getRow() == i && this->player->getCol() == j)
 				{
+					std::cout << "player is on Power up"  << std::endl;
 					for (std::vector<Powerup*>::iterator it = this->powerups->begin() ; it != this->powerups->end(); )
 					{
 						if ((*it)->getRow() == i && (*it)->getCol() == j)
 						{
+							std::cout << "get Power up type"  << std::endl;
 							int type = (*it)->getType();
+							std::cout << "Handle Power up"  << std::endl;
 							this->player->handlePowerup(type);
 							switch(type)
 							{
@@ -495,8 +517,8 @@ void World::draw(glm::mat4 matCamera, const GLfloat glfwTime)
 										/*
 											also load next level here
 										*/
-											it = this->powerups->erase(it);
-											this->worldStatus = 2;
+										it = this->powerups->erase(it);
+										this->worldStatus = 2;
 									}
 									else
 										++it;
@@ -604,3 +626,126 @@ int		World::getLives( void )
 {
 	return(this->lives);
 }
+
+
+void	World::loadStage()
+{
+	std::cout << "in World::loadStage" << std::endl;
+
+mu.lock();
+	std::cout << "Setting contextcurret to the window" << std::endl;
+	glfwMakeContextCurrent(this->window);	
+	// clean up objects
+	this->worldStatus = 0;
+	this->time = 200;
+	this->player->setPos(-168, -168, 0, 0);
+	for (std::vector<Item*>::iterator it = this->objects->begin() ; it != this->objects->end(); )
+	{
+		if (*it)
+			delete (*it);
+		it = this->objects->erase(it);
+	}
+
+glfwMakeContextCurrent(NULL);
+mu.unlock();
+
+mu.lock();
+	glfwMakeContextCurrent(this->window);	
+
+	// clean up enemies
+	for (std::vector<Enemy*>::iterator it = this->enemies->begin() ; it != this->enemies->end(); )
+	{
+		if (*it)
+			delete (*it);
+		it = this->enemies->erase(it);
+	}
+
+	glfwMakeContextCurrent(NULL);
+mu.unlock();
+
+mu.lock();
+	glfwMakeContextCurrent(this->window);	
+
+	for (std::vector<Powerup*>::iterator it = this->powerups->begin() ; it != this->powerups->end(); )
+	{
+		it = this->powerups->erase(it);
+	}
+	
+	glfwMakeContextCurrent(NULL);
+mu.unlock();
+
+
+mu.lock();
+	glfwMakeContextCurrent(this->window);	
+
+	// randomly innitilize map and breakable walls to the world
+	for (int i = 0; i < 17; i++)
+	{
+		for(int j = 0; j < 17; j++)
+		{
+			if ((i % 2) != 0 && (j % 2) != 0)
+			{
+				this->map[i][j] = '#';
+			}
+			else
+			{
+				if (i < 2 && j <  2)
+					this->map[i][j] = '\0';
+				else
+				{
+					if ((std::rand() % 3 + 1) == 1)
+					{
+						this->wallCount++;
+						this->map[i][j] = 'W';
+						Item *temp = new Item(*this->_shader, this->wall_model);
+
+						float x_transT = ((-168) - (j) * (-21));
+						float z_transT = ((-168) - (i) * (-21));
+						temp->setPos( x_transT, z_transT, i, j);
+						this->objects->push_back(temp);
+						temp = NULL;
+					}
+					else
+						this->map[i][j] = '\0';
+				}
+			}
+		}
+	}
+
+	glfwMakeContextCurrent(NULL);
+mu.unlock();
+
+mu.lock();
+	glfwMakeContextCurrent(this->window);	
+
+	// Initialize Enemies into the world
+	int enemy_count = 5;
+	while (enemy_count > 0)
+	{
+		int row = (rand() % 16);
+		int col = (rand() % 16);
+		if ( (row > 2) && (col > 2))
+		{
+			if (this->map[row][col] == '\0')
+			{
+				this->enemyCount++;
+				this->map[row][col] = 'E';
+				float x_transT = ((-168) - (col) * (-21));
+				float z_transT = ((-168) - (row) * (-21));
+
+				Enemy *temp = new Enemy(*this->_shader, "resources/models/enemy2.obj");
+
+				temp->setPos(x_transT, z_transT, row, col);
+				temp->setMap(this->map);
+				this->enemies->push_back(temp);
+				enemy_count--;
+			}
+		}
+	}
+
+glfwMakeContextCurrent(NULL);
+mu.unlock();
+}
+
+
+Sound * World::sound = new Sound();
