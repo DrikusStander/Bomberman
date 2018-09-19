@@ -6,7 +6,7 @@
 /*   By: dwilliam <dwilliam@42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/11 11:20:47 by cnolte            #+#    #+#             */
-/*   Updated: 2018/09/17 18:53:20 by dwilliam         ###   ########.fr       */
+/*   Updated: 2018/09/18 17:29:29 by dwilliam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@
 # include "MainMenu.class.hpp"
 # include "LoadingScreen.class.hpp"
 # include "SoundMenu.class.hpp"
+# include "PauseMenu.class.hpp"
 # include <unistd.h>
 # include <thread>
 # include <future>
@@ -64,6 +65,7 @@ class Game
 		std::vector<MainMenu*>	Menus;
 		std::vector<LoadingScreen*> load;
 		std::vector<SoundMenu*> soundMenu;
+		std::vector<PauseMenu*> pauseMenu;
 		GLfloat	deltaTime;
 		GLfloat	lastFrame;
 		GLuint	screen_x;
@@ -76,12 +78,23 @@ class Game
 		int		loadActive;
 		bool	soundMenuVisible;
 		int		soundActive;
+		bool	pauseVisible;
+		int		pauseActive;
+		int		check;
+		int		keyUP;
+		int		keyDOWN;
+		int		keyLEFT;
+		int		keyRIGHT;
+		int		keyBOMB;
+		int		keyFLASH;
+		int		keyCHANGEVIEW;
 
 		bool 		WorldLoaded;
 		Shader		*shader;
 		void		DoMovement(void);
 		void		MoveMenu(void);
 		void		MoveSoundMenu(void);
+		void		MovePause(void);
 		GLFWwindow	*window;
 		glm::mat4	projection;
 

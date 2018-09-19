@@ -18,19 +18,22 @@ bool	keys[1024];
 bool	firstMouse;
 GLfloat	lastX;
 GLfloat	lastY;
+int		lastkeypressed;
 
 // Is called whenever a key is pressed/released via GLFW
 void	KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mode)
 {
 	if (GLFW_KEY_ESCAPE == key && GLFW_PRESS == action)
 	{
-		glfwSetWindowShouldClose(window, GL_TRUE);
+		// glfwSetWindowShouldClose(window, GL_TRUE);
 	}
 
 	if (key >= 0 && key < 1024)
 	{
 		if (action == GLFW_PRESS)
 		{
+			lastkeypressed = key;
+			std::cout << "pressed key " << key << std::endl;
 			keys[key] = true;
 		}
 		else if (action == GLFW_RELEASE)
@@ -38,6 +41,7 @@ void	KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mode
 			keys[key] = false;
 		}
 	}
+	// std::cout << "pressed key " << key << std::endl;
 }
 
 void	MouseCallback(GLFWwindow *window, double xPos, double yPos)
@@ -78,10 +82,19 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 	menuVisible = true;
 	loadVisible = false;
 	soundMenuVisible = false;
+	pauseVisible = false;
 	this->WorldLoaded = false;
 	this->menuActive = 0;
 	this->loadActive = 0;
 	this->soundActive = 0;
+	this->pauseActive = 0;
+	this->check = 0;
+
+	this->keyUP = GLFW_KEY_UP;
+	this->keyDOWN = GLFW_KEY_DOWN;
+	this->keyLEFT = GLFW_KEY_LEFT;
+	this->keyRIGHT = GLFW_KEY_RIGHT;
+	this->keyBOMB = GLFW_KEY_SPACE;
 
 	camera.ProcessMouseMovement(0, -250);
 
@@ -144,10 +157,9 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 
 	for (int i = 0; i < 11; i++)
 		this->soundMenu.push_back(new SoundMenu(shader, "resources/models/menu/SoundScreen/SoundScreen_" + std::to_string(i) + ".obj"));
-
-	// Item temp(shader, "resources/models/fire/fire.obj");
-	// Item temp2(shader, "resources/models/fire/fire.obj");
-	// temp.setPos(168, 168, 0, 0);
+	
+	for (int i = 0; i < 5; i++)
+		this->pauseMenu.push_back(new PauseMenu(shader, "resources/models/menu/PauseMenu/pauseMenu_" + std::to_string(i) + ".obj"));
 
 	glm::mat4 projection = glm::perspective(camera.GetZoom(), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 1000.0f);
 	this->projection = projection;
@@ -235,11 +247,23 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 						soundMenuVisible = true;
 					}
 					else if (this->menuActive == 8) //Key Bindings
-						this->menuActive = 0;
-					else if ((this->menuActive == 5) || (this->menuActive == 9)) //Back to Main Menu
+						std::cout << "still busy" << std::endl;
+					else if (this->menuActive == 5) //Back to Main Menu
 						this->menuActive = 0;
 					else if (this->menuActive == 15) //Going back to Options
 						this->menuActive = 6;
+					else if (this->menuActive == 9)
+					{
+						if (this->check == 1)
+						{
+							menuVisible = false;
+							pauseVisible = true;
+							check = 0;
+							this->pauseActive = 3;
+						}
+						else
+							this->menuActive = 2;
+					}
 					//-------------------Changing Resolutions--------------------------------------------------------
 					else if (this->menuActive == 10) //Resolution change
 					{
@@ -360,6 +384,44 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 				usleep(400000);
 				this->loadActive++;
 			}
+			else if (pauseVisible == true)
+			{
+				pauseMenu[this->pauseActive]->draw();
+				MovePause();
+				if (keys[GLFW_KEY_ENTER])
+				{
+					keys[GLFW_KEY_ENTER] = false;
+					if (this->pauseActive >= 0 && this->pauseActive <= 4)
+					{
+						switch (this->pauseActive)
+						{
+							case 0://Resume Game
+								pauseVisible = false;
+								break ;
+							case 1:// Save Game
+								pauseVisible = false;
+								break ;
+							case 2://Load Game
+								pauseVisible = false;
+								break ;
+							case 3://Options
+								menuVisible = true;
+								pauseVisible =false;
+								this->check = 1;
+								this->menuActive = 6;
+								break ;
+							case 4://Quit to Main menu
+								delete this->world;
+								this->menuActive = 0;
+								menuVisible = true;
+								pauseVisible = false;
+								break ;
+							default:
+								break ;
+						}
+					}
+				}
+			}
 			else
 			{	
 				if (currentFrame - old_time_key >= 0.01f)
@@ -471,6 +533,23 @@ Game	&Game::operator=(Game const &rhs)
 }
 //end canonical form
 
+void Game::MovePause(void)
+{
+	// Pause Menu controls
+	if (keys[GLFW_KEY_UP])
+	{
+		keys[GLFW_KEY_UP] = false;
+		if (this->pauseActive > 0)
+				this->pauseActive--;
+	}
+	else if (keys[GLFW_KEY_DOWN])
+	{
+		keys[GLFW_KEY_DOWN] = false;
+		if (this->pauseActive < 4)
+			this->pauseActive++;
+	}
+}
+
 void Game::MoveSoundMenu(void)
 {
 	//SoundMenu controls
@@ -541,6 +620,20 @@ void Game::MoveMenu(void)
 					this->menuActive++;
 			}
 		}
+		else if (check == 1)
+		{
+			if (keys[GLFW_KEY_ESCAPE])
+			{
+				keys[GLFW_KEY_ESCAPE] = false;
+				if (this->menuActive >= 6 || this->menuActive <= 9)
+				{
+					menuVisible = false;
+					pauseVisible = true;
+					this->check = 1;
+					this->pauseActive = 3;
+				} 
+			}
+		}
 	}
 }
 
@@ -562,22 +655,28 @@ void	Game::DoMovement(void)
 		camera.ProcessKeyboard(RIGHT, deltaTime);
 
 	// Player controls
-	if (keys[GLFW_KEY_UP])
+	if (keys[this->keyUP])
 	{
 		this->world->ProcessKeyboard(FWD);
 	}
-	else if (keys[GLFW_KEY_DOWN])
+	else if (keys[this->keyDOWN])
 		this->world->ProcessKeyboard(BKW);
-	else if (keys[GLFW_KEY_LEFT])
+	else if (keys[this->keyLEFT])
 		this->world->ProcessKeyboard(LFT);
-	else if (keys[GLFW_KEY_RIGHT])
+	else if (keys[this->keyRIGHT])
 		this->world->ProcessKeyboard(RGT);
 
 	// Plant a bomb
-	if (keys[GLFW_KEY_SPACE])
+	if (keys[this->keyBOMB])
 	{
-		keys[GLFW_KEY_SPACE] = false;
+		keys[this->keyBOMB] = false;
 		this->world->ProcessKeyboard(SPC);
+	}
+	else if (keys[GLFW_KEY_ESCAPE])
+	{
+		keys[GLFW_KEY_ESCAPE] = false;
+		this->pauseActive = 0;
+		pauseVisible = true;
 	}
 	usleep(10000);
 }
