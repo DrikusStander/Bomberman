@@ -693,6 +693,21 @@ void 	Game::createWorld2(void )
 	this->loadVisible = false;
 }
 
+void 	loadStage(Game *game)
+{
+	std::cout << "in Load stage calling load stage from Game" << std::endl;
+	game->loadStage1();
+}
+
+void 	Game::loadStage1(void )
+{
+	std::cout << "in Load stage1 calling load stage from World" << std::endl;
+
+	this->world->loadStage();
+	std::cout << "set LoadVisible to false" << std::endl;
+	this->loadVisible = false;
+}
+
 void	Game::placeSpotLight(void)
 {
 	glUniform3f(glGetUniformLocation(this->shader->getProgram(), "spotLight.position"), camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
