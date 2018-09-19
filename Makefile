@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: dwilliam <dwilliam@42.fr>                  +#+  +:+       +#+         #
+#    By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/07/31 19:21:44 by cnolte            #+#    #+#              #
-#    Updated: 2018/09/18 13:41:38 by dwilliam         ###   ########.fr        #
+#    Updated: 2018/09/19 18:49:11 by cnolte           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -79,5 +79,8 @@ fclean: clean
 	@echo "[INFO] $(NAME) removed!"
 
 re: fclean all
+
+test:
+	curl https://drive.google.com/drive/folders/1kt-hJU0QTY9QqVaHk7GLkwwlRB7lMPi8?usp=sharing
 
 .PHONY: all clean fclean re
