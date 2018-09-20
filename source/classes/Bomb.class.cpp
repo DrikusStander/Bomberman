@@ -224,7 +224,7 @@ void	Bomb::incBlastRaduis()
 
 void	Bomb::setBlastRaduis(int blastRaduis)
 {
-	if (blastRaduis < 3)
+	if (blastRaduis < 4)
 		this->blastRaduis = blastRaduis;
 	else
 		this->blastRaduis = 1;

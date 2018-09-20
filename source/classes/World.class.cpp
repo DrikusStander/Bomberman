@@ -306,7 +306,9 @@ mu.lock();
 	{
 		int temp = 0;
 		std::istringstream(tokens[1]) >> temp;
+		std::cout << "bomb raduis: " << temp << std::endl;
 		this->player->setBombRaduis(temp);
+		sleep(6);
 	}
 	tokens.clear();
 
