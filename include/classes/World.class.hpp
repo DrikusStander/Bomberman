@@ -67,9 +67,6 @@ class World
 		int						timeSinceNewFrame;
 		int						stage;
 
-
-
-
 	public:
 		World(Shader &shader, std::string model, float screen_x, float screen_y, GLFWwindow	*window);
 		World(Shader &shader, std::string model, float screen_x, float screen_y, GLFWwindow	*window, std::string savedGame);
@@ -93,5 +90,6 @@ class World
 };
 
 std::vector<std::string>	strsplit(std::string &line, char delem);
+std::string					trim(std::string &str);
 
 #endif

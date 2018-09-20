@@ -64,11 +64,6 @@ void Player::draw(void)
 				this->dead = false;
 				this->invincible = false;
 			}
-			// else
-			// {
-			// 	this->invincible = false;
-			// 	// this->dead = false;
-			// }
 			break;
 		}
 		case 2:
@@ -82,11 +77,6 @@ void Player::draw(void)
 				this->dead = false;
 				this->invincible = false;
 			}
-			// else
-			// {
-			// 	this->invincible = false;
-			// 	// this->dead = false;
-			// }
 			break;
 		}
 		case 3:
@@ -100,11 +90,6 @@ void Player::draw(void)
 				this->dead = false;
 				this->invincible = false;
 			}
-			// else
-			// {
-			// 	this->invincible = false;
-			// 	// this->dead = false;
-			// }
 			break;
 		}
 		default:
@@ -364,10 +349,8 @@ void	Player::ProcessKeyboard(Direction direction)
 		}
 		case SPC:
 		{
-			std::cout << "need to place bomb" << std::endl;
 			for (int i = 0 ; i < this->bombCount; i++)
 			{
-				std::cout << "bomb: " << i << std::endl;
 				if (this->map[this->row][this->col] == 'B')
 					break;
 				if (this->bomb[i]->getActive() == false)
@@ -393,23 +376,14 @@ void	Player::ProcessKeyboard(Direction direction)
 		if (this->active > 21)
 			this->active = 0;
 	}
-	
-	// std::cout << "* x_trans: " << this->x_trans << std::endl;
-	// std::cout << "* z_trans: " << this->z_trans << std::endl;
-	// std::cout << "x_trans: " << std::to_string((fmod(((168.0f) - (this->x_trans - 10.5f)), -21.0f))) << std::endl;
-	// std::cout << "z_trans: "<< std::to_string((fmod(((168) - (this->z_trans - 10.5)), -21))) << std::endl;
-	// std::cout << "array[" << this->row << "][" << this->col << "]" << std::endl;
 }
 
 void	Player::handlePowerup(int powerup)
 {
-	std::cout << "in handle powerup" << std::endl;
 	if (powerup == 0)
 	{
 		for (std::vector<Bomb*>::iterator it = this->bomb.begin() ; it != this->bomb.end(); it++)
-		{
 			(*it)->incBlastRaduis();
-		}
 	}
 	else if (powerup == 1)
 	{
@@ -424,7 +398,6 @@ void	Player::handlePowerup(int powerup)
 		if (this->bombCount < 3)
 			this->bombCount++;
 	}
-	std::cout << "leaving handle powerup" << std::endl;
 }
 
 int		Player::getLives( void )
@@ -489,8 +462,5 @@ void Player::setBombCount(int bombCount)
 void Player::setBombRaduis(int bombRaduis)
 {
 	for (std::vector<Bomb*>::iterator it = this->bomb.begin() ; it != this->bomb.end(); it++)
-	{
 		(*it)->setBlastRaduis(bombRaduis);
-	}
-	// this->bomb->setBlastRaduis(bombRaduis);
 }
