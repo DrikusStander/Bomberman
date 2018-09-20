@@ -6,7 +6,7 @@
 #    By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/07/31 19:21:44 by cnolte            #+#    #+#              #
-#    Updated: 2018/09/20 19:37:14 by cnolte           ###   ########.fr        #
+#    Updated: 2018/09/20 19:45:17 by cnolte           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -44,7 +44,7 @@ ifneq ($(DYLD_LIBRARY_PATH),$(ROOT_DIR)/resources/Sound/lib)
 endif
 	@if ! test -d resources; \
 	then if ! test -a resources.zip; \
-	then curl -L -o "resources.zip" "https://drive.google.com/uc?export=download&id=179LGduIy9MPUrPUkzdGEqWFmUVbgWrKK"; \
+	then curl -L -o "resources.zip" "https://drive.google.com/uc?export=download&id=1UNuLyEmjuZVLP6-Gy4QJE1nHdajrhRvK"; \
 	fi; \
 	unzip resources.zip; \
 	fi
@@ -74,12 +74,10 @@ endif
 all: $(NAME)
 
 clean:
-	@$(MAKE) -C resources/SOIL2 clean
 	@rm -f $(OBJS)
 	@echo "[INFO] Objects removed!"
 
 fclean: clean
-	@$(MAKE) -C resources/SOIL2 fclean
 	@rm -rf libSOIL2.a
 	@rm -rf $(NAME)
 	@rm -rf resources
