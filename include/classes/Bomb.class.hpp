@@ -31,6 +31,7 @@ class Bomb : public Item
 		using Item::setPos;
 		using Item::setMap;
 		using Item::getActive;
+		using Item::setShader;
 };
 
 #endif

@@ -48,6 +48,7 @@ Item const & Item::operator=(Item const & rhs)
 
 void Item::draw(void)
 {
+	this->_shader->Use();
 	glm::mat4 model(1);
 	model = glm::translate( model, glm::vec3(this->x_trans, this->y_trans, this->z_trans)); // Translate item
 	model = glm::scale(model, glm::vec3(4.25f, 2.25f, 4.25f));								// scale item
@@ -96,4 +97,9 @@ float	Item::getX()
 float	Item::getZ()
 {
 	return(this->z_trans);
+}
+
+void	Item::setShader(Shader &shader)
+{
+	this->_shader = &shader;
 }
