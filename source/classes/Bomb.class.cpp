@@ -223,3 +223,16 @@ void	Bomb::incBlastRaduis()
 	if (this->blastRaduis < 3)
 		this->blastRaduis++;
 }
+
+void	Bomb::setBlastRaduis(int blastRaduis)
+{
+	if (blastRaduis < 3)
+		this->blastRaduis = blastRaduis;
+	else
+		this->blastRaduis = 1;
+}
+
+int		Bomb::getBlastRaduis( void )
+{
+	return(this->blastRaduis);
+}

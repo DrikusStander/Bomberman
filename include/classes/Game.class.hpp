@@ -6,7 +6,7 @@
 /*   By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/11 11:20:47 by cnolte            #+#    #+#             */
-/*   Updated: 2018/09/20 12:14:17 by cnolte           ###   ########.fr       */
+/*   Updated: 2018/09/20 16:42:20 by cnolte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ class Game
 		World	*world;
 		void 	createWorld2( void);
 		void 	loadStage1(void );
+		void 	loadGame1(void );
 		// static void 	createWorld( Game *game);
 
 	private:
@@ -89,6 +90,7 @@ class Game
 		int		keyFLASH;
 		bool	toggleFlash;
 		int		keyCHANGEVIEW;
+		int		stage;
 
 		bool 		WorldLoaded;
 		Shader		*shaderNormal;
@@ -99,11 +101,13 @@ class Game
 		void		MovePause(void);
 		void		MoveSoundMenu(void);
 		void		placeSpotLight(void);
+		inline bool exist(const std::string& name);
 		GLFWwindow	*window;
 		glm::mat4	projection;
 
 };
 void 	createWorld(Game *game);
 void 	loadStage(Game *game);
+void 	loadGame(Game *game);
 
 #endif

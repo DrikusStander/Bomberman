@@ -5,7 +5,7 @@ World::World(Shader &shader, std::string model, float screen_x, float screen_y, 
 {
 	std::cout << "World - Parametric Constructor called " << std::endl;
 mu.lock();
-	glfwMakeContextCurrent(window);	
+	glfwMakeContextCurrent(window);
 	this->WorldModel =  new Model(model);
 	glfwMakeContextCurrent(NULL);
 mu.unlock();
@@ -25,11 +25,14 @@ mu.lock();
 	this->z_trans = 0.0f;
 	this->score = 0;
 	this->time = 200;
+	this->stage = 1;
 	timeSinceNewFrame = 0.0f;
 	this->wallCount = 0;
 	this->enemyCount = 0;
 	this->portalActive = false;
 	this->player = new Player(shader, "resources/models/player/player_run_");
+	this->player->setMap(this->map);
+
 	this->lives = this->player->getLives();
 	glfwMakeContextCurrent(NULL);
 mu.unlock();
@@ -176,7 +179,7 @@ mu.lock();
 				float x_transT = ((-168) - (col) * (-21));
 				float z_transT = ((-168) - (row) * (-21));
 
-				Enemy *temp = new Enemy(shader, "resources/models/enemy.obj");
+				Enemy *temp = new Enemy(shader, "resources/models/enemy" + std::to_string(this->stage) +".obj");
 
 				temp->setPos(x_transT, z_transT, row, col);
 				temp->setMap(this->map);
@@ -190,6 +193,307 @@ mu.lock();
 mu.unlock();
 
 }
+
+
+
+
+
+
+
+// load saved game constructor
+World::World(Shader &shader, std::string model, float screen_x, float screen_y, GLFWwindow	*window, std::string savedGame)
+{
+	std::cout << "World - Parametric SavedGame Constructor called " << std::endl;
+mu.lock();
+	glfwMakeContextCurrent(window);
+	this->WorldModel =  new Model(model);
+	glfwMakeContextCurrent(NULL);
+mu.unlock();
+
+mu.lock();
+	glfwMakeContextCurrent(window);
+	this->hud = HUD(shader, screen_x, screen_y);
+	glfwMakeContextCurrent(NULL);
+mu.unlock();
+
+mu.lock();
+	glfwMakeContextCurrent(window);
+	this->window = window;
+	this->_shader = &shader;
+	this->x_trans = 0.0f;
+	this->y_trans = 0.0f;
+	this->z_trans = 0.0f;
+
+	// Open saved game file
+	std::ifstream file;
+	file.open(savedGame);
+	std::string	line;
+	std::vector<std::string> tokens;
+	///////////////////////
+
+	// read from file and update
+		//read stage
+	getline(file, line);
+	tokens = strsplit(line, ' ');
+	if (tokens[0] == "stage:")
+	{
+		std::cout << tokens[0] << std::endl;
+
+		std::istringstream(tokens[1]) >> this->stage;
+	}
+	tokens.clear();
+		//read score
+	getline(file, line);
+	tokens = strsplit(line, ' ');
+	if (tokens[0] == "score:")
+	{
+		std::cout << tokens[0] << std::endl;
+
+		std::istringstream(tokens[1]) >> this->score;
+	}
+	tokens.clear();
+	 //read time
+	getline(file, line);
+	tokens = strsplit(line, ' ');
+
+	if (tokens[0] == "time:")
+	{
+	std::cout << tokens[0] << std::endl;
+		std::istringstream(tokens[1]) >> this->time;
+	}
+	std::cout << "time: " << this->time << std::endl ;
+	tokens.clear();
+
+	sleep(4);
+	////////////////
+
+
+	timeSinceNewFrame = 0.0f;
+	this->wallCount = 0;
+	this->enemyCount = 0;
+	this->portalActive = false;
+	this->player = new Player(shader, "resources/models/player/player_run_");
+
+	// read from file and update
+	 //read lives
+	getline(file, line);
+	tokens = strsplit(line, ' ');
+	if (tokens[0] == "lives:")
+	{
+		std::istringstream(tokens[1]) >> this->lives;
+		this->player->setlives(this->lives);
+	}
+	tokens.clear();
+
+	// this->lives = this->player->getLives();
+	////////////////
+
+	glfwMakeContextCurrent(NULL);
+mu.unlock();
+
+mu.lock();
+	glfwMakeContextCurrent(window);	
+	this->objects = new std::vector<Item*>();
+	this->enemies = new std::vector<Enemy*>();
+	this->powerups = new std::vector<Powerup*>();
+	this->worldStatus = 0;
+
+	// read from file and update
+	 //read blastraduis
+	getline(file, line);
+	tokens = strsplit(line, ' ');
+	if (tokens[0] == "blastraduis:")
+	{
+		int temp = 0;
+		std::istringstream(tokens[1]) >> temp;
+		this->player->setBombRaduis(temp);
+	}
+	tokens.clear();
+
+	 //read bombcount
+	getline(file, line);
+	tokens = strsplit(line, ' ');
+	if (tokens[0] == "bombCount:")
+	{
+		int temp = 0;
+		std::istringstream(tokens[1]) >> temp;
+		this->player->setBombCount(temp);
+	}
+	tokens.clear();
+	 //read speedMult
+	getline(file, line);
+	tokens = strsplit(line, ' ');
+	if (tokens[0] == "speedMult:")
+	{
+		int temp = 0;
+		std::istringstream(tokens[1]) >> temp;
+		this->player->setSpeedMult(temp);
+	}
+	tokens.clear();
+	 //read activeMult
+	getline(file, line);
+	tokens = strsplit(line, ' ');
+	if (tokens[0] == "activeMult:")
+	{
+		int temp = 0;
+		std::istringstream(tokens[1]) >> temp;
+		this->player->setActiveMult(temp);
+	}
+	tokens.clear();
+	////////////////
+
+	this->bombRaduis_index = 0;
+	this->bombCount_index = 0;
+	this->speed_index = 0;
+
+	// create breakable wall model
+	this->wall_model = new Model("resources/models/wall.obj");
+	glfwMakeContextCurrent(NULL);
+mu.unlock();
+
+mu.lock();
+	glfwMakeContextCurrent(window);
+	// create coin models vectors
+	this->bombRaduis_model = new std::vector<Model*>();
+	this->bombCount_model = new std::vector<Model*>();
+	this->speed_model = new std::vector<Model*>();
+	this->portal_model = new std::vector<Model*>();
+	glfwMakeContextCurrent(NULL);
+mu.unlock();
+
+mu.lock();
+	glfwMakeContextCurrent(window);
+	// add moels to coin models vectors
+	for (int i = 0; i < 24; i++)
+		this->bombRaduis_model->push_back(new Model("resources/models/coin/bomb/coin" + std::to_string(i) + ".obj"));
+	glfwMakeContextCurrent(NULL);
+mu.unlock();
+
+mu.lock();
+	glfwMakeContextCurrent(window);
+	for (int i = 0; i < 24; i++)
+		this->bombCount_model->push_back(new Model("resources/models/coin/bombs/coin" + std::to_string(i) + ".obj"));
+	glfwMakeContextCurrent(NULL);
+mu.unlock();
+
+mu.lock();
+	glfwMakeContextCurrent(window);	
+	for (int i = 0; i < 24; i++)
+		this->speed_model->push_back(new Model("resources/models/coin/run/coin" + std::to_string(i) + ".obj"));
+	glfwMakeContextCurrent(NULL);
+mu.unlock();
+
+mu.lock();
+	glfwMakeContextCurrent(window);
+	// set models for portal
+	for (int i = 0; i < 1; i++)
+		this->portal_model->push_back(new Model("resources/models/portal/portal" + std::to_string(i) + ".obj"));
+	glfwMakeContextCurrent(NULL);
+mu.unlock();
+
+mu.lock();
+	glfwMakeContextCurrent(window);
+	// set initial powerups
+
+	for (int i = 0; i < 3 ; i++)
+	{
+		this->speed.push_back( new Powerup(*this->_shader, "resources/models/coin/run/coin", 1, this->speed_model) );
+		this->bombCount.push_back( new Powerup(*this->_shader, "resources/models/coin/bombs/coin", 2, this->bombCount_model) );
+		this->bombRaduis.push_back( new Powerup(*this->_shader, "resources/models/coin/bomb/coin", 0, this->bombRaduis_model) );
+	}
+	this->portal = new Powerup(*this->_shader, "resources/models/portal/portal", 3, this->portal_model);
+
+	glfwMakeContextCurrent(NULL);
+mu.unlock();
+
+mu.lock();
+	glfwMakeContextCurrent(window);	
+	// initiliaze the map
+
+	this->map = new char*[17] ;
+	for (int z = 0; z < 17; z++)
+	{
+		this->map[z] = new char[17];
+	}
+
+	glfwMakeContextCurrent(NULL);
+mu.unlock();
+
+mu.lock();
+	glfwMakeContextCurrent(window);
+	std::srand(std::time(NULL));
+
+	// innitilize map and breakable walls to the world from file
+	// read from file and update
+	for (int i = 0; i < 17; i++)
+	{
+		tokens.clear();
+		getline(file, line);
+		tokens = strsplit(line, ' ');
+		for(int j = 0; j < 17; j++)
+		{
+			float x_transT;
+			float z_transT;
+			Enemy *enemyTemp;
+			Item *temp;
+			switch(tokens[j].c_str()[0])
+			{
+				case '#':
+					this->map[i][j] = '#';
+					break;
+				case '\0':
+					this->map[i][j] = '\0';
+					break;
+				case 'W':
+					this->map[i][j] = 'W';
+					this->wallCount++;
+					temp = new Item(shader, this->wall_model);
+					x_transT = ((-168) - (j) * (-21));
+					z_transT = ((-168) - (i) * (-21));
+					temp->setPos( x_transT, z_transT, i, j);
+					this->objects->push_back(temp);
+					temp = NULL;
+					break;
+				case 'P':
+					this->map[i][j] = 'P';
+					x_transT = ((-168) - (j) * (-21));
+					z_transT = ((-168) - (i) * (-21));
+					this->player->setPos(x_transT, z_transT, i, j);
+					break;
+				case 'E':
+					this->map[i][j] = 'E';
+					this->enemyCount++;
+					enemyTemp = new Enemy(shader, "resources/models/enemy" + std::to_string(this->stage) +".obj");
+					x_transT = ((-168) - (j) * (-21));
+					z_transT = ((-168) - (i) * (-21));
+					enemyTemp->setPos( x_transT, z_transT, i, j);
+					enemyTemp->setMap(this->map);
+					this->enemies->push_back(enemyTemp);
+					enemyTemp = NULL;
+					break;
+				default:
+					this->map[i][j] = '\0';
+					break;
+			}
+		}
+	}
+	//////////////////////
+
+
+	glfwMakeContextCurrent(NULL);
+mu.unlock();
+
+}
+
+
+
+
+
+
+
+
+
+
 
 World::World( World const & src)
 {
@@ -396,17 +700,11 @@ void World::draw(Camera &camera, const GLfloat glfwTime)
 				for (std::vector<Item*>::iterator it = this->objects->begin() ; it != this->objects->end(); )
 				{
 					if (it == this->objects->end())
-					{
-						std::cout << "Break!!!" << std::endl;
-
 						break;
-					}
 					// std::cout << "Check Objects vectro for affected object: " << std::endl;
 					int objRow = (*it)->getRow();
-					std::cout << "Row: " << objRow << std::endl;
 
 					int objCol = (*it)->getCol();
-					std::cout << "Col: " << objCol << std::endl;
 					if ((*it)->getRow() == i && (*it)->getCol() == j)
 					{
 						// generate a powerup based on random chance
@@ -414,7 +712,6 @@ void World::draw(Camera &camera, const GLfloat glfwTime)
 						if ((rand() % this->wallCount) == 0 && this->portalActive == false)
 						{
 							this->portalActive = true;
-							// std::cout << "-----------> portal " << std::endl;
 							this->portal->setPos((*it)->getX(), (*it)->getZ(), (*it)->getRow(), (*it)->getCol());
 							this->map[i][j] = 'U';
 							this->powerups->push_back(this->portal);
@@ -526,6 +823,7 @@ void World::draw(Camera &camera, const GLfloat glfwTime)
 											also load next level here
 										*/
 										it = this->powerups->erase(it);
+										this->stage++;
 										this->worldStatus = 2;
 									}
 									else
@@ -639,7 +937,7 @@ int		World::getLives( void )
 }
 
 
-void	World::loadStage()
+void	World::loadStage(int stage)
 {
 	std::cout << "in World::loadStage" << std::endl;
 
@@ -647,7 +945,10 @@ mu.lock();
 	std::cout << "Setting contextcurret to the window" << std::endl;
 	glfwMakeContextCurrent(this->window);	
 	// clean up objects
+	this->wallCount = 0;
+	this->enemyCount = 0;
 	this->worldStatus = 0;
+	this->portalActive = false;
 	this->time = 200;
 	this->player->setPos(-168, -168, 0, 0);
 	for (std::vector<Item*>::iterator it = this->objects->begin() ; it != this->objects->end(); )
@@ -681,7 +982,7 @@ mu.lock();
 	{
 		it = this->powerups->erase(it);
 	}
-	
+
 	glfwMakeContextCurrent(NULL);
 mu.unlock();
 
@@ -727,10 +1028,10 @@ mu.lock();
 mu.unlock();
 
 mu.lock();
-	glfwMakeContextCurrent(this->window);	
+	glfwMakeContextCurrent(this->window);
 
 	// Initialize Enemies into the world
-	int enemy_count = 5;
+	int enemy_count = 5 * stage;
 	while (enemy_count > 0)
 	{
 		int row = (rand() % 16);
@@ -744,7 +1045,7 @@ mu.lock();
 				float x_transT = ((-168) - (col) * (-21));
 				float z_transT = ((-168) - (row) * (-21));
 
-				Enemy *temp = new Enemy(*this->_shader, "resources/models/enemy2.obj");
+				Enemy *temp = new Enemy(*this->_shader, "resources/models/enemy" + std::to_string(stage) + ".obj");
 
 				temp->setPos(x_transT, z_transT, row, col);
 				temp->setMap(this->map);
@@ -762,5 +1063,80 @@ void	World::setShader(Shader &shader)
 {
 	this->_shader = &shader;
 }
+void	World::saveWorld()
+{
+	std::stringstream sstr;
+	std::ofstream file;
+	file.open("saveGame");
+	sstr << this->stage;
+	file << "stage: " + sstr.str() + "\n";
+	sstr.str("");
+	sstr << this->score;
+	file << "score: " + sstr.str() + "\n";
+	sstr.str("");
+	sstr << this->time;
+	file << "time: " + sstr.str() + "\n";
+	sstr.str("");
+	sstr << this->lives;
+	file << "lives: " + sstr.str() + "\n";
+	sstr.str("");
+	sstr << this->player->getBombRaduis();
+	file << "blastraduis: " + sstr.str() + "\n";
+	sstr.str("");
+	sstr << this->player->getBombCount();
+	file << "bombCount: " + sstr.str() + "\n";
+	sstr.str("");
+	sstr << this->player->getSpeedMult();
+	file << "speedMult: " + sstr.str() + "\n";
+	sstr.str("");
+	sstr << this->player->getSpeedMult();
+	file << "activeMult: " + sstr.str() + "\n";
+	// save map to file
+	for (int i = 0; i < 17; i++)
+	{
+		for(int j = 0; j < 17; j++)
+		{
+			if (this->map[i][j] == 'U' || this->map[i][j] == 'D' || this->map[i][j] == 'B')
+				file << '\0';
+			else
+				file << this->map[i][j];
+			if (j != 16)
+				file << " ";
+		}
+				file << "\n";
+	}
+	file.close();
+}
 
 Sound * World::sound = new Sound();
+
+std::string trim(std::string &str)
+{
+	const char *white_space = " \n\t\r\f\v";
+
+	str.erase(0, str.find_first_not_of(white_space));
+	str.erase(str.find_last_not_of(white_space) + 1, str.length());
+	return(str);
+}
+
+std::vector<std::string>	strsplit(std::string &line, char delem)
+{
+	std::string			word;
+	std::vector<std::string>	words;
+
+	std::stringstream tokenStream(line);
+	while (getline(tokenStream, word, delem))
+	{
+		word = trim(word);
+		if (word.size() != 0)
+		{
+			words.push_back(word);
+		}
+	}
+	return (words);
+}
+
+int		World::getStage( void )
+{
+	return(this->stage);
+}

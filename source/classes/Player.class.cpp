@@ -457,3 +457,51 @@ void	Player::setShader(Shader &shader)
 {
 	this->_shader = &shader;
 }
+int	Player::getBombCount()
+{
+	return(this->bombCount);
+}
+
+int	Player::getBombRaduis()
+{
+	return(this->bomb[0]->getBlastRaduis());
+}
+
+int	Player::getSpeedMult()
+{
+	return(this->speedMult);
+}
+
+float	Player::getActiveMult()
+{
+	return(this->activeMult);
+}
+
+void Player::setSpeedMult(int speedMult)
+{
+	this->speedMult = speedMult;
+}
+
+void Player::setActiveMult(float activeMult)
+{
+	this->activeMult = activeMult;
+}
+
+void Player::setlives(int lives)
+{
+	this->lives = lives;
+}
+
+void Player::setBombCount(int bombCount)
+{
+	this->bombCount = bombCount;
+}
+
+void Player::setBombRaduis(int bombRaduis)
+{
+	for (std::vector<Bomb*>::iterator it = this->bomb.begin() ; it != this->bomb.end(); it++)
+	{
+		(*it)->setBlastRaduis(bombRaduis);
+	}
+	// this->bomb->setBlastRaduis(bombRaduis);
+}

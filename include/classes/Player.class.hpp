@@ -40,6 +40,16 @@ class Player : public Character
 		bool	getInvincible( void );
 		void	setShader(Shader &shader);
 		void	drawBomb(void);
+		int		getBombCount();
+		int		getBombRaduis();
+		int		getSpeedMult();
+		void	setSpeedMult(int speedMult);
+		void	setlives(int lives);
+		void	setBombCount(int bombCount);
+		void	setBombRaduis(int bombRaduis);
+		void	setActiveMult(float activeMult);
+		float	getActiveMult( void );
+
 };
 
 #endif
