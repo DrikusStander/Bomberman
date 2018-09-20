@@ -37,6 +37,13 @@ class Player : public Character
 		int		getLives( void );
 		int		subLife( void );
 		bool	getInvincible( void );
+		int		getBombCount();
+		int		getBombRaduis();
+		int		getSpeedMult();
+		void	setSpeedMult(int speedMult);
+		void	setlives(int lives);
+		void	setBombCount(int bombCount);
+		void	setBombRaduis(int bombRaduis);
 };
 
 #endif

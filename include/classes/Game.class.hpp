@@ -59,6 +59,7 @@ class Game
 		World	*world;
 		void 	createWorld2( void);
 		void 	loadStage1(void );
+		void 	loadGame1(void );
 		// static void 	createWorld( Game *game);
 
 	private:
@@ -88,6 +89,7 @@ class Game
 		int		keyBOMB;
 		int		keyFLASH;
 		int		keyCHANGEVIEW;
+		int		stage;
 
 		bool 		WorldLoaded;
 		Shader		*shader;
@@ -101,5 +103,6 @@ class Game
 };
 void 	createWorld(Game *game);
 void 	loadStage(Game *game);
+void 	loadGame(Game *game);
 
 #endif

@@ -73,7 +73,7 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 	std::cout << "Game - Parametric Constructor called" << std::endl;
 
 	int temp22 = 2;
-	int stage = 2;
+	this->stage = 1;
 	lastX = 400;
 	lastY = 300;
 	firstMouse = true;
@@ -174,7 +174,6 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 	// Game loop
 	while (!glfwWindowShouldClose(window))
 	{
-		std::cout << "strat of game loop" << std::endl;
 		mu.lock();
 		glfwMakeContextCurrent(window);
 
@@ -195,8 +194,6 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 		// Clear the colorbuffer
 		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		std::cout << "after GLFW function calls" << std::endl;
 
 		shader.Use();
 
@@ -221,6 +218,7 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 				keys[GLFW_KEY_ENTER] = false;
 				if (menuVisible == true)
 				{
+					// std::cout << "active menu: " << this->menuActive << std::endl;
 					if (this->menuActive == 0)
 					{
 						this->loadActive = 0;
@@ -229,8 +227,15 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 						std::thread *worldThread =  new std::thread(createWorld, this);
 						worldThread->detach();
 					}
-					else if (this->menuActive == 3)
-						this->menuActive = 5;
+					else if (this->menuActive == 1)//load Game
+					{
+						this->loadActive = 0;
+						menuVisible = false;
+						loadVisible =true;
+						std::thread *worldThread =  new std::thread(loadGame, this);
+						worldThread->detach();
+					}
+						// this->menuActive = 5;
 					else if (this->menuActive == 4)
 						glfwSetWindowShouldClose(window, GL_TRUE);
 					else if (this->menuActive == 2)//Options
@@ -368,17 +373,15 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 				if (this->loadActive == 3)
 				{
 					this->loadActive = 0;
-					stage = 2;
+					this->stage = 1;
 				}
 				if (this->loadActive == 6)
 				{
 					this->loadActive = 4;
-					stage = 3;
 				}
 				if (this->loadActive == 9)
 				{
 					this->loadActive = 7;
-					stage = 4;
 				}
 				load[this->loadActive]->draw();
 				usleep(400000);
@@ -393,16 +396,26 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 					keys[GLFW_KEY_ENTER] = false;
 					if (this->pauseActive >= 0 && this->pauseActive <= 4)
 					{
+						std::thread *worldThread;
 						switch (this->pauseActive)
 						{
 							case 0://Resume Game
 								pauseVisible = false;
 								break ;
 							case 1:// Save Game
+								this->world->saveWorld();
 								pauseVisible = false;
 								break ;
 							case 2://Load Game
+								delete this->world;
+								this->loadActive = 0;
 								pauseVisible = false;
+
+								menuVisible = false;
+								pauseVisible = false;
+								loadVisible = true;
+								worldThread =  new std::thread(loadGame, this);
+								worldThread->detach();
 								break ;
 							case 3://Options
 								menuVisible = true;
@@ -439,33 +452,37 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 					}
 					else if (world->getStatus() == 2)
 					{
-						std::cout << "world status = 2" << std::endl;
-						if (stage == 2)
-							this->loadActive = 4;
-						if (stage == 3)
-							this->loadActive = 7;
-						if (stage == 4)
+						if (this->stage == 3)
 						{
 							delete this->world;
 							camera.moveCamForMenu();
 							camera.ProcessMouseMovement(0, -250);
 							this->menuActive = 0;
+							this->stage = 4;
+
 							menuVisible = true;
 						}
-						else
+						
+						else if (this->stage == 1)
 						{
-							std::cout << "setting load visible to true" << std::endl;
+							this->loadActive = 4;
+							this->stage = 2;
+						}
+						else if (this->stage == 2)
+						{
+							this->loadActive = 7;
+							this->stage = 3;
+						}
+						if (this->stage < 4)
+						{
 							loadVisible = true;
-							// delete this->world;
-							std::cout << "Move cam for menu" << std::endl;
 							camera.moveCamForMenu();
-						std::cout << "ProcessMouseMovement" << std::endl;
 							camera.ProcessMouseMovement(0, -250);
-						std::cout << "creating new thread for loading the stage" << std::endl;
 							std::thread *worldThread =  new std::thread(loadStage, this);
-						std::cout << "detaching the new thread" << std::endl;
 							worldThread->detach();
 						}
+						
+						
 					}
 				}
 			}
@@ -702,7 +719,19 @@ void 	Game::loadStage1(void )
 {
 	std::cout << "in Load stage1 calling load stage from World" << std::endl;
 
-	this->world->loadStage();
+	this->world->loadStage(this->stage);
 	std::cout << "set LoadVisible to false" << std::endl;
+	this->loadVisible = false;
+}
+
+void 	loadGame(Game *game)
+{
+	game->loadGame1();
+}
+
+void 	Game::loadGame1(void )
+{
+	this->world = new World(*(this->shader), "resources/models/world.obj", this->screen_x, this->screen_y, this->window, "saveGame");
+	this->stage = this->world->getStage();
 	this->loadVisible = false;
 }

@@ -26,6 +26,8 @@ class Bomb : public Item
 		void	setActive( bool active );
 		void	checkDestruction();
 		void	incBlastRaduis();
+		void	setBlastRaduis(int blastRaduis);
+		int		getBlastRaduis( void );
 		using Item::setPos;
 		using Item::setMap;
 		using Item::getActive;

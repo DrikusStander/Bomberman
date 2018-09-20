@@ -1,6 +1,6 @@
 # Blender v2.79 (sub 0) OBJ File: 'cartoon.blend'
 # www.blender.org
-mtllib cartoon.mtl
+mtllib enemy1.mtl
 o Circle.002_Circle.004
 v -0.163775 3.028964 0.491748
 v -0.153629 3.027475 0.494907
