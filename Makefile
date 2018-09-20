@@ -6,7 +6,7 @@
 #    By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/07/31 19:21:44 by cnolte            #+#    #+#              #
-#    Updated: 2018/09/19 18:49:11 by cnolte           ###   ########.fr        #
+#    Updated: 2018/09/20 19:37:14 by cnolte           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -42,6 +42,12 @@ ifneq ($(DYLD_LIBRARY_PATH),$(ROOT_DIR)/resources/Sound/lib)
 	@echo "Added missing environment variable. Please run 'make' again."
 	@exec zsh;
 endif
+	@if ! test -d resources; \
+	then if ! test -a resources.zip; \
+	then curl -L -o "resources.zip" "https://drive.google.com/uc?export=download&id=179LGduIy9MPUrPUkzdGEqWFmUVbgWrKK"; \
+	fi; \
+	unzip resources.zip; \
+	fi
 	@if ! test -d ~/.brew/Library; \
 	then if ! test -s resources/install_brew.sh; \
 	then echo "ERROR: Brew install script missing."; \
@@ -76,11 +82,10 @@ fclean: clean
 	@$(MAKE) -C resources/SOIL2 fclean
 	@rm -rf libSOIL2.a
 	@rm -rf $(NAME)
+	@rm -rf resources
+	@rm -rf resources.zip
 	@echo "[INFO] $(NAME) removed!"
 
 re: fclean all
-
-test:
-	curl https://drive.google.com/drive/folders/1kt-hJU0QTY9QqVaHk7GLkwwlRB7lMPi8?usp=sharing
 
 .PHONY: all clean fclean re
