@@ -918,7 +918,7 @@ void 	loadGame(Game *game)
 
 void 	Game::loadGame1(void )
 {
-	this->world = new World(*(this->shader), "resources/models/world.obj", this->screen_x, this->screen_y, this->window, "saveGame");
+	this->world = new World(*(this->shaderNormal), "resources/models/world.obj", this->screen_x, this->screen_y, this->window, "saveGame");
 	this->stage = this->world->getStage();
 	this->loadVisible = false;
 }
