@@ -230,7 +230,34 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 					}
 					else if (this->menuActive == 1)//load Game
 					{
-						this->loadActive = 0;
+						std::ifstream file;
+						std::string	line;
+						std::vector<std::string> tokens;
+						file.open("saveGame");
+						getline(file, line);
+						tokens = strsplit(line, ' ');
+						if (tokens[0] == "stage:")
+						{
+							std::cout << tokens[0] << std::endl;
+
+							std::istringstream(tokens[1]) >> this->stage;
+						}
+						file.close();
+						switch(this->stage)
+						{
+							case 1:
+								this->loadActive = 0;
+								break;
+							case 2:
+								this->loadActive = 4;
+								break;
+							case 3:
+								this->loadActive = 7;
+								break;
+							default:
+								break;
+						}
+						// this->loadActive = 0;
 						menuVisible = false;
 						loadVisible =true;
 						std::thread *worldThread =  new std::thread(loadGame, this);
@@ -398,6 +425,9 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 					if (this->pauseActive >= 0 && this->pauseActive <= 4)
 					{
 						std::thread *worldThread;
+						std::ifstream file;
+						std::string	line;
+						std::vector<std::string> tokens;
 						switch (this->pauseActive)
 						{
 							case 0://Resume Game
@@ -409,7 +439,32 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 								break ;
 							case 2://Load Game
 								delete this->world;
-								this->loadActive = 0;
+								
+								file.open("saveGame");
+								
+								getline(file, line);
+								tokens = strsplit(line, ' ');
+								if (tokens[0] == "stage:")
+								{
+									std::cout << tokens[0] << std::endl;
+
+									std::istringstream(tokens[1]) >> this->stage;
+								}
+								file.close();
+								switch(this->stage)
+								{
+									case 1:
+										this->loadActive = 0;
+										break;
+									case 2:
+										this->loadActive = 4;
+										break;
+									case 3:
+										this->loadActive = 7;
+										break;
+									default:
+										break;
+								}
 								pauseVisible = false;
 
 								menuVisible = false;
