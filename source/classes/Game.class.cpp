@@ -150,7 +150,7 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 
 	this->shader = &shader;
 	// Load models
-	for (int i = 0; i < 16; i++)
+	for (int i = 0; i < 17; i++)
 		this->Menus.push_back(new MainMenu(shader, "resources/models/menu/Menu_" + std::to_string(i) + ".obj"));
 
 	for (int i = 0; i < 9; i++)
@@ -159,7 +159,7 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 	for (int i = 0; i < 11; i++)
 		this->soundMenu.push_back(new SoundMenu(shader, "resources/models/menu/SoundScreen/SoundScreen_" + std::to_string(i) + ".obj"));
 	
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < 6; i++)
 		this->pauseMenu.push_back(new PauseMenu(shader, "resources/models/menu/PauseMenu/pauseMenu_" + std::to_string(i) + ".obj"));
 
 	glm::mat4 projection = glm::perspective(camera.GetZoom(), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 1000.0f);
@@ -230,38 +230,43 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 					}
 					else if (this->menuActive == 1)//load Game
 					{
-						std::ifstream file;
-						std::string	line;
-						std::vector<std::string> tokens;
-						file.open("saveGame");
-						getline(file, line);
-						tokens = strsplit(line, ' ');
-						if (tokens[0] == "stage:")
+						if (exist("saveGame"))
 						{
-							std::cout << tokens[0] << std::endl;
+							std::ifstream file;
+							std::string	line;
+							std::vector<std::string> tokens;
+							file.open("saveGame");
+							getline(file, line);
+							tokens = strsplit(line, ' ');
+							if (tokens[0] == "stage:")
+							{
+								std::cout << tokens[0] << std::endl;
 
-							std::istringstream(tokens[1]) >> this->stage;
+								std::istringstream(tokens[1]) >> this->stage;
+							}
+							file.close();
+							switch(this->stage)
+							{
+								case 1:
+									this->loadActive = 0;
+									break;
+								case 2:
+									this->loadActive = 4;
+									break;
+								case 3:
+									this->loadActive = 7;
+									break;
+								default:
+									break;
+							}
+							// this->loadActive = 0;
+							menuVisible = false;
+							loadVisible =true;
+							std::thread *worldThread =  new std::thread(loadGame, this);
+							worldThread->detach();
 						}
-						file.close();
-						switch(this->stage)
-						{
-							case 1:
-								this->loadActive = 0;
-								break;
-							case 2:
-								this->loadActive = 4;
-								break;
-							case 3:
-								this->loadActive = 7;
-								break;
-							default:
-								break;
-						}
-						// this->loadActive = 0;
-						menuVisible = false;
-						loadVisible =true;
-						std::thread *worldThread =  new std::thread(loadGame, this);
-						worldThread->detach();
+						else
+							this->menuActive = 16;
 					}
 						// this->menuActive = 5;
 					else if (this->menuActive == 4)
@@ -277,6 +282,7 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 					else if (this->menuActive == 7) //Sound
 					{
 						menuVisible = false;
+						this->soundActive = 0;
 						soundMenuVisible = true;
 					}
 					else if (this->menuActive == 8) //Key Bindings
@@ -285,6 +291,8 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 						this->menuActive = 0;
 					else if (this->menuActive == 15) //Going back to Options
 						this->menuActive = 6;
+					else if (this->menuActive == 16)
+						this->menuActive = 1;
 					else if (this->menuActive == 9)
 					{
 						if (this->check == 1)
@@ -422,7 +430,7 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 				if (keys[GLFW_KEY_ENTER])
 				{
 					keys[GLFW_KEY_ENTER] = false;
-					if (this->pauseActive >= 0 && this->pauseActive <= 4)
+					if (this->pauseActive >= 0 && this->pauseActive <= 5)
 					{
 						std::thread *worldThread;
 						std::ifstream file;
@@ -438,40 +446,43 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 								pauseVisible = false;
 								break ;
 							case 2://Load Game
-								delete this->world;
-								
-								file.open("saveGame");
-								
-								getline(file, line);
-								tokens = strsplit(line, ' ');
-								if (tokens[0] == "stage:")
+								if (exist("saveGame"))
 								{
-									std::cout << tokens[0] << std::endl;
-
-									std::istringstream(tokens[1]) >> this->stage;
+									delete this->world;
+									
+									file.open("saveGame");
+									
+									getline(file, line);
+									tokens = strsplit(line, ' ');
+									if (tokens[0] == "stage:")
+									{
+										std::cout << tokens[0] << std::endl;
+										std::istringstream(tokens[1]) >> this->stage;
+									}
+									file.close();
+									switch(this->stage)
+									{
+										case 1:
+											this->loadActive = 0;
+											break;
+										case 2:
+											this->loadActive = 4;
+											break;
+										case 3:
+											this->loadActive = 7;
+											break;
+										default:
+											break;
+									}
+									pauseVisible = false;
+									menuVisible = false;
+									pauseVisible = false;
+									loadVisible = true;
+									worldThread =  new std::thread(loadGame, this);
+									worldThread->detach();
 								}
-								file.close();
-								switch(this->stage)
-								{
-									case 1:
-										this->loadActive = 0;
-										break;
-									case 2:
-										this->loadActive = 4;
-										break;
-									case 3:
-										this->loadActive = 7;
-										break;
-									default:
-										break;
-								}
-								pauseVisible = false;
-
-								menuVisible = false;
-								pauseVisible = false;
-								loadVisible = true;
-								worldThread =  new std::thread(loadGame, this);
-								worldThread->detach();
+								else
+									this->pauseActive = 5;
 								break ;
 							case 3://Options
 								menuVisible = true;
@@ -484,6 +495,9 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 								this->menuActive = 0;
 								menuVisible = true;
 								pauseVisible = false;
+								break ;
+							case 5://Error_message
+								this->pauseActive = 2;
 								break ;
 							default:
 								break ;
@@ -609,17 +623,20 @@ Game	&Game::operator=(Game const &rhs)
 void Game::MovePause(void)
 {
 	// Pause Menu controls
-	if (keys[GLFW_KEY_UP])
+	if (this->pauseActive != 5)
 	{
-		keys[GLFW_KEY_UP] = false;
-		if (this->pauseActive > 0)
-				this->pauseActive--;
-	}
-	else if (keys[GLFW_KEY_DOWN])
-	{
-		keys[GLFW_KEY_DOWN] = false;
-		if (this->pauseActive < 4)
-			this->pauseActive++;
+		if (keys[GLFW_KEY_UP])
+		{
+			keys[GLFW_KEY_UP] = false;
+			if (this->pauseActive > 0)
+					this->pauseActive--;
+		}
+		else if (keys[GLFW_KEY_DOWN])
+		{
+			keys[GLFW_KEY_DOWN] = false;
+			if (this->pauseActive < 4)
+				this->pauseActive++;
+		}
 	}
 }
 
@@ -666,7 +683,7 @@ void Game::MoveSoundMenu(void)
 void Game::MoveMenu(void)
 {
 	// Menu controls
-	if (this->menuActive != 5)
+	if (this->menuActive != 5 || this->menuActive != 16)
 	{
 		if (keys[GLFW_KEY_UP])
 		{
@@ -803,4 +820,13 @@ void	Game::placeSpotLight(void)
 	glUniform1f(glGetUniformLocation(this->shader->getProgram(), "spotLight.quadratic"), 0.00032f);
 	glUniform1f(glGetUniformLocation(this->shader->getProgram(), "spotLight.cutOff"), glm::cos(glm::radians(25.0f)));
 	glUniform1f(glGetUniformLocation(this->shader->getProgram(), "spotLight.outerCutOff"), glm::cos(glm::radians(27.0f)));
+}
+
+inline bool Game::exist(const std::string& name)
+{
+	std::ifstream file(name);
+	if(!file)				// If the file was not found, then file is 0, i.e. !file=1 or true.
+		return false;		// The file was not found.
+	else					// If the file was found, then file is non-0.
+		return true;		// The file was found.
 }

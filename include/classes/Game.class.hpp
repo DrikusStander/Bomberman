@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Game.class.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+        */
+/*   By: dwilliam <dwilliam@42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/11 11:20:47 by cnolte            #+#    #+#             */
-/*   Updated: 2018/09/19 12:44:26 by cnolte           ###   ########.fr       */
+/*   Updated: 2018/09/20 12:17:57 by dwilliam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,7 @@ class Game
 		void		MovePause(void);
 		void		MoveSoundMenu(void);
 		void		placeSpotLight(void);
+		inline bool exist(const std::string& name);
 		GLFWwindow	*window;
 		glm::mat4	projection;
 
