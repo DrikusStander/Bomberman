@@ -17,6 +17,7 @@ Player::Player( Shader &shader, std::string model) : Character(shader, model + "
 	this->lives = 3;
 	this->dead = false;
 	this->invincible = false;
+	this->dirLast = FWD;
 }
 
 
@@ -176,6 +177,7 @@ void	Player::ProcessKeyboard(Direction direction)
 							else if (fmod(((168) - (this->x_trans - 10.5)), -21) <= 10.5)
 								this->clipX(fmod(((-168) - (this->x_trans)), -21));
 						}
+						this->dirLast = FWD;
 						this->rotate = 180.0f;
 						this->z_trans -= 0.5f * this->speedMult;
 						this->clearPosOnMap();
@@ -192,6 +194,7 @@ void	Player::ProcessKeyboard(Direction direction)
 							this->clipX(fmod(((168) - (this->x_trans)), -21));
 						else if (fmod(((168) - (this->x_trans - 10.5)), -21) <= 10.5)
 							this->clipX(fmod(((-168) - (this->x_trans)), -21));
+						this->dirLast = FWD;
 						this->rotate = 180.0f;
 						this->z_trans -= 0.5f * this->speedMult;
 						this->clearPosOnMap();
@@ -205,6 +208,7 @@ void	Player::ProcessKeyboard(Direction direction)
 			{
 				this->rotate = 180.0f;
 				this->z_trans -= 0.5f * this->speedMult;
+				this->dirLast = FWD;
 				this->clearPosOnMap();
 				this->row = static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21);
 				this->active += this->activeMult;
@@ -230,6 +234,7 @@ void	Player::ProcessKeyboard(Direction direction)
 								this->clipX(fmod(((168) - (this->x_trans)), -21));
 						}
 						this->rotate = 0.0f;
+						this->dirLast = BKW;
 						this->z_trans += 0.5f * this->speedMult;
 						this->clearPosOnMap();
 						this->row = static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21);
@@ -248,6 +253,7 @@ void	Player::ProcessKeyboard(Direction direction)
 						else if (fmod(((168) - (this->x_trans - 10.5)), -21) > 10.5)
 							this->clipX(fmod(((168) - (this->x_trans)), -21));
 						this->rotate = 0.0f;
+						this->dirLast = BKW;
 						this->z_trans += 0.5f * this->speedMult;
 						this->clearPosOnMap();
 						this->row = static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21);
@@ -259,6 +265,7 @@ void	Player::ProcessKeyboard(Direction direction)
 			else if (this->z_trans < 168)
 			{
 				this->rotate = 0.0f;
+				this->dirLast = BKW;
 				this->z_trans += 0.5f * this->speedMult;
 				this->clearPosOnMap();
 				this->row = static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21);
@@ -282,6 +289,7 @@ void	Player::ProcessKeyboard(Direction direction)
 							else if (fmod(((168) - (this->z_trans - 10.5)), -21) <= 10.5)
 								this->clipZ(fmod(((-168) - (this->z_trans)), -21));
 						}
+						this->dirLast = LFT;
 						this->rotate = 270.0f;
 						this->x_trans -= 0.5f * this->speedMult;
 						this->clearPosOnMap();
@@ -298,6 +306,7 @@ void	Player::ProcessKeyboard(Direction direction)
 							this->clipZ(fmod(((168) - (this->z_trans)), -21));
 						else if (fmod(((168) - (this->z_trans - 10.5)), -21) <= 10.5)
 							this->clipZ(fmod(((-168) - (this->z_trans)), -21));
+						this->dirLast = LFT;
 						this->rotate = 270.0f;
 						this->x_trans -= 0.5f * this->speedMult;
 						this->clearPosOnMap();
@@ -310,6 +319,7 @@ void	Player::ProcessKeyboard(Direction direction)
 			else if (this->x_trans > -168)
 			{
 				this->rotate = 270.0f;
+				this->dirLast = LFT;
 				this->x_trans -= 0.5 * this->speedMult;
 				this->clearPosOnMap();
 				this->col = static_cast<int>((-168 - (this->x_trans + 10.5)) /  -21);
@@ -333,6 +343,7 @@ void	Player::ProcessKeyboard(Direction direction)
 							else if (fmod(((168) - (this->z_trans - 10.5)), -21) <= 10.5)
 								this->clipZ(fmod(((-168) - (this->z_trans)), -21));
 						}
+						this->dirLast = RGT;
 						this->rotate = 90.0f;
 						this->x_trans += 0.5f * this->speedMult;
 						this->clearPosOnMap();
@@ -350,6 +361,7 @@ void	Player::ProcessKeyboard(Direction direction)
 						else if (fmod(((168) - (this->z_trans - 10.5)), -21) <= 10.5)
 							this->clipZ(fmod(((-168) - (this->z_trans)), -21));
 						this->rotate = 90.0f;
+						this->dirLast = RGT;
 						this->x_trans += 0.5f * this->speedMult;
 						this->clearPosOnMap();
 						this->col = static_cast<int>((-168 - (this->x_trans + 10.5)) /  -21);
@@ -361,6 +373,7 @@ void	Player::ProcessKeyboard(Direction direction)
 			else if (this->x_trans < 168)
 			{
 				this->rotate = 90.0f;
+				this->dirLast = RGT;
 				this->x_trans += 0.5f * this->speedMult;
 				this->clearPosOnMap();
 				this->col = static_cast<int>((-168 - (this->x_trans + 10.5)) /  -21);
@@ -503,4 +516,9 @@ void Player::setBombRaduis(int bombRaduis)
 		(*it)->setBlastRaduis(bombRaduis);
 	}
 	// this->bomb->setBlastRaduis(bombRaduis);
+}
+
+Direction	Player::getDirLast(void)
+{
+	return (this->dirLast);
 }

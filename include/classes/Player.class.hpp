@@ -16,6 +16,7 @@ class Player : public Character
 		bool				dead;
 		bool				invincible;
 		bool				toggleFlash;
+		Direction			dirLast;
 
 	protected:
 	public:
@@ -49,6 +50,7 @@ class Player : public Character
 		void	setBombRaduis(int bombRaduis);
 		void	setActiveMult(float activeMult);
 		float	getActiveMult( void );
+		Direction	getDirLast(void);
 
 };
 
