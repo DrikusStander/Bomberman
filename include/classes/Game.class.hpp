@@ -6,7 +6,7 @@
 /*   By: dwilliam <dwilliam@42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/11 11:20:47 by cnolte            #+#    #+#             */
-/*   Updated: 2018/09/20 12:17:57 by dwilliam         ###   ########.fr       */
+/*   Updated: 2018/09/20 18:34:13 by dwilliam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,11 +88,15 @@ class Game
 		int		keyRIGHT;
 		int		keyBOMB;
 		int		keyFLASH;
+		bool	toggleFlash;
 		int		keyCHANGEVIEW;
 		int		stage;
+		int		key_change;
 
 		bool 		WorldLoaded;
-		Shader		*shader;
+		Shader		*shaderNormal;
+		Shader		*shaderActive;
+		Shader		*shaderFlash;
 		void		DoMovement(void);
 		void		MoveMenu(void);
 		void		MovePause(void);

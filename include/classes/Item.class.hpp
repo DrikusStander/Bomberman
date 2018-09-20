@@ -44,6 +44,7 @@ class Item
 		int		getRow();
 		float	getX();
 		float	getZ();
+		void	setShader(Shader &shader);
 };
 
 #endif

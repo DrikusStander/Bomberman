@@ -53,6 +53,7 @@ class Character
 		void	setPos(float x, float z, int row, int col);
 		int		getCol();
 		int		getRow();
+		void	setShader(Shader &shader);
 
 };
 

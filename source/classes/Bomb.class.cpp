@@ -162,6 +162,7 @@ void	Bomb::checkDestruction()
 
 void Bomb::draw(void)
 {
+	this->_shader->Use();
 	if ((glfwGetTime() - this->PlantTime) >= this->PlantTimeLength)
 	{
 		if (this->destruction == false)
@@ -175,6 +176,7 @@ void Bomb::draw(void)
 			if (this->map[this->flames[i]->getRow()][this->flames[i]->getCol()] != 'U')
 			{
 				this->map[this->flames[i]->getRow()][this->flames[i]->getCol()] = 'D';
+				this->flames[i]->setShader(*this->_shader);
 				this->flames[i]->draw();
 			}
 		}

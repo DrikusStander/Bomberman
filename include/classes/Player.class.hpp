@@ -15,6 +15,7 @@ class Player : public Character
 		int					lives;
 		bool				dead;
 		bool				invincible;
+		bool				toggleFlash;
 
 	protected:
 	public:
@@ -37,6 +38,8 @@ class Player : public Character
 		int		getLives( void );
 		int		subLife( void );
 		bool	getInvincible( void );
+		void	setShader(Shader &shader);
+		void	drawBomb(void);
 		int		getBombCount();
 		int		getBombRaduis();
 		int		getSpeedMult();

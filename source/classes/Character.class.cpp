@@ -68,3 +68,8 @@ int		Character::getRow()
 {
 	return(this->row);
 }
+
+void	Character::setShader(Shader &shader)
+{
+	this->_shader = &shader;
+}

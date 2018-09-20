@@ -6,7 +6,7 @@
 /*   By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/11 11:26:34 by cnolte            #+#    #+#             */
-/*   Updated: 2018/08/13 19:11:17 by cnolte           ###   ########.fr       */
+/*   Updated: 2018/09/20 15:38:22 by cnolte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,13 @@ Shader::Shader(const GLchar *vertexPath, const GLchar *fragmentPath)
 	std::string		fragmentCode;
 	std::ifstream	vShaderFile;
 	std::ifstream	fShaderFile;
+	std::string temp(vertexPath);
+	if (temp == "resources/shaders/lighting.vs")
+	{
+		this->flashlight = true;
+	}
+	else
+		this->flashlight = false;
 
 	// ensures ifstream objects can throw exceptions:
 	vShaderFile.exceptions ( std::ifstream::badbit );
@@ -130,4 +137,9 @@ GLuint	Shader::getProgram(void)
 void	Shader::Use(void)
 {
 	glUseProgram(this->program);
+}
+
+bool	Shader::getFlashLight()
+{
+	return(this->flashlight);
 }

@@ -498,7 +498,7 @@ World const & World::operator=(World const & rhs)
 	return(*this);
 }
 
-void World::draw(glm::mat4 matCamera, const GLfloat glfwTime)
+void World::draw(Camera &camera, const GLfloat glfwTime)
 {
 	this->player->setMap(this->map);
 	glm::mat4 model(1);
@@ -507,8 +507,15 @@ void World::draw(glm::mat4 matCamera, const GLfloat glfwTime)
 	glUniformMatrix4fv( glGetUniformLocation(this->_shader->getProgram(), "model"), 1, GL_FALSE, glm::value_ptr( model ));
 	this->WorldModel->Draw(*this->_shader);
 	for (Item *item : *this->objects)
+	{
+		item->setShader(*this->_shader);
 		item->draw();
-	this->player->draw();
+	}
+
+	this->player->setShader(*this->_shader);
+	if (this->_shader->getFlashLight() == false)
+		this->player->draw();
+	this->player->drawBomb();
 	if (glfwTime - this->timeSinceNewFrame >= 1.0f)
 	{
 		this->timeSinceNewFrame = glfwTime;
@@ -517,11 +524,20 @@ void World::draw(glm::mat4 matCamera, const GLfloat glfwTime)
 		else
 			this->worldStatus = 1;
 	}
-	this->hud.draw(matCamera, this->time, this->score, this->lives);
+
+	this->hud.draw(camera, this->time, this->score, this->lives);
+	this->_shader->Use();
+
 	for (Enemy *enemy : *this->enemies)
+	{
+		enemy->setShader(*this->_shader);
 		enemy->draw();
+	}
 	for (Powerup *powerup : *this->powerups)
+	{
+		powerup->setShader(*this->_shader);
 		powerup->draw();
+	}
 	//check what items the bomb affected
 	for (int i = 0; i < 17; i++)
 	{
@@ -616,7 +632,6 @@ void World::draw(glm::mat4 matCamera, const GLfloat glfwTime)
 						++it;
 				}
 				// check what enemy was affected
-				std::cout << "Check enemies affected"  << std::endl;
 				for (std::vector<Enemy*>::iterator it = this->enemies->begin() ; it != this->enemies->end(); )
 				{
 					if ((*it)->getRow() == i && (*it)->getCol() == j)
@@ -635,58 +650,104 @@ void World::draw(glm::mat4 matCamera, const GLfloat glfwTime)
 			// check if the player is on powerup
 			if (this->map[i][j] == 'U' && (this->player->getRow() == i && this->player->getCol() == j))
 			{
+				for (std::vector<Powerup*>::iterator it = this->powerups->begin() ; it != this->powerups->end(); )
 				{
-					for (std::vector<Powerup*>::iterator it = this->powerups->begin() ; it != this->powerups->end(); )
+					if ((*it)->getRow() == i && (*it)->getCol() == j)
 					{
-						if ((*it)->getRow() == i && (*it)->getCol() == j)
+						int type = (*it)->getType();
+						this->player->handlePowerup(type);
+						switch(type)
 						{
-							int type = (*it)->getType();
-							this->player->handlePowerup(type);
-							switch(type)
+							case 0:
+								it = this->powerups->erase(it);
+								this->bombRaduis_index--;
+								break;
+							case 1:
+								it = this->powerups->erase(it);
+								this->speed_index--;
+								break;
+							case 2:
+								it = this->powerups->erase(it);
+								this->bombCount_index--;
+								break;
+							case 3:
 							{
-								case 0:
-									it = this->powerups->erase(it);
-									this->bombRaduis_index--;
-									break;
-								case 1:
-									it = this->powerups->erase(it);
-									this->speed_index--;
-									break;
-								case 2:
-									it = this->powerups->erase(it);
-									this->bombCount_index--;
-									break;
-								case 3:
+								if (this->enemyCount == 0)
 								{
-									if (this->enemyCount == 0)
-									{
-										/*
-											also load next level here
-										*/
-										it = this->powerups->erase(it);
-										this->stage++;
-										this->worldStatus = 2;
-									}
-									else
-										++it;
-									break;
+									/*
+										also load next level here
+									*/
+									it = this->powerups->erase(it);
+									this->stage++;
+									this->worldStatus = 2;
 								}
-								default:
-									break;
+								else
+									++it;
+								break;
 							}
+							default:
+								break;
 						}
-						else
-							++it;
 					}
+					else
+						++it;
 				}
-
 			}
 		}
 	}
 }
 
-void	World::ProcessKeyboard(Direction direction, Camera &camera)
+void	World::ProcessKeyboard(Direction direction, Camera &camera, bool toggleFlash)
 {
+	if (toggleFlash == true)
+	{
+		camera.setPos(glm::vec3(this->player->getX(), 35.0f, this->player->getZ()));
+		float	yaw = camera.getYaw();
+		if (direction == FWD)
+		{
+			if ((yaw >= 315.0f) && (yaw <= 45.0f))
+				direction = FWD;
+			else if ((yaw >= 135.0f) && (yaw <= 225.0f))
+				direction = BKW;
+			else if ((yaw > 45.0f) && (yaw < 135.0f))
+				direction = RGT;
+			else if ((yaw > 225.0f) && (yaw < 315.0f))
+				direction = LFT;
+		}
+		else if (direction == BKW)
+		{
+			if ((yaw >= 315.0f) && (yaw <= 45.0f))
+				direction = BKW;
+			else if ((yaw >= 135.0f) && (yaw <= 225.0f))
+				direction = FWD;
+			else if ((yaw > 45.0f) && (yaw < 135.0f))
+				direction = LFT;
+			else if ((yaw > 225.0f) && (yaw < 315.0f))
+				direction = RGT;
+		}
+		else if (direction == LFT)
+		{
+			if ((yaw >= 315.0f) && (yaw <= 45.0f))
+				direction = LFT;
+			else if ((yaw >= 135.0f) && (yaw <= 225.0f))
+				direction = RGT;
+			else if ((yaw > 45.0f) && (yaw < 135.0f))
+				direction = FWD;
+			else if ((yaw > 225.0f) && (yaw < 315.0f))
+				direction = BKW;
+		}
+		else if (direction == RGT)
+		{
+			if ((yaw >= 315.0f) && (yaw <= 45.0f))
+				direction = RGT;
+			else if ((yaw >= 135.0f) && (yaw <= 225.0f))
+				direction = LFT;
+			else if ((yaw > 45.0f) && (yaw < 135.0f))
+				direction = BKW;
+			else if ((yaw > 225.0f) && (yaw < 315.0f))
+				direction = FWD;
+		}
+	}
 	this->player->ProcessKeyboard(direction);
 }
 
@@ -724,7 +785,6 @@ int		World::getLives( void )
 {
 	return(this->lives);
 }
-
 
 void	World::loadStage(int stage)
 {
@@ -767,7 +827,6 @@ void	World::loadStage(int stage)
 	glfwMakeContextCurrent(NULL);
 	mu.unlock();
 
-
 	mu.lock();
 	glfwMakeContextCurrent(this->window);	
 	// randomly innitilize map and breakable walls to the world
@@ -803,13 +862,11 @@ void	World::loadStage(int stage)
 			}
 		}
 	}
-
 	glfwMakeContextCurrent(NULL);
 	mu.unlock();
 
 	mu.lock();
 	glfwMakeContextCurrent(this->window);
-
 	// Initialize Enemies into the world
 	int enemy_count = 5 * stage;
 	while (enemy_count > 0)
@@ -836,6 +893,10 @@ void	World::loadStage(int stage)
 	mu.unlock();
 }
 
+void	World::setShader(Shader &shader)
+{
+	this->_shader = &shader;
+}
 void	World::saveWorld()
 {
 	std::stringstream sstr;
@@ -885,7 +946,6 @@ int		World::getStage( void )
 {
 	return(this->stage);
 }
-
 
 Sound * World::sound = new Sound();
 
