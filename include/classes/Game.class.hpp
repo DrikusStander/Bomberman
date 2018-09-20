@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Game.class.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dwilliam <dwilliam@42.fr>                  +#+  +:+       +#+        */
+/*   By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/11 11:20:47 by cnolte            #+#    #+#             */
-/*   Updated: 2018/09/18 17:29:29 by dwilliam         ###   ########.fr       */
+/*   Updated: 2018/09/19 12:44:26 by cnolte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,8 +95,9 @@ class Game
 		Shader		*shader;
 		void		DoMovement(void);
 		void		MoveMenu(void);
-		void		MoveSoundMenu(void);
 		void		MovePause(void);
+		void		MoveSoundMenu(void);
+		void		placeSpotLight(void);
 		GLFWwindow	*window;
 		glm::mat4	projection;
 

@@ -6,7 +6,7 @@
 /*   By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/11 11:20:47 by cnolte            #+#    #+#             */
-/*   Updated: 2018/09/11 16:11:17 by cnolte           ###   ########.fr       */
+/*   Updated: 2018/09/18 13:46:22 by cnolte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,14 @@ class Camera
 
 		// Move camera to default position for menu
 		void		moveCamForMenu(void);
+
+		// Set camera position
+		void		setPos(const glm::vec3 pos);
+
+		GLfloat		getYaw(void);
+
+		glm::vec3	getPosition(void) const;
+		glm::vec3	getFront(void) const;
 
 	private:
 		 // Camera Attributes
