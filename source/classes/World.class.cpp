@@ -194,12 +194,6 @@ mu.unlock();
 
 }
 
-
-
-
-
-
-
 // load saved game constructor
 World::World(Shader &shader, std::string model, float screen_x, float screen_y, GLFWwindow	*window, std::string savedGame)
 {
@@ -486,15 +480,6 @@ mu.unlock();
 }
 
 
-
-
-
-
-
-
-
-
-
 World::World( World const & src)
 {
 	*this = src;
@@ -672,10 +657,6 @@ void World::draw(glm::mat4 matCamera, const GLfloat glfwTime)
 					{
 						if ((*it)->getType() != 3)
 						{
-							std::cout << "Deleting Powerup " << std::endl;
-
-							// delete (*it);
-
 							it = this->powerups->erase(it);
 						}
 						else
@@ -726,7 +707,6 @@ void World::draw(glm::mat4 matCamera, const GLfloat glfwTime)
 								{
 									temp = this->speed[this->speed_index];
 									this->speed_index++; 
-
 								}
 							}
 							else if (powerupOption == 2)
@@ -749,18 +729,14 @@ void World::draw(glm::mat4 matCamera, const GLfloat glfwTime)
 							}
 						}
 						this->wallCount--;
-						// std::cout << "delete object at: " << objRow << " " << objCol << std::endl;
 						delete (*it);
-						// std::cout << "remove object pointer from vector"  << std::endl;
 						it = this->objects->erase(it);
 					}
 					else
 						++it;
 				}
-				// std::cout << "end of Oject Check" << std::endl;
 
 				// check what enemy was affected
-				std::cout << "Check enemies affected"  << std::endl;
 				for (std::vector<Enemy*>::iterator it = this->enemies->begin() ; it != this->enemies->end(); )
 				{
 					if ((*it)->getRow() == i && (*it)->getCol() == j)
@@ -781,17 +757,13 @@ void World::draw(glm::mat4 matCamera, const GLfloat glfwTime)
 			if (this->map[i][j] == 'U' && (this->player->getRow() == i && this->player->getCol() == j))
 			{
 				// check if the player is on powerup
-				std::cout << "Check if player is on Power up"  << std::endl;
 				// if (this->player->getRow() == i && this->player->getCol() == j)
 				{
-					std::cout << "player is on Power up"  << std::endl;
 					for (std::vector<Powerup*>::iterator it = this->powerups->begin() ; it != this->powerups->end(); )
 					{
 						if ((*it)->getRow() == i && (*it)->getCol() == j)
 						{
-							std::cout << "get Power up type"  << std::endl;
 							int type = (*it)->getType();
-							std::cout << "Handle Power up"  << std::endl;
 							this->player->handlePowerup(type);
 							switch(type)
 							{
@@ -931,7 +903,6 @@ void	World::loadStage(int stage)
 	std::cout << "in World::loadStage" << std::endl;
 
 mu.lock();
-	std::cout << "Setting contextcurret to the window" << std::endl;
 	glfwMakeContextCurrent(this->window);	
 	// clean up objects
 	this->wallCount = 0;

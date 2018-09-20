@@ -364,7 +364,6 @@ void	Player::ProcessKeyboard(Direction direction)
 		}
 		case SPC:
 		{
-			std::cout << "need to place bomb" << std::endl;
 			for (int i = 0 ; i < this->bombCount; i++)
 			{
 				std::cout << "bomb: " << i << std::endl;
