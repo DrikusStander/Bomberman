@@ -478,7 +478,7 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 									menuVisible = false;
 									pauseVisible = false;
 									loadVisible = true;
-									worldThread =  new std::thread(loadGame, this);
+									worldThread = new std::thread(loadGame, this);
 									worldThread->detach();
 								}
 								else
@@ -551,8 +551,6 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 							std::thread *worldThread =  new std::thread(loadStage, this);
 							worldThread->detach();
 						}
-						
-						
 					}
 				}
 			}
