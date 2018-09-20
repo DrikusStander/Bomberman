@@ -44,6 +44,9 @@ class Player : public Character
 		void	setlives(int lives);
 		void	setBombCount(int bombCount);
 		void	setBombRaduis(int bombRaduis);
+		void	setActiveMult(float activeMult);
+		float	getActiveMult( void );
+
 };
 
 #endif

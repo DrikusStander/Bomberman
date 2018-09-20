@@ -461,9 +461,19 @@ int	Player::getSpeedMult()
 	return(this->speedMult);
 }
 
+float	Player::getActiveMult()
+{
+	return(this->activeMult);
+}
+
 void Player::setSpeedMult(int speedMult)
 {
 	this->speedMult = speedMult;
+}
+
+void Player::setActiveMult(float activeMult)
+{
+	this->activeMult = activeMult;
 }
 
 void Player::setlives(int lives)
