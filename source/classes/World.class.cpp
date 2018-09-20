@@ -320,7 +320,7 @@ mu.lock();
 		this->player->setBombCount(temp);
 	}
 	tokens.clear();
-	 //read bombcount
+	 //read speedMult
 	getline(file, line);
 	tokens = strsplit(line, ' ');
 	if (tokens[0] == "speedMult:")
@@ -328,6 +328,16 @@ mu.lock();
 		int temp = 0;
 		std::istringstream(tokens[1]) >> temp;
 		this->player->setSpeedMult(temp);
+	}
+	tokens.clear();
+	 //read activeMult
+	getline(file, line);
+	tokens = strsplit(line, ' ');
+	if (tokens[0] == "activeMult:")
+	{
+		int temp = 0;
+		std::istringstream(tokens[1]) >> temp;
+		this->player->setActiveMult(temp);
 	}
 	tokens.clear();
 	////////////////
@@ -1063,6 +1073,9 @@ void	World::saveWorld()
 	sstr.str("");
 	sstr << this->player->getSpeedMult();
 	file << "speedMult: " + sstr.str() + "\n";
+	sstr.str("");
+	sstr << this->player->getSpeedMult();
+	file << "activeMult: " + sstr.str() + "\n";
 	// save map to file
 	for (int i = 0; i < 17; i++)
 	{
