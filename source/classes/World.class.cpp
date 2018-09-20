@@ -950,11 +950,6 @@ void	World::saveWorld()
 	file.close();
 }
 
-int		World::getStage( void )
-{
-	return(this->stage);
-}
-
 Sound * World::sound = new Sound();
 
 std::string trim(std::string &str)
