@@ -19,21 +19,16 @@ bool	firstMouse;
 GLfloat	lastX;
 GLfloat	lastY;
 int		lastkeypressed;
+int		tempKEY;
 
 // Is called whenever a key is pressed/released via GLFW
 void	KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mode)
 {
-	if (GLFW_KEY_ESCAPE == key && GLFW_PRESS == action)
-	{
-		// glfwSetWindowShouldClose(window, GL_TRUE);
-	}
-
 	if (key >= 0 && key < 1024)
 	{
 		if (action == GLFW_PRESS)
 		{
 			lastkeypressed = key;
-			// std::cout << "pressed key " << key << std::endl;
 			keys[key] = true;
 		}
 		else if (action == GLFW_RELEASE)
@@ -41,7 +36,6 @@ void	KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mode
 			keys[key] = false;
 		}
 	}
-	// std::cout << "pressed key " << key << std::endl;
 }
 
 void	MouseCallback(GLFWwindow *window, double xPos, double yPos)
@@ -71,9 +65,7 @@ Game::Game(void) : screen_x(100), screen_y(100)
 Game::Game(const int width, const int height) : screen_x(width), screen_y(height)
 {
 	std::cout << "Game - Parametric Constructor called" << std::endl;
-
 	int last_menu = 0;
-	int key_change = 0;
 	int temp22 = 2;
 	this->stage = 1;
 	lastX = 400;
@@ -91,26 +83,22 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 	this->soundActive = 0;
 	this->pauseActive = 0;
 	this->check = 0;
-
+	this->key_change = 0;
 	this->keyUP = GLFW_KEY_UP;
 	this->keyDOWN = GLFW_KEY_DOWN;
 	this->keyLEFT = GLFW_KEY_LEFT;
 	this->keyRIGHT = GLFW_KEY_RIGHT;
 	this->keyBOMB = GLFW_KEY_SPACE;
 	this->keyFLASH = GLFW_KEY_F;
-
 	camera.ProcessMouseMovement(0, -250);
-
 	// Init GLFW
 	glfwInit();
-
 	// Set all the required options for GLFW
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-
 	// Create a GLFWwindow object that we can use for GLFW's functions
 	// fullscreen
 	// GLFWwindow	*window = glfwCreateWindow(this->screen_x, this->screen_y, "Bomberman", glfwGetPrimaryMonitor(), nullptr);
@@ -122,87 +110,60 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 		glfwTerminate();
 		throw Exceptions::CreateWindowFailed();
 	}
-
 	glfwMakeContextCurrent(window);
-
 	glfwGetFramebufferSize(window, &SCREEN_WIDTH, &SCREEN_HEIGHT);
-	// std::cout << "x: " << SCREEN_WIDTH << " y: " << SCREEN_HEIGHT << std::endl;
 	// Set the required callback functions
 	glfwSetKeyCallback(window, KeyCallback);
 	glfwSetCursorPosCallback(window, MouseCallback);
-
 	// GLFW Options
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
 	// Set this to true so GLEW knows to use a modern approach to retrieving function pointers and extensions
 	glewExperimental = GL_TRUE;
-
 	// Initialize GLEW to setup the OpenGL Function pointers
 	if (GLEW_OK != glewInit())
 		throw Exceptions::InitializeGlewFailed();
-
 	// Define the viewport dimensions
 	glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-
 	// OpenGL options
 	glEnable(GL_DEPTH_TEST);
-
 	// Setup and compile our shaders
 	Shader	shader("resources/shaders/modelLoading.vert", "resources/shaders/modelLoading.frag");
 	this->shaderNormal = &shader;
 	Shader	shaderFlash("resources/shaders/lighting.vs", "resources/shaders/lighting.frag");
 	this->shaderFlash = &shaderFlash;
-
 	this->shaderActive = this->shaderNormal;
-
-	// this->shader = &shader;
 	// Load models
 	for (int i = 0; i < 25; i++)
 		this->Menus.push_back(new MainMenu(shader, "resources/models/menu/Menu_" + std::to_string(i) + ".obj"));
-
 	for (int i = 0; i < 9; i++)
 		this->load.push_back(new LoadingScreen((*this->shaderNormal), "resources/models/menu/LoadingScreen/Loading_screen_" + std::to_string(i) + ".obj"));
-
 	for (int i = 0; i < 11; i++)
 		this->soundMenu.push_back(new SoundMenu((*this->shaderNormal), "resources/models/menu/SoundScreen/SoundScreen_" + std::to_string(i) + ".obj"));
-	
 	for (int i = 0; i < 6; i++)
 		this->pauseMenu.push_back(new PauseMenu(shader, "resources/models/menu/PauseMenu/pauseMenu_" + std::to_string(i) + ".obj"));
-
 	glm::mat4 projection = glm::perspective(camera.GetZoom(), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 1000.0f);
 	this->projection = projection;
-
 	GLfloat old_time = 0.0f;
 	GLfloat old_time_key = 0.0f;
-
 	// ---------Sound-----------
 	World::sound->playMusic();
 	// -------------------------
-
 	// Game loop
 	while (!glfwWindowShouldClose(window))
 	{
 		mu.lock();
 		glfwMakeContextCurrent(window);
-
 		// Set frame time
 		GLfloat currentFrame = glfwGetTime();
-		// std::cout << "time: " << currentFrame << std::endl;
 		this->deltaTime = currentFrame - this->lastFrame;
 		this->lastFrame = currentFrame;
 		if (currentFrame - old_time >= 1.0f)
-		{
 			old_time = currentFrame;
-			// std::cout << "FPS: " << std::to_string(1.0f / deltaTime) << std::endl;
-		}
-		
 		// Check and call events
 		glfwPollEvents();
-
 		// Clear the colorbuffer
 		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 		if ((this->menuVisible == true) || (this->pauseActive == true))
 		{
 			this->toggleFlash = false;
@@ -241,13 +202,11 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 				this->Menus[this->menuActive]->draw();
 				MoveMenu();
 			}
-		
 			if (keys[GLFW_KEY_ENTER])
 			{
 				keys[GLFW_KEY_ENTER] = false;
 				if (this->menuVisible == true)
 				{
-					// std::cout << "active menu: " << this->menuActive << std::endl;
 					if (this->menuActive == 0)
 					{
 						this->loadActive = 0;
@@ -269,7 +228,6 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 							if (tokens[0] == "stage:")
 							{
 								std::cout << tokens[0] << std::endl;
-
 								std::istringstream(tokens[1]) >> this->stage;
 							}
 							file.close();
@@ -287,7 +245,6 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 								default:
 									break;
 							}
-							// this->loadActive = 0;
 							menuVisible = false;
 							loadVisible =true;
 							std::thread *worldThread =  new std::thread(loadGame, this);
@@ -296,7 +253,6 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 						else
 							this->menuActive = 16;
 					}
-						// this->menuActive = 5;
 					else if (this->menuActive == 4)
 						glfwSetWindowShouldClose(window, GL_TRUE);
 					else if (this->menuActive == 2)//Options
@@ -325,49 +281,49 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 					else if (this->menuActive == 17)//changing UP key
 					{
 						last_menu = this->menuActive;
-						key_change = 0;
+						this->key_change = 0;
 						this->menuActive = 24;
 						keys[GLFW_KEY_ENTER] = false;
 					}
 					else if (this->menuActive == 18)//changing DOWN key
 					{
 						last_menu = this->menuActive;
-						key_change = 1;
+						this->key_change = 1;
 						this->menuActive = 24;
 						keys[GLFW_KEY_ENTER] = false;
 					}
 					else if (this->menuActive == 19)//changing LEFT key
 					{
 						last_menu = this->menuActive;
-						key_change = 2;
+						this->key_change = 2;
 						this->menuActive = 24;
 						keys[GLFW_KEY_ENTER] = false;
 					}
 					else if (this->menuActive == 20)//changing RIGHT key
 					{
 						last_menu = this->menuActive;
-						key_change = 3;
+						this->key_change = 3;
 						this->menuActive = 24;
 						keys[GLFW_KEY_ENTER] = false;
 					}
 					else if (this->menuActive == 21)//changing BOMB key
 					{
 						last_menu = this->menuActive;
-						key_change = 4;
+						this->key_change = 4;
 						this->menuActive = 24;
 						keys[GLFW_KEY_ENTER] = false;
 					}
 					else if (this->menuActive == 22)//changing 1st/3rd person View key
 					{
 						last_menu = this->menuActive;
-						key_change = 5;
+						this->key_change = 5;
 						this->menuActive = 24;
 						keys[GLFW_KEY_ENTER] = false;
 					}
 					else if (this->menuActive == 23)
 					{
 						last_menu = 0;
-						key_change = 0;
+						this->key_change = 0;
 						this->menuActive = 8;
 					}
 					//---------------------------END Changing KEYS-------------------------------------------------
@@ -415,7 +371,6 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 						{
 							GLFWmonitor *monitor = glfwGetPrimaryMonitor();
 							const GLFWvidmode *mode = glfwGetVideoMode(monitor);
-
 							glfwSetWindowMonitor(window, monitor, 0, 0, 2300, 1920, mode->refreshRate);
 							glfwSetWindowMonitor(window, monitor, 0, 0, this->screen_x, this->screen_y, mode->refreshRate);
 							keys[GLFW_KEY_ENTER] = true;
@@ -447,20 +402,46 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 			{
 				if (keys[lastkeypressed])
 				{
-					if (!keys[GLFW_KEY_ENTER])
+					if (!(keys[GLFW_KEY_ENTER] && keys[GLFW_KEY_ESCAPE]))
 					{
-						if (key_change == 0)
-							this->keyUP = lastkeypressed;
-						if (key_change == 1)
-							this->keyDOWN = lastkeypressed;
-						if (key_change == 2)
-							this->keyLEFT = lastkeypressed;
-						if (key_change == 3)
-							this->keyRIGHT = lastkeypressed;
-						if (key_change == 4)
-							this->keyBOMB = lastkeypressed;
-						if (key_change == 5)
-							this->keyCHANGEVIEW = lastkeypressed;
+						tempKEY = lastkeypressed;
+						if (this->key_change == 0)
+						{
+							if ((tempKEY != this->keyDOWN) && (tempKEY != this->keyLEFT) && (tempKEY != this->keyRIGHT) && (tempKEY != this->keyBOMB))
+								this->keyUP = tempKEY;
+							else
+								std::cout << "key is already assigned" << std::endl;
+						}
+						if (this->key_change == 1)
+						{
+							if ((tempKEY != this->keyUP) && (tempKEY != this->keyLEFT) && (tempKEY != this->keyRIGHT) && (tempKEY != this->keyBOMB))
+								this->keyDOWN = tempKEY;
+							else
+								std::cout << "key is already assigned" << std::endl;
+						}
+						if (this->key_change == 2)
+						{
+							if ((tempKEY != this->keyUP) && (tempKEY != this->keyDOWN) && (tempKEY != this->keyRIGHT) && (tempKEY != this->keyBOMB))
+								this->keyLEFT = tempKEY;
+							else
+								std::cout << "key is already assigned" << std::endl;
+						}
+						if (this->key_change == 3)
+						{
+							if ((tempKEY != this->keyUP) && (tempKEY != this->keyDOWN) && (tempKEY != this->keyLEFT) && (tempKEY != this->keyBOMB))
+								this->keyRIGHT = tempKEY;
+							else
+								std::cout << "key is already assigned" << std::endl;
+						}
+						if (this->key_change == 4)
+						{
+							if ((tempKEY != this->keyUP) && (tempKEY != this->keyDOWN) && (tempKEY != this->keyLEFT) && (tempKEY != this->keyRIGHT))
+								this->keyBOMB = tempKEY;
+							else
+								std::cout << "key is already assigned" << std::endl;
+						}
+						// if (this->key_change == 5)
+						// 	this->keyCHANGEVIEW = tempKEY;
 						this->menuActive = last_menu;
 					}
 				}
@@ -555,16 +536,11 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 								if (exist("saveGame"))
 								{
 									delete this->world;
-									
 									file.open("saveGame");
-									
 									getline(file, line);
 									tokens = strsplit(line, ' ');
 									if (tokens[0] == "stage:")
-									{
-										std::cout << tokens[0] << std::endl;
 										std::istringstream(tokens[1]) >> this->stage;
-									}
 									file.close();
 									switch(this->stage)
 									{
@@ -611,6 +587,7 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 					}
 				}
 			}
+			//--------------------End Pause Menu-------------------------------------
 			else
 			{	
 				if (currentFrame - old_time_key >= 0.01f)
@@ -632,10 +609,8 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 							delete this->world;
 							this->menuActive = 0;
 							this->stage = 4;
-
 							menuVisible = true;
 						}
-						
 						else if (this->stage == 1)
 						{
 							this->loadActive = 4;
@@ -672,7 +647,6 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 			it = this->Menus.erase(it);
 		}
 	}
-	
 	for (std::vector<LoadingScreen*>::iterator it = this->load.begin() ; it != this->load.end(); )
 	{
 		if (it != this->load.end())
@@ -681,7 +655,6 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 			it = this->load.erase(it);
 		}
 	}
-
 	for (std::vector<SoundMenu*>::iterator it = this->soundMenu.begin() ; it != this->soundMenu.end(); )
 	{
 		if (it != this->soundMenu.end())
@@ -719,7 +692,7 @@ Game	&Game::operator=(Game const &rhs)
 	}
 	return (*this);
 }
-//end canonical form
+
 
 void Game::MovePause(void)
 {
@@ -788,16 +761,18 @@ void Game::MoveMenu(void)
 	{
 		if (keys[GLFW_KEY_UP])
 		{
-			keys[GLFW_KEY_UP] = false;
+			if (this->menuActive != 24)
+				keys[GLFW_KEY_UP] = false;
 			if (this->menuActive > 0)
 			{
-				if ((this->menuActive < 5) || (this->menuActive > 6 && this->menuActive <= 9) || (this->menuActive > 10 && this->menuActive < 16) || (this->menuActive > 17))
+				if ((this->menuActive < 5) || (this->menuActive > 6 && this->menuActive <= 9) || (this->menuActive > 10 && this->menuActive < 16) || (this->menuActive > 17 && this->menuActive < 24))
 					this->menuActive--;
 			}
 		}
 		else if (keys[GLFW_KEY_DOWN])
 		{
-			keys[GLFW_KEY_DOWN] = false;
+			if (this->menuActive != 24)
+				keys[GLFW_KEY_DOWN] = false;
 			if (this->menuActive < 4)
 				this->menuActive++;
 			if (this->menuActive >= 6)
@@ -810,7 +785,7 @@ void Game::MoveMenu(void)
 				if (this->menuActive < 15)
 					this->menuActive++;
 			}
-			if (this->menuActive >= 17)
+			if (this->menuActive >= 17 && this->menuActive < 23)
 			{
 				if (this->menuActive < 23)
 					this->menuActive++;
@@ -849,7 +824,6 @@ void	Game::DoMovement(void)
 		camera.ProcessKeyboard(LEFT, this->deltaTime);
 	else if (keys[GLFW_KEY_D] )
 		camera.ProcessKeyboard(RIGHT, this->deltaTime);
-
 	// Player controls
 	if (keys[this->keyUP])
 	{
@@ -861,7 +835,6 @@ void	Game::DoMovement(void)
 		this->world->ProcessKeyboard(LFT, camera, this->toggleFlash);
 	else if (keys[this->keyRIGHT])
 		this->world->ProcessKeyboard(RGT, camera, this->toggleFlash);
-
 	// Plant a bomb
 	if (keys[this->keyBOMB])
 	{
@@ -921,16 +894,12 @@ void 	Game::createWorld2(void )
 
 void 	loadStage(Game *game)
 {
-	std::cout << "in Load stage calling load stage from Game" << std::endl;
 	game->loadStage1();
 }
 
 void 	Game::loadStage1(void )
 {
-	std::cout << "in Load stage1 calling load stage from World" << std::endl;
-
 	this->world->loadStage(this->stage);
-	std::cout << "set LoadVisible to false" << std::endl;
 	this->loadVisible = false;
 }
 

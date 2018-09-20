@@ -13,9 +13,7 @@ Bomb::Bomb( Shader &shader, std::string model) : Item(shader, model)
 	this->activeFlames = 0;
 	this->destruction = false;
 	for (int i = 0; i < 12; i++)
-	{
 		this->flames.push_back(new Item(shader, "resources/models/fire/fire.obj"));
-	}
 }
 
 Bomb::Bomb( Bomb const & src) : Item(src)
@@ -40,7 +38,6 @@ void	Bomb::checkDestruction()
 	//check down
 	for (int i = 1; i <= this->blastRaduis; i++)
 	{
-		// std::cout << "Checking bomb Down " << this->row + i << std::endl;
 		if (this->row + i < 17)
 		{
 			if (this->map[this->row + i][this->col] == '#')
@@ -72,7 +69,6 @@ void	Bomb::checkDestruction()
 	//check up
 	for (int i = 1; i <= this->blastRaduis; i++)
 	{
-		// std::cout << "Checking bomb Up " << this->row  - i << std::endl;
 		if (this->row - i > -1)
 		{
 			if (this->map[this->row - i][this->col] == '#')
@@ -104,7 +100,6 @@ void	Bomb::checkDestruction()
 	//check right
 	for (int i = 1; i <= this->blastRaduis; i++)
 	{
-		// std::cout << "Checking bomb Right " << this->col  + i << std::endl;
 		if (this->col + i < 17)
 		{
 			if (this->map[this->row][this->col + i] == '#')
@@ -117,7 +112,6 @@ void	Bomb::checkDestruction()
 				}
 				else
 					this->map[this->row][this->col + i] = 'D';
-				
 			}
 			if (this->map[this->row][this->col + i] != 'U')
 			{
@@ -196,17 +190,12 @@ void Bomb::draw(void)
 	}
 	else
 	{
-		// if (this->activeFrame == 1)
-		// 	this->activeFrame = 0;
-		// else
-		// 	this->activeFrame++;
 		glm::mat4 model(1);
 		model = glm::translate( model, glm::vec3(this->x_trans, this->y_trans, this->z_trans));		// Translate item
 		model = glm::scale(model, glm::vec3(4.25f, 2.25f, 4.25f));									// scale item
 		model = glm::rotate(model, glm::radians(this->rotate), glm::vec3(0, 1, 0));					// where x, y, z is axis of rotation (e.g. 0 1 0)
 		glUniformMatrix4fv( glGetUniformLocation(this->_shader->getProgram(), "model"), 1, GL_FALSE, glm::value_ptr(model ));
 		this->ItemModel->Draw(*this->_shader);
-		// (*this->itemModelarr)[this->activeFrame]->Draw(*this->_shader);
 	}
 }
 
@@ -226,7 +215,7 @@ void	Bomb::incBlastRaduis()
 
 void	Bomb::setBlastRaduis(int blastRaduis)
 {
-	if (blastRaduis < 3)
+	if (blastRaduis < 4)
 		this->blastRaduis = blastRaduis;
 	else
 		this->blastRaduis = 1;
