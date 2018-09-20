@@ -6,7 +6,7 @@
 /*   By: dwilliam <dwilliam@42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/11 11:20:47 by cnolte            #+#    #+#             */
-/*   Updated: 2018/09/20 12:17:57 by dwilliam         ###   ########.fr       */
+/*   Updated: 2018/09/20 17:46:11 by dwilliam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,7 @@ class Game
 		int		keyFLASH;
 		int		keyCHANGEVIEW;
 		int		stage;
+		int		key_change;
 
 		bool 		WorldLoaded;
 		Shader		*shader;

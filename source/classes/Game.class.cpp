@@ -19,6 +19,7 @@ bool	firstMouse;
 GLfloat	lastX;
 GLfloat	lastY;
 int		lastkeypressed;
+int		tempKEY;
 
 // Is called whenever a key is pressed/released via GLFW
 void	KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mode)
@@ -33,7 +34,7 @@ void	KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mode
 		if (action == GLFW_PRESS)
 		{
 			lastkeypressed = key;
-			// std::cout << "pressed key " << key << std::endl;
+			std::cout << "pressed key " << key << std::endl;
 			keys[key] = true;
 		}
 		else if (action == GLFW_RELEASE)
@@ -73,7 +74,6 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 	std::cout << "Game - Parametric Constructor called" << std::endl;
 
 	int last_menu = 0;
-	int key_change = 0;
 	int temp22 = 2;
 	this->stage = 1;
 	lastX = 400;
@@ -91,6 +91,7 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 	this->soundActive = 0;
 	this->pauseActive = 0;
 	this->check = 0;
+	this->key_change = 0;
 
 	this->keyUP = GLFW_KEY_UP;
 	this->keyDOWN = GLFW_KEY_DOWN;
@@ -299,49 +300,49 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 					else if (this->menuActive == 17)//changing UP key
 					{
 						last_menu = this->menuActive;
-						key_change = 0;
+						this->key_change = 0;
 						this->menuActive = 24;
 						keys[GLFW_KEY_ENTER] = false;
 					}
 					else if (this->menuActive == 18)//changing DOWN key
 					{
 						last_menu = this->menuActive;
-						key_change = 1;
+						this->key_change = 1;
 						this->menuActive = 24;
 						keys[GLFW_KEY_ENTER] = false;
 					}
 					else if (this->menuActive == 19)//changing LEFT key
 					{
 						last_menu = this->menuActive;
-						key_change = 2;
+						this->key_change = 2;
 						this->menuActive = 24;
 						keys[GLFW_KEY_ENTER] = false;
 					}
 					else if (this->menuActive == 20)//changing RIGHT key
 					{
 						last_menu = this->menuActive;
-						key_change = 3;
+						this->key_change = 3;
 						this->menuActive = 24;
 						keys[GLFW_KEY_ENTER] = false;
 					}
 					else if (this->menuActive == 21)//changing BOMB key
 					{
 						last_menu = this->menuActive;
-						key_change = 4;
+						this->key_change = 4;
 						this->menuActive = 24;
 						keys[GLFW_KEY_ENTER] = false;
 					}
 					else if (this->menuActive == 22)//changing 1st/3rd person View key
 					{
 						last_menu = this->menuActive;
-						key_change = 5;
+						this->key_change = 5;
 						this->menuActive = 24;
 						keys[GLFW_KEY_ENTER] = false;
 					}
 					else if (this->menuActive == 23)
 					{
 						last_menu = 0;
-						key_change = 0;
+						this->key_change = 0;
 						this->menuActive = 8;
 					}
 					//---------------------------END Changing KEYS-------------------------------------------------
@@ -421,20 +422,46 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 			{
 				if (keys[lastkeypressed])
 				{
-					if (!keys[GLFW_KEY_ENTER])
+					if (!(keys[GLFW_KEY_ENTER] && keys[GLFW_KEY_ESCAPE]))
 					{
-						if (key_change == 0)
-							this->keyUP = lastkeypressed;
-						if (key_change == 1)
-							this->keyDOWN = lastkeypressed;
-						if (key_change == 2)
-							this->keyLEFT = lastkeypressed;
-						if (key_change == 3)
-							this->keyRIGHT = lastkeypressed;
-						if (key_change == 4)
-							this->keyBOMB = lastkeypressed;
-						if (key_change == 5)
-							this->keyCHANGEVIEW = lastkeypressed;
+						tempKEY = lastkeypressed;
+						if (this->key_change == 0)
+						{
+							if ((tempKEY != this->keyDOWN) && (tempKEY != this->keyLEFT) && (tempKEY != this->keyRIGHT) && (tempKEY != this->keyBOMB))
+								this->keyUP = tempKEY;
+							else
+								std::cout << "key is already assigned" << std::endl;
+						}
+						if (this->key_change == 1)
+						{
+							if ((tempKEY != this->keyUP) && (tempKEY != this->keyLEFT) && (tempKEY != this->keyRIGHT) && (tempKEY != this->keyBOMB))
+								this->keyDOWN = tempKEY;
+							else
+								std::cout << "key is already assigned" << std::endl;
+						}
+						if (this->key_change == 2)
+						{
+							if ((tempKEY != this->keyUP) && (tempKEY != this->keyDOWN) && (tempKEY != this->keyRIGHT) && (tempKEY != this->keyBOMB))
+								this->keyLEFT = tempKEY;
+							else
+								std::cout << "key is already assigned" << std::endl;
+						}
+						if (this->key_change == 3)
+						{
+							if ((tempKEY != this->keyUP) && (tempKEY != this->keyDOWN) && (tempKEY != this->keyLEFT) && (tempKEY != this->keyBOMB))
+								this->keyRIGHT = tempKEY;
+							else
+								std::cout << "key is already assigned" << std::endl;
+						}
+						if (this->key_change == 4)
+						{
+							if ((tempKEY != this->keyUP) && (tempKEY != this->keyDOWN) && (tempKEY != this->keyLEFT) && (tempKEY != this->keyRIGHT))
+								this->keyBOMB = tempKEY;
+							else
+								std::cout << "key is already assigned" << std::endl;
+						}
+						// if (this->key_change == 5)
+						// 	this->keyCHANGEVIEW = tempKEY;
 						this->menuActive = last_menu;
 					}
 				}
@@ -499,6 +526,7 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 				usleep(400000);
 				this->loadActive++;
 			}
+			//---------------------Pause Menu------------------------------------------
 			else if (pauseVisible == true)
 			{
 				pauseMenu[this->pauseActive]->draw();
@@ -581,6 +609,7 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 					}
 				}
 			}
+			//--------------------End Pause Menu-------------------------------------
 			else
 			{	
 				if (currentFrame - old_time_key >= 0.01f)
@@ -694,6 +723,7 @@ Game	&Game::operator=(Game const &rhs)
 }
 //end canonical form
 
+
 void Game::MovePause(void)
 {
 	// Pause Menu controls
@@ -761,16 +791,18 @@ void Game::MoveMenu(void)
 	{
 		if (keys[GLFW_KEY_UP])
 		{
-			keys[GLFW_KEY_UP] = false;
+			if (this->menuActive != 24)
+				keys[GLFW_KEY_UP] = false;
 			if (this->menuActive > 0)
 			{
-				if ((this->menuActive < 5) || (this->menuActive > 6 && this->menuActive <= 9) || (this->menuActive > 10 && this->menuActive < 16) || (this->menuActive > 17))
+				if ((this->menuActive < 5) || (this->menuActive > 6 && this->menuActive <= 9) || (this->menuActive > 10 && this->menuActive < 16) || (this->menuActive > 17 && this->menuActive < 24))
 					this->menuActive--;
 			}
 		}
 		else if (keys[GLFW_KEY_DOWN])
 		{
-			keys[GLFW_KEY_DOWN] = false;
+			if (this->menuActive != 24)
+				keys[GLFW_KEY_DOWN] = false;
 			if (this->menuActive < 4)
 				this->menuActive++;
 			if (this->menuActive >= 6)
@@ -783,7 +815,7 @@ void Game::MoveMenu(void)
 				if (this->menuActive < 15)
 					this->menuActive++;
 			}
-			if (this->menuActive >= 17)
+			if (this->menuActive >= 17 && this->menuActive < 23)
 			{
 				if (this->menuActive < 23)
 					this->menuActive++;
