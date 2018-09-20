@@ -77,12 +77,12 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 	lastX = 400;
 	lastY = 300;
 	firstMouse = true;
-	deltaTime = 0.0;
-	lastFrame = 0.0;
-	menuVisible = true;
-	loadVisible = false;
-	soundMenuVisible = false;
-	pauseVisible = false;
+	this->deltaTime = 0.0;
+	this->lastFrame = 0.0;
+	this->menuVisible = true;
+	this->loadVisible = false;
+	this->soundMenuVisible = false;
+	this->pauseVisible = false;
 	this->WorldLoaded = false;
 	this->menuActive = 0;
 	this->loadActive = 0;
@@ -95,6 +95,7 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 	this->keyLEFT = GLFW_KEY_LEFT;
 	this->keyRIGHT = GLFW_KEY_RIGHT;
 	this->keyBOMB = GLFW_KEY_SPACE;
+	this->keyFLASH = GLFW_KEY_F;
 
 	camera.ProcessMouseMovement(0, -250);
 
@@ -146,21 +147,25 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 
 	// Setup and compile our shaders
 	Shader	shader("resources/shaders/modelLoading.vert", "resources/shaders/modelLoading.frag");
-	//Shader	shader("resources/shaders/lighting.vs", "resources/shaders/lighting.frag");
+	this->shaderNormal = &shader;
+	Shader	shaderFlash("resources/shaders/lighting.vs", "resources/shaders/lighting.frag");
+	this->shaderFlash = &shaderFlash;
 
-	this->shader = &shader;
+	this->shaderActive = this->shaderNormal;
+
+	// this->shader = &shader;
 	// Load models
 	for (int i = 0; i < 16; i++)
-		this->Menus.push_back(new MainMenu(shader, "resources/models/menu/Menu_" + std::to_string(i) + ".obj"));
+		this->Menus.push_back(new MainMenu((*this->shaderNormal), "resources/models/menu/Menu_" + std::to_string(i) + ".obj"));
 
 	for (int i = 0; i < 9; i++)
-		this->load.push_back(new LoadingScreen(shader, "resources/models/menu/LoadingScreen/Loading_screen_" + std::to_string(i) + ".obj"));
+		this->load.push_back(new LoadingScreen((*this->shaderNormal), "resources/models/menu/LoadingScreen/Loading_screen_" + std::to_string(i) + ".obj"));
 
 	for (int i = 0; i < 11; i++)
-		this->soundMenu.push_back(new SoundMenu(shader, "resources/models/menu/SoundScreen/SoundScreen_" + std::to_string(i) + ".obj"));
+		this->soundMenu.push_back(new SoundMenu((*this->shaderNormal), "resources/models/menu/SoundScreen/SoundScreen_" + std::to_string(i) + ".obj"));
 	
 	for (int i = 0; i < 5; i++)
-		this->pauseMenu.push_back(new PauseMenu(shader, "resources/models/menu/PauseMenu/pauseMenu_" + std::to_string(i) + ".obj"));
+		this->pauseMenu.push_back(new PauseMenu((*this->shaderNormal), "resources/models/menu/PauseMenu/pauseMenu_" + std::to_string(i) + ".obj"));
 
 	glm::mat4 projection = glm::perspective(camera.GetZoom(), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 1000.0f);
 	this->projection = projection;
@@ -181,12 +186,12 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 		// Set frame time
 		GLfloat currentFrame = glfwGetTime();
 		// std::cout << "time: " << currentFrame << std::endl;
-		deltaTime = currentFrame - lastFrame;
-		lastFrame = currentFrame;
+		this->deltaTime = currentFrame - this->lastFrame;
+		this->lastFrame = currentFrame;
 		if (currentFrame - old_time >= 1.0f)
 		{
 			old_time = currentFrame;
-			std::cout << "FPS: " << std::to_string(1.0f / deltaTime) << std::endl;
+			std::cout << "FPS: " << std::to_string(1.0f / this->deltaTime) << std::endl;
 		}
 		
 		// Check and call events
@@ -196,34 +201,54 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		shader.Use();
-		this->placeSpotLight();
-		// set the camera view and projection
-		glUniformMatrix4fv(glGetUniformLocation(shader.getProgram(), "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-		glUniformMatrix4fv(glGetUniformLocation(shader.getProgram(), "view"), 1, GL_FALSE, glm::value_ptr(camera.GetViewMatrix()));
-		if (menuVisible == true || soundMenuVisible == true)
+		if ((this->menuVisible == true) || (this->pauseActive == true))
 		{
-			if (soundMenuVisible == true)
+			this->toggleFlash = false;
+			this->shaderActive = this->shaderNormal;
+		}
+		else
+		{
+			if (this->toggleFlash == true)
 			{
-				soundMenu[this->soundActive]->draw();
+				this->shaderActive = this->shaderFlash;
+				this->placeSpotLight();
+			}
+			else
+			{
+				camera.moveCamForMenu();
+				camera.ProcessMouseMovement(0, -250);
+				this->shaderActive = this->shaderNormal;
+			}
+		}
+		this->shaderActive->Use();
+		// set the camera view and projection
+		glUniformMatrix4fv(glGetUniformLocation(this->shaderActive->getProgram(), "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+		glUniformMatrix4fv(glGetUniformLocation(this->shaderActive->getProgram(), "view"), 1, GL_FALSE, glm::value_ptr(camera.GetViewMatrix()));
+		if (this->menuVisible == true || this->soundMenuVisible == true)
+		{
+			camera.moveCamForMenu();
+			camera.ProcessMouseMovement(0, -250);
+			if (this->soundMenuVisible == true)
+			{
+				this->soundMenu[this->soundActive]->draw();
 				MoveSoundMenu();
 			}
 			else
 			{
-				Menus[this->menuActive]->draw();
+				this->Menus[this->menuActive]->draw();
 				MoveMenu();
 			}
 		
 			if (keys[GLFW_KEY_ENTER])
 			{
 				keys[GLFW_KEY_ENTER] = false;
-				if (menuVisible == true)
+				if (this->menuVisible == true)
 				{
 					if (this->menuActive == 0)
 					{
 						this->loadActive = 0;
-						menuVisible = false;
-						loadVisible =true;
+						this->menuVisible = false;
+						this->loadVisible =true;
 						std::thread *worldThread =  new std::thread(createWorld, this);
 						worldThread->detach();
 					}
@@ -241,8 +266,8 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 						this->menuActive = 10;
 					else if (this->menuActive == 7) //Sound
 					{
-						menuVisible = false;
-						soundMenuVisible = true;
+						this->menuVisible = false;
+						this->soundMenuVisible = true;
 					}
 					else if (this->menuActive == 8) //Key Bindings
 						std::cout << "still busy" << std::endl;
@@ -254,8 +279,8 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 					{
 						if (this->check == 1)
 						{
-							menuVisible = false;
-							pauseVisible = true;
+							this->menuVisible = false;
+							this->pauseVisible = true;
 							check = 0;
 							this->pauseActive = 3;
 						}
@@ -303,7 +328,7 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 					}
 				}
 				//--------------------Changing Sound--------------------------------------------------------------------
-				else if (soundMenuVisible == true)
+				else if (this->soundMenuVisible == true)
 				{
 					if (this->soundActive == 0)
 						this->soundActive = 3;
@@ -312,8 +337,8 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 					else if (this->soundActive == 2)
 					{
 						this->menuActive = 7;
-						soundMenuVisible = false;
-						menuVisible = true;
+						this->soundMenuVisible = false;
+						this->menuVisible = true;
 					}
 					else if ((this->soundActive >= 3) && (this->soundActive <= 6))
 						this->soundActive = 0;
@@ -361,8 +386,10 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 		}
 		else
 		{
-			if (loadVisible == true)
+			if (this->loadVisible == true)
 			{
+				camera.moveCamForMenu();
+				camera.ProcessMouseMovement(0, -250);
 				if (this->loadActive == 3)
 				{
 					this->loadActive = 0;
@@ -378,13 +405,15 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 					this->loadActive = 7;
 					stage = 4;
 				}
-				load[this->loadActive]->draw();
+				this->load[this->loadActive]->draw();
 				usleep(400000);
 				this->loadActive++;
 			}
-			else if (pauseVisible == true)
+			else if (this->pauseVisible == true)
 			{
-				pauseMenu[this->pauseActive]->draw();
+				camera.moveCamForMenu();
+				camera.ProcessMouseMovement(0, -250);
+				this->pauseMenu[this->pauseActive]->draw();
 				MovePause();
 				if (keys[GLFW_KEY_ENTER])
 				{
@@ -394,25 +423,25 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 						switch (this->pauseActive)
 						{
 							case 0://Resume Game
-								pauseVisible = false;
+								this->pauseVisible = false;
 								break ;
 							case 1:// Save Game
-								pauseVisible = false;
+								this->pauseVisible = false;
 								break ;
 							case 2://Load Game
-								pauseVisible = false;
+								this->pauseVisible = false;
 								break ;
 							case 3://Options
-								menuVisible = true;
-								pauseVisible =false;
+								this->menuVisible = true;
+								this->pauseVisible =false;
 								this->check = 1;
 								this->menuActive = 6;
 								break ;
 							case 4://Quit to Main menu
 								delete this->world;
 								this->menuActive = 0;
-								menuVisible = true;
-								pauseVisible = false;
+								this->menuVisible = true;
+								this->pauseVisible = false;
 								break ;
 							default:
 								break ;
@@ -425,15 +454,14 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 				if (currentFrame - old_time_key >= 0.01f)
 				{
 					old_time_key = currentFrame;
-					this->world->draw(camera.GetViewMatrix(), currentFrame);
+					this->world->setShader((*this->shaderActive));
+					this->world->draw(camera, currentFrame);
 					DoMovement();
 					if (world->getStatus() == 1)
 					{
 						delete this->world;
-						camera.moveCamForMenu();
-						camera.ProcessMouseMovement(0, -250);
 						this->menuActive = 0;
-						menuVisible = true;
+						this->menuVisible = true;
 					}
 					else if (world->getStatus() == 2)
 					{
@@ -445,20 +473,14 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 						if (stage == 4)
 						{
 							delete this->world;
-							camera.moveCamForMenu();
-							camera.ProcessMouseMovement(0, -250);
 							this->menuActive = 0;
-							menuVisible = true;
+							this->menuVisible = true;
 						}
 						else
 						{
 							std::cout << "setting load visible to true" << std::endl;
-							loadVisible = true;
+							this->loadVisible = true;
 							// delete this->world;
-							std::cout << "Move cam for menu" << std::endl;
-							camera.moveCamForMenu();
-						std::cout << "ProcessMouseMovement" << std::endl;
-							camera.ProcessMouseMovement(0, -250);
 						std::cout << "creating new thread for loading the stage" << std::endl;
 							std::thread *worldThread =  new std::thread(loadStage, this);
 						std::cout << "detaching the new thread" << std::endl;
@@ -625,8 +647,8 @@ void Game::MoveMenu(void)
 				keys[GLFW_KEY_ESCAPE] = false;
 				if (this->menuActive >= 6 || this->menuActive <= 9)
 				{
-					menuVisible = false;
-					pauseVisible = true;
+					this->menuVisible = false;
+					this->pauseVisible = true;
 					this->check = 1;
 					this->pauseActive = 3;
 				} 
@@ -640,41 +662,48 @@ void	Game::DoMovement(void)
 {
 	// Camera controls
 	if (keys[GLFW_KEY_Q])
-		camera.ProcessKeyboard(UP, deltaTime);
+		camera.ProcessKeyboard(UP, this->deltaTime);
 	else if (keys[GLFW_KEY_E])
-		camera.ProcessKeyboard(DOWN, deltaTime);
+		camera.ProcessKeyboard(DOWN, this->deltaTime);
 	else if (keys[GLFW_KEY_W])
-		camera.ProcessKeyboard(FORWARD, deltaTime);
+		camera.ProcessKeyboard(FORWARD, this->deltaTime);
 	else if (keys[GLFW_KEY_S])
-		camera.ProcessKeyboard(BACKWARD, deltaTime);
+		camera.ProcessKeyboard(BACKWARD, this->deltaTime);
 	else if (keys[GLFW_KEY_A])
-		camera.ProcessKeyboard(LEFT, deltaTime);
+		camera.ProcessKeyboard(LEFT, this->deltaTime);
 	else if (keys[GLFW_KEY_D] )
-		camera.ProcessKeyboard(RIGHT, deltaTime);
+		camera.ProcessKeyboard(RIGHT, this->deltaTime);
 
 	// Player controls
 	if (keys[this->keyUP])
-	{
-		this->world->ProcessKeyboard(FWD, camera);
-	}
+		this->world->ProcessKeyboard(FWD, camera, this->toggleFlash);
 	else if (keys[GLFW_KEY_DOWN])
-		this->world->ProcessKeyboard(BKW, camera);
+		this->world->ProcessKeyboard(BKW, camera, this->toggleFlash);
 	else if (keys[GLFW_KEY_LEFT])
-		this->world->ProcessKeyboard(LFT, camera);
+		this->world->ProcessKeyboard(LFT, camera, this->toggleFlash);
 	else if (keys[GLFW_KEY_RIGHT])
-		this->world->ProcessKeyboard(RGT, camera);
+		this->world->ProcessKeyboard(RGT, camera, this->toggleFlash);
 
 	// Plant a bomb
 	if (keys[this->keyBOMB])
 	{
 		keys[GLFW_KEY_SPACE] = false;
-		this->world->ProcessKeyboard(SPC, camera);
+		this->world->ProcessKeyboard(SPC, camera, this->toggleFlash);
 	}
 	else if (keys[GLFW_KEY_ESCAPE])
 	{
 		keys[GLFW_KEY_ESCAPE] = false;
 		this->pauseActive = 0;
-		pauseVisible = true;
+		this->toggleFlash = false;
+		this->pauseVisible = true;
+	}
+	else if (keys[this->keyFLASH])
+	{
+		keys[this->keyFLASH] = false;
+		if (this->toggleFlash == true)
+			this->toggleFlash = false;
+		else if (this->toggleFlash == false)
+			this->toggleFlash = true;
 	}
 	usleep(10000);
 }
@@ -686,7 +715,7 @@ void 	createWorld(Game *game)
 
 void 	Game::createWorld2(void )
 {
-	this->world = new World(*(this->shader), "resources/models/world.obj", this->screen_x, this->screen_y, this->window);
+	this->world = new World(*(this->shaderActive), "resources/models/world.obj", this->screen_x, this->screen_y, this->window);
 	this->loadVisible = false;
 }
 
@@ -707,14 +736,14 @@ void 	Game::loadStage1(void )
 
 void	Game::placeSpotLight(void)
 {
-	glUniform3f(glGetUniformLocation(this->shader->getProgram(), "spotLight.position"), camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
-	glUniform3f(glGetUniformLocation(this->shader->getProgram(), "spotLight.direction"), camera.getFront().x, camera.getFront().y, camera.getFront().z);
-	glUniform3f(glGetUniformLocation(this->shader->getProgram(), "spotLight.ambient"), 0.0f, 0.0f, 0.0f);
-	glUniform3f(glGetUniformLocation(this->shader->getProgram(), "spotLight.diffuse"), 1.0f, 1.0f, 1.0f);
-	glUniform3f(glGetUniformLocation(this->shader->getProgram(), "spotLight.specular"), 1.0f, 1.0f, 1.0f);
-	glUniform1f(glGetUniformLocation(this->shader->getProgram(), "spotLight.constant"), 1.0f);
-	glUniform1f(glGetUniformLocation(this->shader->getProgram(), "spotLight.linear"), 0.0009f);
-	glUniform1f(glGetUniformLocation(this->shader->getProgram(), "spotLight.quadratic"), 0.00032f);
-	glUniform1f(glGetUniformLocation(this->shader->getProgram(), "spotLight.cutOff"), glm::cos(glm::radians(25.0f)));
-	glUniform1f(glGetUniformLocation(this->shader->getProgram(), "spotLight.outerCutOff"), glm::cos(glm::radians(27.0f)));
+	glUniform3f(glGetUniformLocation(this->shaderFlash->getProgram(), "spotLight.position"), camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
+	glUniform3f(glGetUniformLocation(this->shaderFlash->getProgram(), "spotLight.direction"), camera.getFront().x, camera.getFront().y, camera.getFront().z);
+	glUniform3f(glGetUniformLocation(this->shaderFlash->getProgram(), "spotLight.ambient"), 0.0f, 0.0f, 0.0f);
+	glUniform3f(glGetUniformLocation(this->shaderFlash->getProgram(), "spotLight.diffuse"), 1.0f, 1.0f, 1.0f);
+	glUniform3f(glGetUniformLocation(this->shaderFlash->getProgram(), "spotLight.specular"), 1.0f, 1.0f, 1.0f);
+	glUniform1f(glGetUniformLocation(this->shaderFlash->getProgram(), "spotLight.constant"), 1.0f);
+	glUniform1f(glGetUniformLocation(this->shaderFlash->getProgram(), "spotLight.linear"), 0.0009f);
+	glUniform1f(glGetUniformLocation(this->shaderFlash->getProgram(), "spotLight.quadratic"), 0.00032f);
+	glUniform1f(glGetUniformLocation(this->shaderFlash->getProgram(), "spotLight.cutOff"), glm::cos(glm::radians(25.0f)));
+	glUniform1f(glGetUniformLocation(this->shaderFlash->getProgram(), "spotLight.outerCutOff"), glm::cos(glm::radians(27.0f)));
 }

@@ -7,10 +7,10 @@ HUD::HUD(void)
 	std::cout << "HUD - Default Constructor Called" << std::endl;
 }
 
-HUD::HUD(Shader &shader, float screen_x, float screen_y)
+HUD::HUD(Shader shader, float screen_x, float screen_y)
 {
 	std::cout << "HUD - Parametric Constructor called" << std::endl;
-	this->_shader = &shader;
+	this->_shader = shader;
 	this->HUD_Pos.left = -0.123f;
 	this->HUD_Pos.center = -0.015f;
 	this->HUD_Pos.right = 0.122f;
@@ -73,8 +73,8 @@ void	HUD::drawNumbers(glm::mat4 matCamera)
 		model = glm::translate(model, glm::vec3(this->HUD_Pos.left + 0.025f + (KERNING * (float)i), this->HUD_item[j].pos.y, this->HUD_item[j].pos.z)); 	// Translate item
 		model = glm::scale(model, glm::vec3(TEXT_SCALE, TEXT_SCALE, TEXT_SCALE));				// scale item
 		model = glm::rotate(model, glm::radians(this->HUD_item[j].rotate), glm::vec3(1, 0, 0)); 	// where x, y, z is axis of rotation (e.g. 0 1 0)
-		glUniformMatrix4fv(glGetUniformLocation(this->_shader->getProgram(), "model"), 1, GL_FALSE, glm::value_ptr(model));
-		this->HUD_item[j].model.Draw(*this->_shader);
+		glUniformMatrix4fv(glGetUniformLocation(this->_shader.getProgram(), "model"), 1, GL_FALSE, glm::value_ptr(model));
+		this->HUD_item[j].model.Draw(this->_shader);
 	}
 
 	std::string	strScore(std::to_string(this->score));
@@ -86,8 +86,8 @@ void	HUD::drawNumbers(glm::mat4 matCamera)
 		model = glm::translate(model, glm::vec3(this->HUD_Pos.center + 0.018f + (0.006f * (float)i), this->HUD_item[j].pos.y, this->HUD_item[j].pos.z)); 	// Translate item
 		model = glm::scale(model, glm::vec3(TEXT_SCALE, TEXT_SCALE, TEXT_SCALE));				// scale item
 		model = glm::rotate(model, glm::radians(this->HUD_item[j].rotate), glm::vec3(1, 0, 0)); 	// where x, y, z is axis of rotation (e.g. 0 1 0)
-		glUniformMatrix4fv(glGetUniformLocation(this->_shader->getProgram(), "model"), 1, GL_FALSE, glm::value_ptr(model));
-		this->HUD_item[j].model.Draw(*this->_shader);
+		glUniformMatrix4fv(glGetUniformLocation(this->_shader.getProgram(), "model"), 1, GL_FALSE, glm::value_ptr(model));
+		this->HUD_item[j].model.Draw(this->_shader);
 	}
 
 	std::string	strLives(std::to_string(this->lives));
@@ -99,26 +99,28 @@ void	HUD::drawNumbers(glm::mat4 matCamera)
 		model = glm::translate(model, glm::vec3(this->HUD_Pos.right + 0.018f + (KERNING * (float)i), this->HUD_item[j].pos.y, this->HUD_item[j].pos.z)); 	// Translate item
 		model = glm::scale(model, glm::vec3(TEXT_SCALE, TEXT_SCALE, TEXT_SCALE));				// scale item
 		model = glm::rotate(model, glm::radians(this->HUD_item[j].rotate), glm::vec3(1, 0, 0)); 	// where x, y, z is axis of rotation (e.g. 0 1 0)
-		glUniformMatrix4fv(glGetUniformLocation(this->_shader->getProgram(), "model"), 1, GL_FALSE, glm::value_ptr(model));
-		this->HUD_item[j].model.Draw(*this->_shader);
+		glUniformMatrix4fv(glGetUniformLocation(this->_shader.getProgram(), "model"), 1, GL_FALSE, glm::value_ptr(model));
+		this->HUD_item[j].model.Draw(this->_shader);
 	}
 }
 
-void	HUD::draw(glm::mat4 matCamera, const int time, const int score, const int lives)
+void	HUD::draw(Camera &camera, const int time, const int score, const int lives)
 {
+	this->_shader.Use();
+	glUniformMatrix4fv(glGetUniformLocation(this->_shader.getProgram(), "view"), 1, GL_FALSE, glm::value_ptr(camera.GetViewMatrix()));
 	this->time = time;
 	this->score = score;
 	this->lives = lives;
 	for (int i = 10; i <= 12; i++)
 	{
-		glm::mat4 model = glm::affineInverse(matCamera);
+		glm::mat4 model = glm::affineInverse(camera.GetViewMatrix());
 		model = glm::translate(model, glm::vec3(this->HUD_item[i].pos.x, this->HUD_item[i].pos.y, this->HUD_item[i].pos.z)); 	// Translate item
 		model = glm::scale(model, glm::vec3(TEXT_SCALE, TEXT_SCALE, TEXT_SCALE));				// scale item
 		model = glm::rotate(model, glm::radians(this->HUD_item[i].rotate), glm::vec3(1, 0, 0)); 	// where x, y, z is axis of rotation (e.g. 0 1 0)
-		glUniformMatrix4fv(glGetUniformLocation(this->_shader->getProgram(), "model"), 1, GL_FALSE, glm::value_ptr(model));
-		this->HUD_item[i].model.Draw(*this->_shader);
+		glUniformMatrix4fv(glGetUniformLocation(this->_shader.getProgram(), "model"), 1, GL_FALSE, glm::value_ptr(model));
+		this->HUD_item[i].model.Draw(this->_shader);
 	}
-	drawNumbers(matCamera);
+	drawNumbers(camera.GetViewMatrix());
 }
 
 int	numDigits(int number)

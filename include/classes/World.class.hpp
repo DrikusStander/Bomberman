@@ -74,8 +74,8 @@ class World
 		World(World const & src);
 		~World(void);
 		World const & operator=(World const & rhs);
-		void	draw(glm::mat4 matCamera, const GLfloat glfwTime);
-		virtual void	ProcessKeyboard(Direction direction, Camera &camera);
+		void	draw(Camera &camera, const GLfloat glfwTime);
+		virtual void	ProcessKeyboard(Direction direction, Camera &camera, bool toggleFlash);
 		float	player_getX(void);
 		float	player_getZ(void);
 		void	player_clipX(float x_move);
@@ -84,6 +84,7 @@ class World
 		int		getScore( void );
 		int		getLives( void );
 		void	loadStage( void );
+		void	setShader(Shader &shader);
 		static Sound			*sound;
 
 };

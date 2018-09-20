@@ -302,7 +302,7 @@ World const & World::operator=(World const & rhs)
 	return(*this);
 }
 
-void World::draw(glm::mat4 matCamera, const GLfloat glfwTime)
+void World::draw(Camera &camera, const GLfloat glfwTime)
 {
 	this->player->setMap(this->map);
 	glm::mat4 model(1);
@@ -312,9 +312,14 @@ void World::draw(glm::mat4 matCamera, const GLfloat glfwTime)
 	this->WorldModel->Draw(*this->_shader);
 	for (Item *item : *this->objects)
 	{
+		item->setShader(*this->_shader);
 		item->draw();
 	}
-	this->player->draw();
+
+	this->player->setShader(*this->_shader);
+	if (this->_shader->getFlashLight() == false)
+		this->player->draw();
+	this->player->drawBomb();
 	if (glfwTime - this->timeSinceNewFrame >= 1.0f)
 	{
 		this->timeSinceNewFrame = glfwTime;
@@ -324,15 +329,18 @@ void World::draw(glm::mat4 matCamera, const GLfloat glfwTime)
 			this->worldStatus = 1;
 	}
 
-	this->hud.draw(matCamera, this->time, this->score, this->lives);
+	this->hud.draw(camera, this->time, this->score, this->lives);
+	this->_shader->Use();
 
 	for (Enemy *enemy : *this->enemies)
 	{
+		enemy->setShader(*this->_shader);
 		enemy->draw();
 	}
 
 	for (Powerup *powerup : *this->powerups)
 	{
+		powerup->setShader(*this->_shader);
 		powerup->draw();
 	}
 
@@ -541,54 +549,57 @@ void World::draw(glm::mat4 matCamera, const GLfloat glfwTime)
 	// std::cout << "end of world Draw" << std::endl;
 }
 
-void	World::ProcessKeyboard(Direction direction, Camera &camera)
+void	World::ProcessKeyboard(Direction direction, Camera &camera, bool toggleFlash)
 {
-	// camera.setPos(glm::vec3(this->player->getX(), 35.0f, this->player->getZ()));
-	// float	yaw = camera.getYaw();
-	// if (direction == FWD)
-	// {
-	// 	if ((yaw >= 315.0f) && (yaw <= 45.0f))
-	// 		direction = FWD;
-	// 	else if ((yaw >= 135.0f) && (yaw <= 225.0f))
-	// 		direction = BKW;
-	// 	else if ((yaw > 45.0f) && (yaw < 135.0f))
-	// 		direction = RGT;
-	// 	else if ((yaw > 225.0f) && (yaw < 315.0f))
-	// 		direction = LFT;
-	// }
-	// else if (direction == BKW)
-	// {
-	// 	if ((yaw >= 315.0f) && (yaw <= 45.0f))
-	// 		direction = BKW;
-	// 	else if ((yaw >= 135.0f) && (yaw <= 225.0f))
-	// 		direction = FWD;
-	// 	else if ((yaw > 45.0f) && (yaw < 135.0f))
-	// 		direction = LFT;
-	// 	else if ((yaw > 225.0f) && (yaw < 315.0f))
-	// 		direction = RGT;
-	// }
-	// else if (direction == LFT)
-	// {
-	// 	if ((yaw >= 315.0f) && (yaw <= 45.0f))
-	// 		direction = LFT;
-	// 	else if ((yaw >= 135.0f) && (yaw <= 225.0f))
-	// 		direction = RGT;
-	// 	else if ((yaw > 45.0f) && (yaw < 135.0f))
-	// 		direction = FWD;
-	// 	else if ((yaw > 225.0f) && (yaw < 315.0f))
-	// 		direction = BKW;
-	// }
-	// else if (direction == RGT)
-	// {
-	// 	if ((yaw >= 315.0f) && (yaw <= 45.0f))
-	// 		direction = RGT;
-	// 	else if ((yaw >= 135.0f) && (yaw <= 225.0f))
-	// 		direction = LFT;
-	// 	else if ((yaw > 45.0f) && (yaw < 135.0f))
-	// 		direction = BKW;
-	// 	else if ((yaw > 225.0f) && (yaw < 315.0f))
-	// 		direction = FWD;
-	// }
+	if (toggleFlash == true)
+	{
+		camera.setPos(glm::vec3(this->player->getX(), 35.0f, this->player->getZ()));
+		float	yaw = camera.getYaw();
+		if (direction == FWD)
+		{
+			if ((yaw >= 315.0f) && (yaw <= 45.0f))
+				direction = FWD;
+			else if ((yaw >= 135.0f) && (yaw <= 225.0f))
+				direction = BKW;
+			else if ((yaw > 45.0f) && (yaw < 135.0f))
+				direction = RGT;
+			else if ((yaw > 225.0f) && (yaw < 315.0f))
+				direction = LFT;
+		}
+		else if (direction == BKW)
+		{
+			if ((yaw >= 315.0f) && (yaw <= 45.0f))
+				direction = BKW;
+			else if ((yaw >= 135.0f) && (yaw <= 225.0f))
+				direction = FWD;
+			else if ((yaw > 45.0f) && (yaw < 135.0f))
+				direction = LFT;
+			else if ((yaw > 225.0f) && (yaw < 315.0f))
+				direction = RGT;
+		}
+		else if (direction == LFT)
+		{
+			if ((yaw >= 315.0f) && (yaw <= 45.0f))
+				direction = LFT;
+			else if ((yaw >= 135.0f) && (yaw <= 225.0f))
+				direction = RGT;
+			else if ((yaw > 45.0f) && (yaw < 135.0f))
+				direction = FWD;
+			else if ((yaw > 225.0f) && (yaw < 315.0f))
+				direction = BKW;
+		}
+		else if (direction == RGT)
+		{
+			if ((yaw >= 315.0f) && (yaw <= 45.0f))
+				direction = RGT;
+			else if ((yaw >= 135.0f) && (yaw <= 225.0f))
+				direction = LFT;
+			else if ((yaw > 45.0f) && (yaw < 135.0f))
+				direction = BKW;
+			else if ((yaw > 225.0f) && (yaw < 315.0f))
+				direction = FWD;
+		}
+	}
 	this->player->ProcessKeyboard(direction);
 }
 
@@ -747,5 +758,9 @@ glfwMakeContextCurrent(NULL);
 mu.unlock();
 }
 
+void	World::setShader(Shader &shader)
+{
+	this->_shader = &shader;
+}
 
 Sound * World::sound = new Sound();

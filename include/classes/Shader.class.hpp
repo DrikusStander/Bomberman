@@ -6,7 +6,7 @@
 /*   By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/11 11:20:47 by cnolte            #+#    #+#             */
-/*   Updated: 2018/08/14 13:35:37 by cnolte           ###   ########.fr       */
+/*   Updated: 2018/09/20 15:33:09 by cnolte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,10 @@ class Shader
 
 		void	Use(void);
 		GLuint	getProgram(void);
+		bool	getFlashLight();
 	private:
 		GLuint	program;
+		bool	flashlight;
 };
 
 #endif

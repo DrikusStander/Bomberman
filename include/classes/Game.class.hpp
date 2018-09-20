@@ -6,7 +6,7 @@
 /*   By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/11 11:20:47 by cnolte            #+#    #+#             */
-/*   Updated: 2018/09/19 12:44:26 by cnolte           ###   ########.fr       */
+/*   Updated: 2018/09/20 12:14:17 by cnolte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,10 +87,13 @@ class Game
 		int		keyRIGHT;
 		int		keyBOMB;
 		int		keyFLASH;
+		bool	toggleFlash;
 		int		keyCHANGEVIEW;
 
 		bool 		WorldLoaded;
-		Shader		*shader;
+		Shader		*shaderNormal;
+		Shader		*shaderActive;
+		Shader		*shaderFlash;
 		void		DoMovement(void);
 		void		MoveMenu(void);
 		void		MovePause(void);

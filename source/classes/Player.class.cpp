@@ -50,7 +50,13 @@ void Player::draw(void)
 	glUniformMatrix4fv( glGetUniformLocation(this->_shader->getProgram(), "model"), 1, GL_FALSE, glm::value_ptr(model ));
 	if (this->active > 21)
 		this->active = 0;
-	this->characterModelarr[static_cast<int>(this->active)]->Draw(*this->_shader);
+	if (this->toggleFlash == false)
+		this->characterModelarr[static_cast<int>(this->active)]->Draw(*this->_shader);
+}
+
+void Player::drawBomb(void)
+{
+	
 	switch(this->bombCount)
 	{
 		case 1:
@@ -112,6 +118,7 @@ void Player::draw(void)
 	}
 	for (std::vector<Bomb*>::iterator it = this->bomb.begin() ; it != this->bomb.end(); it++)
 	{
+		(*it)->setShader(*this->_shader);
 		if ((*it)->getActive() == true)
 			(*it)->draw();
 	}
@@ -444,4 +451,9 @@ int		Player::subLife( void )
 bool Player::getInvincible( void )
 {
 	return(this->invincible);
+}
+
+void	Player::setShader(Shader &shader)
+{
+	this->_shader = &shader;
 }
