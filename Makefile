@@ -6,7 +6,7 @@
 #    By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/07/31 19:21:44 by cnolte            #+#    #+#              #
-#    Updated: 2018/09/20 19:45:17 by cnolte           ###   ########.fr        #
+#    Updated: 2018/09/20 19:48:45 by cnolte           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -47,6 +47,7 @@ endif
 	then curl -L -o "resources.zip" "https://drive.google.com/uc?export=download&id=1UNuLyEmjuZVLP6-Gy4QJE1nHdajrhRvK"; \
 	fi; \
 	unzip resources.zip; \
+	rm -rf resources.zip; \
 	fi
 	@if ! test -d ~/.brew/Library; \
 	then if ! test -s resources/install_brew.sh; \
