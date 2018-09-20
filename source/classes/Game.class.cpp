@@ -33,7 +33,7 @@ void	KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mode
 		if (action == GLFW_PRESS)
 		{
 			lastkeypressed = key;
-			std::cout << "pressed key " << key << std::endl;
+			// std::cout << "pressed key " << key << std::endl;
 			keys[key] = true;
 		}
 		else if (action == GLFW_RELEASE)
@@ -72,6 +72,8 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 {
 	std::cout << "Game - Parametric Constructor called" << std::endl;
 
+	int last_menu = 0;
+	int key_change = 0;
 	int temp22 = 2;
 	this->stage = 1;
 	lastX = 400;
@@ -155,7 +157,7 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 
 	// this->shader = &shader;
 	// Load models
-	for (int i = 0; i < 17; i++)
+	for (int i = 0; i < 25; i++)
 		this->Menus.push_back(new MainMenu(shader, "resources/models/menu/Menu_" + std::to_string(i) + ".obj"));
 
 	for (int i = 0; i < 9; i++)
@@ -191,7 +193,7 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 		if (currentFrame - old_time >= 1.0f)
 		{
 			old_time = currentFrame;
-			std::cout << "FPS: " << std::to_string(1.0f / this->deltaTime) << std::endl;
+			// std::cout << "FPS: " << std::to_string(1.0f / deltaTime) << std::endl;
 		}
 		
 		// Check and call events
@@ -311,13 +313,63 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 						soundMenuVisible = true;
 					}
 					else if (this->menuActive == 8) //Key Bindings
-						std::cout << "still busy" << std::endl;
+						this->menuActive = 17;
 					else if (this->menuActive == 5) //Back to Main Menu
 						this->menuActive = 0;
 					else if (this->menuActive == 15) //Going back to Options
 						this->menuActive = 6;
 					else if (this->menuActive == 16)
 						this->menuActive = 1;
+					//------------------------------Changing Keys----------------------------------------------
+					else if (this->menuActive == 17)//changing UP key
+					{
+						last_menu = this->menuActive;
+						key_change = 0;
+						this->menuActive = 24;
+						keys[GLFW_KEY_ENTER] = false;
+					}
+					else if (this->menuActive == 18)//changing DOWN key
+					{
+						last_menu = this->menuActive;
+						key_change = 1;
+						this->menuActive = 24;
+						keys[GLFW_KEY_ENTER] = false;
+					}
+					else if (this->menuActive == 19)//changing LEFT key
+					{
+						last_menu = this->menuActive;
+						key_change = 2;
+						this->menuActive = 24;
+						keys[GLFW_KEY_ENTER] = false;
+					}
+					else if (this->menuActive == 20)//changing RIGHT key
+					{
+						last_menu = this->menuActive;
+						key_change = 3;
+						this->menuActive = 24;
+						keys[GLFW_KEY_ENTER] = false;
+					}
+					else if (this->menuActive == 21)//changing BOMB key
+					{
+						last_menu = this->menuActive;
+						key_change = 4;
+						this->menuActive = 24;
+						keys[GLFW_KEY_ENTER] = false;
+					}
+					else if (this->menuActive == 22)//changing 1st/3rd person View key
+					{
+						last_menu = this->menuActive;
+						key_change = 5;
+						this->menuActive = 24;
+						keys[GLFW_KEY_ENTER] = false;
+					}
+					else if (this->menuActive == 23)
+					{
+						last_menu = 0;
+						key_change = 0;
+						this->menuActive = 8;
+					}
+					//---------------------------END Changing KEYS-------------------------------------------------
 					else if (this->menuActive == 9)
 					{
 						if (this->check == 1)
@@ -389,6 +441,30 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 						this->soundActive = 1;
 				}
 			}
+			//---------------------Selecting Keys---------------------------------------------------------------------------
+			else if (this->menuActive == 24)
+			{
+				if (keys[lastkeypressed])
+				{
+					if (!keys[GLFW_KEY_ENTER])
+					{
+						if (key_change == 0)
+							this->keyUP = lastkeypressed;
+						if (key_change == 1)
+							this->keyDOWN = lastkeypressed;
+						if (key_change == 2)
+							this->keyLEFT = lastkeypressed;
+						if (key_change == 3)
+							this->keyRIGHT = lastkeypressed;
+						if (key_change == 4)
+							this->keyBOMB = lastkeypressed;
+						if (key_change == 5)
+							this->keyCHANGEVIEW = lastkeypressed;
+						this->menuActive = last_menu;
+					}
+				}
+			}
+			//--------------------END Selecting Keys-------------------------------------------------------------------------
 			else if (keys[GLFW_KEY_SPACE]) // Changing volume in-game
 			{
 				if (this->soundActive >= 3 && this->soundActive <= 10)
@@ -714,7 +790,7 @@ void Game::MoveMenu(void)
 			keys[GLFW_KEY_UP] = false;
 			if (this->menuActive > 0)
 			{
-				if ((this->menuActive < 5) || (this->menuActive > 6 && this->menuActive <= 9) || (this->menuActive > 10))
+				if ((this->menuActive < 5) || (this->menuActive > 6 && this->menuActive <= 9) || (this->menuActive > 10 && this->menuActive < 16) || (this->menuActive > 17))
 					this->menuActive--;
 			}
 		}
@@ -731,6 +807,11 @@ void Game::MoveMenu(void)
 			if (this->menuActive >= 10)
 			{
 				if (this->menuActive < 15)
+					this->menuActive++;
+			}
+			if (this->menuActive >= 17)
+			{
+				if (this->menuActive < 23)
 					this->menuActive++;
 			}
 		}
@@ -770,18 +851,20 @@ void	Game::DoMovement(void)
 
 	// Player controls
 	if (keys[this->keyUP])
+	{
 		this->world->ProcessKeyboard(FWD, camera, this->toggleFlash);
-	else if (keys[GLFW_KEY_DOWN])
+	}
+	else if (keys[this->keyDOWN])
 		this->world->ProcessKeyboard(BKW, camera, this->toggleFlash);
-	else if (keys[GLFW_KEY_LEFT])
+	else if (keys[this->keyLEFT])
 		this->world->ProcessKeyboard(LFT, camera, this->toggleFlash);
-	else if (keys[GLFW_KEY_RIGHT])
+	else if (keys[this->keyRIGHT])
 		this->world->ProcessKeyboard(RGT, camera, this->toggleFlash);
 
 	// Plant a bomb
 	if (keys[this->keyBOMB])
 	{
-		keys[GLFW_KEY_SPACE] = false;
+		keys[this->keyBOMB] = false;
 		this->world->ProcessKeyboard(SPC, camera, this->toggleFlash);
 	}
 	else if (keys[GLFW_KEY_ESCAPE])
