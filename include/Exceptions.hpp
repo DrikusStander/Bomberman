@@ -6,7 +6,7 @@
 /*   By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/16 16:21:59 by cnolte            #+#    #+#             */
-/*   Updated: 2018/09/14 11:43:53 by cnolte           ###   ########.fr       */
+/*   Updated: 2018/09/20 20:09:31 by cnolte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,50 +34,6 @@ namespace Exceptions
 		public:
 			const char	*what(void) const throw();
 	};
-
-	// class ArgumentSizeOutOfRange: public std::exception
-	// {
-	// 	public:
-	// 		const char	*what(void) const throw();
-	// };
-
-	// class LibraryDoesNotExist: public std::exception
-	// {
-	// 	private:
-	// 		std::string _filename;
-	// 	public:
-	// 		virtual const char* what() const throw();
-	// 	LibraryDoesNotExist(const std::string filename)
-	// 	{
-	// 		_filename = filename;
-	// 	}
-	// };
-
-	// class InvalidLibrary: public std::exception
-	// {
-	// 	private:
-	// 		std::string _argument;
-	// 	public:
-	// 		virtual const char* what() const throw();
-	// 	InvalidLibrary(const std::string argument)
-	// 	{
-	// 		_argument = argument;
-	// 	}
-	// };
-
-	// class LibraryFunctionDoesNotExist: public std::exception
-	// {
-	// 	private:
-	// 		std::string _functionName;
-	// 		std::string _dlerror;
-	// 	public:
-	// 		virtual const char* what() const throw();
-	// 	LibraryFunctionDoesNotExist(const std::string functionName, const std::string dlerror)
-	// 	{
-	// 		_functionName = functionName;
-	// 		_dlerror = dlerror;
-	// 	}
-	// };
 };
 
 #endif

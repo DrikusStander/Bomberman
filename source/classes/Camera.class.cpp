@@ -6,7 +6,7 @@
 /*   By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/11 11:26:34 by cnolte            #+#    #+#             */
-/*   Updated: 2018/09/20 13:09:34 by cnolte           ###   ########.fr       */
+/*   Updated: 2018/09/20 18:51:24 by cnolte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -207,4 +207,16 @@ glm::vec3	Camera::getPosition(void) const
 glm::vec3	Camera::getFront(void) const
 {
 	return (this->front);
+}
+
+void		Camera::resetPitch(void)
+{
+	this->pitch = PITCH;
+	this->updateCameraVectors();
+}
+
+void		Camera::setYaw(GLfloat yaw)
+{
+	this->yaw = yaw;
+	this->updateCameraVectors();
 }

@@ -182,6 +182,7 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 			{
 				this->shaderActive = this->shaderFlash;
 				this->placeSpotLight();
+				// camera.ProcessMouseMovement(0, 0);
 			}
 			else
 			{
@@ -873,7 +874,29 @@ void	Game::DoMovement(void)
 		if (this->toggleFlash == true)
 			this->toggleFlash = false;
 		else if (this->toggleFlash == false)
+		{
 			this->toggleFlash = true;
+			camera.resetPitch();
+			switch (this->world->getDirLast())
+			{
+				case FWD:
+					camera.setYaw(-90.0f);
+					break ;
+				case RGT:
+					camera.setYaw(0.0f);
+					break ;
+				case BKW:
+					camera.setYaw(90.0f);
+					break ;
+				case LFT:
+					camera.setYaw(180.0f);
+					break ;
+				default:
+					camera.setYaw(-90.0f);
+					break ;
+			}
+			this->world->moveCameraFp(camera);
+		}
 	}
 	usleep(10000);
 }

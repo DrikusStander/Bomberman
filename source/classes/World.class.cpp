@@ -32,6 +32,8 @@ World::World(Shader &shader, std::string model, float screen_x, float screen_y, 
 	this->portalActive = false;
 	this->player = new Player(shader, "resources/models/player/player_run_");
 	this->player->setMap(this->map);
+	this->dirPlayer = FWD;
+
 	this->lives = this->player->getLives();
 	glfwMakeContextCurrent(NULL);
 	mu.unlock();
@@ -501,6 +503,7 @@ World const & World::operator=(World const & rhs)
 void World::draw(Camera &camera, const GLfloat glfwTime)
 {
 	this->player->setMap(this->map);
+	this->dirPlayer = this->player->getDirLast();
 	glm::mat4 model(1);
 	model = glm::translate( model, glm::vec3(this->x_trans, this->y_trans, this->z_trans)); 	// Translate it down a bit so it's at the center of the scene
 	model = glm::scale( model, glm::vec3(0.2f, 0.2f, 0.2f));									// It's a bit too big for our scene, so scale it down
@@ -697,11 +700,16 @@ void World::draw(Camera &camera, const GLfloat glfwTime)
 	}
 }
 
+void	World::moveCameraFp(Camera &camera)
+{
+	camera.setPos(glm::vec3(this->player->getX(), 35.0f, this->player->getZ()));
+}
+
 void	World::ProcessKeyboard(Direction direction, Camera &camera, bool toggleFlash)
 {
 	if (toggleFlash == true)
 	{
-		camera.setPos(glm::vec3(this->player->getX(), 35.0f, this->player->getZ()));
+		this->moveCameraFp(camera);
 		float	yaw = camera.getYaw();
 		if (direction == FWD)
 		{
@@ -942,11 +950,6 @@ void	World::saveWorld()
 	file.close();
 }
 
-int		World::getStage( void )
-{
-	return(this->stage);
-}
-
 Sound * World::sound = new Sound();
 
 std::string trim(std::string &str)
@@ -971,4 +974,14 @@ std::vector<std::string>	strsplit(std::string &line, char delem)
 		}
 	}
 	return (words);
+}
+
+int		World::getStage( void )
+{
+	return(this->stage);
+}
+
+Direction	World::getDirLast(void)
+{
+	return (this->dirPlayer);
 }

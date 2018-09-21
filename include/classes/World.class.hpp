@@ -66,6 +66,7 @@ class World
 		int						enemyCount;
 		int						timeSinceNewFrame;
 		int						stage;
+		Direction				dirPlayer;
 
 	public:
 		World(Shader &shader, std::string model, float screen_x, float screen_y, GLFWwindow	*window);
@@ -86,6 +87,8 @@ class World
 		void	loadStage( int stage );
 		void	saveWorld( void );
 		int		getStage( void );
+		void	moveCameraFp(Camera &camera);
+		Direction	getDirLast(void);
 		static Sound			*sound;
 
 };
