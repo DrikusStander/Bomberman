@@ -1184,8 +1184,11 @@ void	Game::readConfig(void)
 
 void	Game::menuIsVisible( void )
 {
-	camera.moveCamForMenu();
-	camera.ProcessMouseMovement(0, -250);
+	if (this->debug == false)
+	{
+		camera.moveCamForMenu();
+		camera.ProcessMouseMovement(0, -250);
+	}
 	if (this->soundMenuVisible == true)
 	{
 		this->soundMenu[this->soundActive]->draw();
@@ -1259,9 +1262,9 @@ void	Game::menuIsVisible( void )
 				this->menuActive = 10;
 			else if (this->menuActive == 7) //Sound
 			{
-				menuVisible = false;
+				this->menuVisible = false;
 				this->soundActive = 0;
-				soundMenuVisible = true;
+				this->soundMenuVisible = true;
 			}
 			else if (this->menuActive == 8) //Key Bindings
 				this->menuActive = 17;
@@ -1274,28 +1277,28 @@ void	Game::menuIsVisible( void )
 			//------------------------------Changing Keys----------------------------------------------
 			else if (this->menuActive == 17)//changing UP key
 			{
-				last_menu = this->menuActive;
+				this->last_menu = this->menuActive;
 				this->key_change = 0;
 				this->menuActive = 24;
 				keys[GLFW_KEY_ENTER] = false;
 			}
 			else if (this->menuActive == 18)//changing DOWN key
 			{
-				last_menu = this->menuActive;
+				this->last_menu = this->menuActive;
 				this->key_change = 1;
 				this->menuActive = 24;
 				keys[GLFW_KEY_ENTER] = false;
 			}
 			else if (this->menuActive == 19)//changing LEFT key
 			{
-				last_menu = this->menuActive;
+				this->last_menu = this->menuActive;
 				this->key_change = 2;
 				this->menuActive = 24;
 				keys[GLFW_KEY_ENTER] = false;
 			}
 			else if (this->menuActive == 20)//changing RIGHT key
 			{
-				last_menu = this->menuActive;
+				this->last_menu = this->menuActive;
 				this->key_change = 3;
 				this->menuActive = 24;
 				keys[GLFW_KEY_ENTER] = false;
@@ -1309,14 +1312,14 @@ void	Game::menuIsVisible( void )
 			}
 			else if (this->menuActive == 22)//changing 1st/3rd person View key
 			{
-				last_menu = this->menuActive;
+				this->last_menu = this->menuActive;
 				this->key_change = 5;
 				this->menuActive = 24;
 				keys[GLFW_KEY_ENTER] = false;
 			}
 			else if (this->menuActive == 23)
 			{
-				last_menu = 0;
+				this->last_menu = 0;
 				this->key_change = 0;
 				this->menuActive = 8;
 			}
@@ -1327,7 +1330,7 @@ void	Game::menuIsVisible( void )
 				{
 					this->menuVisible = false;
 					this->pauseVisible = true;
-					check = 0;
+					this->check = 0;
 					this->pauseActive = 3;
 				}
 				else
@@ -1357,14 +1360,14 @@ void	Game::menuIsVisible( void )
 			}
 			else if (this->menuActive == 13) //Window Mode
 			{
-				glfwSetWindowMonitor(window, nullptr, 0, 0, this->screen_x, this->screen_y, GLFW_DONT_CARE);
+				glfwSetWindowMonitor(window, nullptr, 100, 100, this->screen_x, this->screen_y, GLFW_DONT_CARE);
 				keys[GLFW_KEY_ENTER] = true;
 			}
 			else if (this->menuActive == 14) //Full Screen Mode 
 			{
 				if (glfwGetWindowMonitor(window) == nullptr)
 					this->fullScreenItteration = 0;
-				if (this->fullScreenItteration < 2)
+				if (this->fullScreenItteration < 3)
 				{
 					GLFWmonitor *monitor = glfwGetPrimaryMonitor();
 					const GLFWvidmode *mode = glfwGetVideoMode(monitor);
