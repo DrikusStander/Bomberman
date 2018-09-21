@@ -6,7 +6,7 @@
 /*   By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/11 11:26:34 by cnolte            #+#    #+#             */
-/*   Updated: 2018/09/21 13:20:25 by cnolte           ###   ########.fr       */
+/*   Updated: 2018/09/21 19:19:50 by cnolte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,34 +76,22 @@ void	Camera::ProcessKeyboard( Camera_Movement direction, GLfloat deltaTime )
 	GLfloat	velocity = this->movementSpeed * deltaTime;
 	
 	if (direction == UP)
-	{
 		this->position += this->front * velocity;
-	}
 
 	if (direction == DOWN)
-	{
 		this->position -= this->front * velocity;
-	}
 
 	if (direction == FORWARD)
-	{
 		this->position += this->up * velocity;
-	}
 
 	if (direction == BACKWARD)
-	{
 		this->position -= this->up * velocity;
-	}
 
 	if (direction == LEFT)
-	{
 		this->position -= this->right * velocity;
-	}
 	
 	if (direction == RIGHT)
-	{
 		this->position += this->right * velocity;
-	}
 }
 
 GLfloat	Camera::GetZoom(void)
@@ -114,29 +102,29 @@ GLfloat	Camera::GetZoom(void)
 // Processes input received from a mouse input system. Expects the offset value in both the x and y direction.
 void	Camera::ProcessMouseMovement(GLfloat xOffset, GLfloat yOffset)
 {
-	GLboolean constrainPitch = true;
-	xOffset *= this->mouseSensitivity;
-	yOffset *= this->mouseSensitivity;
+		GLboolean constrainPitch = true;
+		xOffset *= this->mouseSensitivity;
+		yOffset *= this->mouseSensitivity;
 
-	this->yaw += xOffset;
-	this->pitch += yOffset;
+		this->yaw += xOffset;
+		this->pitch += yOffset;
 
-	// Make sure that when pitch is out of bounds, screen doesn't get flipped
-	if (constrainPitch)
-	{
-		if (this->pitch > 89.0f)
+		// Make sure that when pitch is out of bounds, screen doesn't get flipped
+		if (constrainPitch)
 		{
-			this->pitch = 89.0f;
-		}
+			if (this->pitch > 89.0f)
+			{
+				this->pitch = 89.0f;
+			}
 
-		if (this->pitch < -89.0f)
-		{
-			this->pitch = -89.0f;
+			if (this->pitch < -89.0f)
+			{
+				this->pitch = -89.0f;
+			}
 		}
-	}
-
-	// Update Front, Right and Up Vectors using the updated Eular angles
-	this->updateCameraVectors( );
+	
+		// Update Front, Right and Up Vectors using the updated Eular angles
+		this->updateCameraVectors( );
 }
 
 // Calculates the front vector from the Camera's (updated) Eular Angles
@@ -178,21 +166,11 @@ GLfloat	Camera::getYaw(void)
 {
 	float	dir = this->yaw + 90;
 	if (dir > 360.0f)
-	{
-		std::cout << "1" << std::endl;
 		return (fmod(dir, 360.0f));
-	}
 	else if ((dir < 0.0f) && (dir > -360.0f))
-	{
-		std::cout << "2" << std::endl;
 		return (360.0f - (-dir));
-	}
 	else if (dir < -360.0f)
-	{
-		std::cout << "3" << std::endl;
 		return (360.0f + fmod(dir, -360.0f));
-	}
-	std::cout << "end" << std::endl;
 	return (dir);
 }
 
