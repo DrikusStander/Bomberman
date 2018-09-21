@@ -6,7 +6,7 @@
 /*   By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/11 11:20:47 by cnolte            #+#    #+#             */
-/*   Updated: 2018/09/21 15:36:36 by cnolte           ###   ########.fr       */
+/*   Updated: 2018/09/21 19:38:58 by cnolte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,8 @@ class Game
 		float	volMusic;
 		float	volEffect;
 		bool	debug;
+		int		last_menu;
+		int		fullScreenItteration;
 
 		bool 		WorldLoaded;
 		Shader		*shaderNormal;
@@ -112,6 +114,10 @@ class Game
 		inline bool exist(const std::string& name);
 		GLFWwindow	*window;
 		glm::mat4	projection;
+		void		menuIsVisible( void );
+		void		loadIsVisible( void );
+		void		pauseIsVisible( void );
+
 
 };
 void 	createWorld(Game *game);
