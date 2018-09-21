@@ -107,7 +107,7 @@ void	HUD::drawNumbers(glm::mat4 matCamera)
 void	HUD::draw(Camera &camera, const int time, const int score, const int lives)
 {
 	this->_shader.Use();
-	// glUniformMatrix4fv(glGetUniformLocation(this->_shader.getProgram(), "view"), 1, GL_FALSE, glm::value_ptr(camera.GetViewMatrix()));
+	glUniformMatrix4fv(glGetUniformLocation(this->_shader.getProgram(), "view"), 1, GL_FALSE, glm::value_ptr(camera.GetViewMatrix()));
 	this->time = time;
 	this->score = score;
 	this->lives = lives;

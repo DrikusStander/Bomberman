@@ -983,13 +983,13 @@ void	Game::placeSpotLight(void)
 {
 	glUniform3f(glGetUniformLocation(this->shaderFlash->getProgram(), "spotLight.position"), camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
 	glUniform3f(glGetUniformLocation(this->shaderFlash->getProgram(), "spotLight.direction"), camera.getFront().x, camera.getFront().y, camera.getFront().z);
-	glUniform3f(glGetUniformLocation(this->shaderFlash->getProgram(), "spotLight.ambient"), 0.0f, 0.0f, 0.0f);
+	glUniform3f(glGetUniformLocation(this->shaderFlash->getProgram(), "spotLight.ambient"), 0.1f, 0.1f, 0.1f);
 	glUniform3f(glGetUniformLocation(this->shaderFlash->getProgram(), "spotLight.diffuse"), 1.0f, 1.0f, 1.0f);
 	glUniform3f(glGetUniformLocation(this->shaderFlash->getProgram(), "spotLight.specular"), 1.0f, 1.0f, 1.0f);
 	glUniform1f(glGetUniformLocation(this->shaderFlash->getProgram(), "spotLight.constant"), 1.0f);
-	glUniform1f(glGetUniformLocation(this->shaderFlash->getProgram(), "spotLight.linear"), 0.0009f);
-	glUniform1f(glGetUniformLocation(this->shaderFlash->getProgram(), "spotLight.quadratic"), 0.00032f);
-	glUniform1f(glGetUniformLocation(this->shaderFlash->getProgram(), "spotLight.cutOff"), glm::cos(glm::radians(25.0f)));
+	glUniform1f(glGetUniformLocation(this->shaderFlash->getProgram(), "spotLight.linear"), 0.00009f);
+	glUniform1f(glGetUniformLocation(this->shaderFlash->getProgram(), "spotLight.quadratic"), 0.000092f);
+	glUniform1f(glGetUniformLocation(this->shaderFlash->getProgram(), "spotLight.cutOff"), glm::cos(glm::radians(23.0f)));
 	glUniform1f(glGetUniformLocation(this->shaderFlash->getProgram(), "spotLight.outerCutOff"), glm::cos(glm::radians(27.0f)));
 }
 
