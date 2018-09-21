@@ -145,7 +145,7 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 	this->shaderFlash = &shaderFlash;
 	this->shaderActive = this->shaderNormal;
 	// Load models
-	for (int i = 0; i < 25; i++)
+	for (int i = 0; i < 26; i++)
 		this->Menus.push_back(new MainMenu(shader, "resources/models/menu/Menu_" + std::to_string(i) + ".obj"));
 	for (int i = 0; i < 9; i++)
 		this->load.push_back(new LoadingScreen((*this->shaderNormal), "resources/models/menu/LoadingScreen/Loading_screen_" + std::to_string(i) + ".obj"));
@@ -191,8 +191,8 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 			}
 			else
 			{
-				camera.moveCamForMenu();
-				camera.ProcessMouseMovement(0, -250);
+				// camera.moveCamForMenu();
+				// camera.ProcessMouseMovement(0, -250);
 				this->shaderActive = this->shaderNormal;
 			}
 		}
@@ -397,9 +397,28 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 				else if (this->soundMenuVisible == true)
 				{
 					if (this->soundActive == 0)
-						this->soundActive = 3;
+					{
+						if (this->volMusic == 0.0f)
+							this->soundActive = 3;
+						else if (this->volMusic == 0.2f)
+							this->soundActive = 4;
+						else if (this->volMusic == 0.5f)
+							this->soundActive = 5;
+						else if(this->volMusic == 1.0f)
+							this->soundActive = 6;
+
+					}
 					else if (this->soundActive == 1)
-						this->soundActive = 7;
+					{
+						if (this->volEffect == 0.0f)
+							this->soundActive = 7;
+						else if (this->volEffect == 0.2f)
+							this->soundActive = 8;
+						else if (this->volEffect == 0.5f)
+							this->soundActive = 9;
+						else if (this->volEffect == 1.0f)
+							this->soundActive = 10;
+					}
 					else if (this->soundActive == 2)
 					{
 						this->menuActive = 7;
@@ -413,8 +432,13 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 				}
 			}
 			//---------------------Selecting Keys---------------------------------------------------------------------------
-			else if (this->menuActive == 24)
+			else if (this->menuActive == 24 || this->menuActive == 25)
 			{
+				if (this->menuActive == 25)
+				{
+					usleep(1000000);
+					this->menuActive = last_menu;
+				}
 				if (keys[lastkeypressed])
 				{
 					if (!(keys[GLFW_KEY_ENTER] && keys[GLFW_KEY_ESCAPE]))
@@ -422,42 +446,64 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 						tempKEY = lastkeypressed;
 						if (this->key_change == 0)
 						{
-							if ((tempKEY != this->keyDOWN) && (tempKEY != this->keyLEFT) && (tempKEY != this->keyRIGHT) && (tempKEY != this->keyBOMB))
+							if ((tempKEY != this->keyDOWN) && (tempKEY != this->keyLEFT) && (tempKEY != this->keyRIGHT) && (tempKEY != this->keyBOMB) && (tempKEY != this->keyFLASH))
+							{
 								this->keyUP = tempKEY;
+								this->menuActive = last_menu;
+							}
 							else
-								std::cout << "key is already assigned" << std::endl;
+								this->menuActive = 25;
 						}
 						if (this->key_change == 1)
 						{
-							if ((tempKEY != this->keyUP) && (tempKEY != this->keyLEFT) && (tempKEY != this->keyRIGHT) && (tempKEY != this->keyBOMB))
+							if ((tempKEY != this->keyUP) && (tempKEY != this->keyLEFT) && (tempKEY != this->keyRIGHT) && (tempKEY != this->keyBOMB) && (tempKEY != this->keyFLASH))
+							{
 								this->keyDOWN = tempKEY;
+								this->menuActive = last_menu;
+							}
 							else
-								std::cout << "key is already assigned" << std::endl;
+								this->menuActive = 25;
 						}
 						if (this->key_change == 2)
 						{
-							if ((tempKEY != this->keyUP) && (tempKEY != this->keyDOWN) && (tempKEY != this->keyRIGHT) && (tempKEY != this->keyBOMB))
+							if ((tempKEY != this->keyUP) && (tempKEY != this->keyDOWN) && (tempKEY != this->keyRIGHT) && (tempKEY != this->keyBOMB) && (tempKEY != this->keyFLASH))
+							{
 								this->keyLEFT = tempKEY;
+								this->menuActive = last_menu;
+							}
 							else
-								std::cout << "key is already assigned" << std::endl;
+								this->menuActive = 25;
 						}
 						if (this->key_change == 3)
 						{
-							if ((tempKEY != this->keyUP) && (tempKEY != this->keyDOWN) && (tempKEY != this->keyLEFT) && (tempKEY != this->keyBOMB))
+							if ((tempKEY != this->keyUP) && (tempKEY != this->keyDOWN) && (tempKEY != this->keyLEFT) && (tempKEY != this->keyBOMB) && (tempKEY != this->keyFLASH))
+							{
 								this->keyRIGHT = tempKEY;
+								this->menuActive = last_menu;
+							}
 							else
-								std::cout << "key is already assigned" << std::endl;
+								this->menuActive = 25;
 						}
 						if (this->key_change == 4)
 						{
-							if ((tempKEY != this->keyUP) && (tempKEY != this->keyDOWN) && (tempKEY != this->keyLEFT) && (tempKEY != this->keyRIGHT))
+							if ((tempKEY != this->keyUP) && (tempKEY != this->keyDOWN) && (tempKEY != this->keyLEFT) && (tempKEY != this->keyRIGHT) && (tempKEY != this->keyFLASH))
+							{
 								this->keyBOMB = tempKEY;
+								this->menuActive = last_menu;
+							}
 							else
-								std::cout << "key is already assigned" << std::endl;
+								this->menuActive = 25;
 						}
-						// if (this->key_change == 5)
-						// 	this->keyCHANGEVIEW = tempKEY;
-						this->menuActive = last_menu;
+						if (this->key_change == 5)
+						{
+							if ((tempKEY != this->keyUP) && (tempKEY != this->keyDOWN) && (tempKEY != this->keyLEFT) && (tempKEY != this->keyRIGHT) && (tempKEY != this->keyBOMB))
+							{
+								this->keyFLASH = tempKEY;
+								this->menuActive = last_menu;
+							}
+							else
+								this->menuActive = 25;
+						}
 						this->writeConfig();
 					}
 				}
@@ -782,7 +828,7 @@ void Game::MoveSoundMenu(void)
 void Game::MoveMenu(void)
 {
 	// Menu controls
-	if (this->menuActive != 5 || this->menuActive != 16)
+	if (this->menuActive != 5 || this->menuActive != 16 || this->menuActive != 25)
 	{
 		if (keys[GLFW_KEY_UP])
 		{
@@ -837,23 +883,22 @@ void Game::MoveMenu(void)
 void	Game::DoMovement(void)
 {
 	// Camera controls
-	if (keys[GLFW_KEY_Q])
-		camera.ProcessKeyboard(UP, this->deltaTime);
-	else if (keys[GLFW_KEY_E])
-		camera.ProcessKeyboard(DOWN, this->deltaTime);
-	else if (keys[GLFW_KEY_W])
-		camera.ProcessKeyboard(FORWARD, this->deltaTime);
-	else if (keys[GLFW_KEY_S])
-		camera.ProcessKeyboard(BACKWARD, this->deltaTime);
-	else if (keys[GLFW_KEY_A])
-		camera.ProcessKeyboard(LEFT, this->deltaTime);
-	else if (keys[GLFW_KEY_D] )
-		camera.ProcessKeyboard(RIGHT, this->deltaTime);
+	// if (keys[GLFW_KEY_Q])
+	// 	camera.ProcessKeyboard(UP, this->deltaTime);
+	// else if (keys[GLFW_KEY_E])
+	// 	camera.ProcessKeyboard(DOWN, this->deltaTime);
+	// else if (keys[GLFW_KEY_W])
+	// 	camera.ProcessKeyboard(FORWARD, this->deltaTime);
+	// else if (keys[GLFW_KEY_S])
+	// 	camera.ProcessKeyboard(BACKWARD, this->deltaTime);
+	// else if (keys[GLFW_KEY_A])
+	// 	camera.ProcessKeyboard(LEFT, this->deltaTime);
+	// else if (keys[GLFW_KEY_D] )
+	// 	camera.ProcessKeyboard(RIGHT, this->deltaTime);
+
 	// Player controls
 	if (keys[this->keyUP])
-	{
 		this->world->ProcessKeyboard(FWD, camera, this->toggleFlash);
-	}
 	else if (keys[this->keyDOWN])
 		this->world->ProcessKeyboard(BKW, camera, this->toggleFlash);
 	else if (keys[this->keyLEFT])
@@ -943,13 +988,13 @@ void	Game::placeSpotLight(void)
 {
 	glUniform3f(glGetUniformLocation(this->shaderFlash->getProgram(), "spotLight.position"), camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
 	glUniform3f(glGetUniformLocation(this->shaderFlash->getProgram(), "spotLight.direction"), camera.getFront().x, camera.getFront().y, camera.getFront().z);
-	glUniform3f(glGetUniformLocation(this->shaderFlash->getProgram(), "spotLight.ambient"), 0.0f, 0.0f, 0.0f);
+	glUniform3f(glGetUniformLocation(this->shaderFlash->getProgram(), "spotLight.ambient"), 0.1f, 0.1f, 0.1f);
 	glUniform3f(glGetUniformLocation(this->shaderFlash->getProgram(), "spotLight.diffuse"), 1.0f, 1.0f, 1.0f);
 	glUniform3f(glGetUniformLocation(this->shaderFlash->getProgram(), "spotLight.specular"), 1.0f, 1.0f, 1.0f);
 	glUniform1f(glGetUniformLocation(this->shaderFlash->getProgram(), "spotLight.constant"), 1.0f);
-	glUniform1f(glGetUniformLocation(this->shaderFlash->getProgram(), "spotLight.linear"), 0.0009f);
-	glUniform1f(glGetUniformLocation(this->shaderFlash->getProgram(), "spotLight.quadratic"), 0.00032f);
-	glUniform1f(glGetUniformLocation(this->shaderFlash->getProgram(), "spotLight.cutOff"), glm::cos(glm::radians(25.0f)));
+	glUniform1f(glGetUniformLocation(this->shaderFlash->getProgram(), "spotLight.linear"), 0.00009f);
+	glUniform1f(glGetUniformLocation(this->shaderFlash->getProgram(), "spotLight.quadratic"), 0.000092f);
+	glUniform1f(glGetUniformLocation(this->shaderFlash->getProgram(), "spotLight.cutOff"), glm::cos(glm::radians(23.0f)));
 	glUniform1f(glGetUniformLocation(this->shaderFlash->getProgram(), "spotLight.outerCutOff"), glm::cos(glm::radians(27.0f)));
 }
 

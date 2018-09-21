@@ -6,7 +6,7 @@
 /*   By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/11 11:20:47 by cnolte            #+#    #+#             */
-/*   Updated: 2018/09/20 18:50:14 by cnolte           ###   ########.fr       */
+/*   Updated: 2018/09/21 13:01:25 by cnolte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ class Camera
 		glm::vec3	getFront(void) const;
 		void		resetPitch(void);
 		void		setYaw(GLfloat pitch);
+		void		set2Dview(const float posX, const float posZ);
 
 	private:
 		 // Camera Attributes
