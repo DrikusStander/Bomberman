@@ -6,7 +6,7 @@
 #    By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/07/31 19:21:44 by cnolte            #+#    #+#              #
-#    Updated: 2018/09/20 19:48:45 by cnolte           ###   ########.fr        #
+#    Updated: 2018/09/21 11:20:58 by cnolte           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,6 +35,8 @@ $(NAME): $(OBJS)
 	mv resources/SOIL2/libSOIL2.a .
 	@$(CXX) $(OBJS) -o $@ -L ~/.brew/lib -lGLEW -lGLFW -lassimp -framework OpenGL -L . -L resources/Sound/lib -lSOIL2 -framework CoreFoundation -lIrrKlang
 	@echo [INFO] $@ "compiled successfully."
+
+all: $(NAME)
 
 install_dependencies:
 ifneq ($(DYLD_LIBRARY_PATH),$(ROOT_DIR)/resources/Sound/lib)
@@ -72,8 +74,6 @@ endif
 	fi
 	$(MAKE) -C . all
 
-all: $(NAME)
-
 clean:
 	@rm -f $(OBJS)
 	@echo "[INFO] Objects removed!"
@@ -81,10 +81,9 @@ clean:
 fclean: clean
 	@rm -rf libSOIL2.a
 	@rm -rf $(NAME)
-	@rm -rf resources
-	@rm -rf resources.zip
+	@rm -fr resources
 	@echo "[INFO] $(NAME) removed!"
 
-re: fclean all
+re: fclean install_dependencies
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re 
