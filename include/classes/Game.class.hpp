@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Game.class.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dwilliam <dwilliam@42.fr>                  +#+  +:+       +#+        */
+/*   By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/11 11:20:47 by cnolte            #+#    #+#             */
-/*   Updated: 2018/09/20 18:34:13 by dwilliam         ###   ########.fr       */
+/*   Updated: 2018/09/21 15:36:36 by cnolte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ class Game
 	public:
 		//start canonical form
 		Game(void);
-		Game(const int width, const int height);
+		Game(const int width, const int height, const bool debug);
 		Game(Game const & src);
 		~Game(void);
 
@@ -98,6 +98,7 @@ class Game
 		int		key_change;
 		float	volMusic;
 		float	volEffect;
+		bool	debug;
 
 		bool 		WorldLoaded;
 		Shader		*shaderNormal;

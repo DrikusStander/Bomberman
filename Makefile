@@ -6,7 +6,7 @@
 #    By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/07/31 19:21:44 by cnolte            #+#    #+#              #
-#    Updated: 2018/09/21 11:20:58 by cnolte           ###   ########.fr        #
+#    Updated: 2018/09/21 16:37:38 by cnolte           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -81,7 +81,7 @@ clean:
 fclean: clean
 	@rm -rf libSOIL2.a
 	@rm -rf $(NAME)
-	@rm -fr resources
+	@rm -rf resources
 	@echo "[INFO] $(NAME) removed!"
 
 re: fclean install_dependencies

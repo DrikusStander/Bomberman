@@ -1,9 +1,10 @@
 #include "World.class.hpp"
 std::mutex mu;
 
-World::World(Shader &shader, std::string model, float screen_x, float screen_y, GLFWwindow	*window)
+World::World(Shader &shader, std::string model, float screen_x, float screen_y, GLFWwindow	*window, const bool debug)
 {
-	std::cout << "World - Parametric Constructor called " << std::endl;
+	// std::cout << "World - Parametric Constructor called " << std::endl;
+	this->debug = debug;
 	mu.lock();
 	glfwMakeContextCurrent(window);
 	this->WorldModel =  new Model(model);
@@ -179,8 +180,9 @@ World::World(Shader &shader, std::string model, float screen_x, float screen_y, 
 }
 
 // load saved game constructor
-World::World(Shader &shader, std::string model, float screen_x, float screen_y, GLFWwindow	*window, std::string savedGame)
+World::World(Shader &shader, std::string model, float screen_x, float screen_y, GLFWwindow	*window, std::string savedGame, const bool debug)
 {
+	this->debug = debug;
 	mu.lock();
 	glfwMakeContextCurrent(window);
 	this->WorldModel =  new Model(model);
@@ -221,7 +223,6 @@ World::World(Shader &shader, std::string model, float screen_x, float screen_y, 
 	tokens = strsplit(line, ' ');
 	if (tokens[0] == "time:")
 		std::istringstream(tokens[1]) >> this->time;
-	std::cout << "time: " << this->time << std::endl ;
 	tokens.clear();
 	timeSinceNewFrame = 0.0f;
 	this->wallCount = 0;
@@ -541,7 +542,7 @@ void World::draw(Camera &camera, const GLfloat glfwTime)
 		powerup->setShader(*this->_shader);
 		powerup->draw();
 	}
-	if (this->_shader->getFlashLight() == false)
+	if ((this->_shader->getFlashLight() == false) && this->debug == false)
 		camera.set2Dview(this->player->getX(), this->player->getZ());
 	//check what items the bomb affected
 	for (int i = 0; i < 17; i++)
@@ -555,6 +556,8 @@ void World::draw(Camera &camera, const GLfloat glfwTime)
 				{
 					this->lives = this->player->subLife();
 					this->player->setPos(-168, -168, 0, 0);
+					if ((this->_shader->getFlashLight() == true) && this->debug == false)
+						this->moveCameraFp(camera);
 					if (this->player->getLives() == 0)
 						this->worldStatus = 1;
 				}
@@ -711,7 +714,8 @@ void	World::ProcessKeyboard(Direction direction, Camera &camera, bool toggleFlas
 {
 	if (toggleFlash == true)
 	{
-		this->moveCameraFp(camera);
+		if (this->debug == false)
+			this->moveCameraFp(camera);
 		float	yaw = camera.getYaw();
 		if (direction == FWD)
 		{

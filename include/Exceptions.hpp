@@ -6,7 +6,7 @@
 /*   By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/16 16:21:59 by cnolte            #+#    #+#             */
-/*   Updated: 2018/09/20 20:09:31 by cnolte           ###   ########.fr       */
+/*   Updated: 2018/09/21 15:34:11 by cnolte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,18 @@ namespace Exceptions
 	};
 
 	class InitializeSoundEngineFailed: public std::exception
+	{
+		public:
+			const char	*what(void) const throw();
+	};
+
+	class TooManyArguments: public std::exception
+	{
+		public:
+			const char	*what(void) const throw();
+	};
+
+	class InvalidArguments: public std::exception
 	{
 		public:
 			const char	*what(void) const throw();
