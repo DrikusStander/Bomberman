@@ -60,6 +60,10 @@ class Game
 		void 	createWorld2( void);
 		void 	loadStage1(void );
 		void 	loadGame1(void );
+		void	writeConfig(void);
+		void	readConfig(void);
+
+
 		// static void 	createWorld( Game *game);
 
 	private:
@@ -92,6 +96,8 @@ class Game
 		int		keyCHANGEVIEW;
 		int		stage;
 		int		key_change;
+		float	volMusic;
+		float	volEffect;
 
 		bool 		WorldLoaded;
 		Shader		*shaderNormal;

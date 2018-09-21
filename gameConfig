@@ -1,0 +1,10 @@
+volMusic: 0.5
+volEffect: 0.2
+keyUp: 87
+keyDown: 83
+keyLeft: 65
+keyRight: 68
+keyBomb: 32
+keyFlash: 70
+screenX: 1920
+screenY: 1080

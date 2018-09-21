@@ -84,12 +84,19 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 	this->pauseActive = 0;
 	this->check = 0;
 	this->key_change = 0;
-	this->keyUP = GLFW_KEY_UP;
-	this->keyDOWN = GLFW_KEY_DOWN;
-	this->keyLEFT = GLFW_KEY_LEFT;
-	this->keyRIGHT = GLFW_KEY_RIGHT;
-	this->keyBOMB = GLFW_KEY_SPACE;
-	this->keyFLASH = GLFW_KEY_F;
+	
+	// Defualt config
+	// this->keyUP = GLFW_KEY_UP;
+	// this->keyDOWN = GLFW_KEY_DOWN;
+	// this->keyLEFT = GLFW_KEY_LEFT;
+	// this->keyRIGHT = GLFW_KEY_RIGHT;
+	// this->keyBOMB = GLFW_KEY_SPACE;
+	// this->keyFLASH = GLFW_KEY_F;
+	// this->volMusic = 0.2;
+	// this->volEffect = 0.2;
+
+	this->readConfig();
+
 	camera.ProcessMouseMovement(0, -250);
 	// Init GLFW
 	glfwInit();
@@ -344,18 +351,21 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 						this->screen_x = 1024;
 						this->screen_y = 576;
 						glfwSetWindowSize(window, this->screen_x, this->screen_y);
+						this->writeConfig();
 					}
 					else if (this->menuActive == 11) //Resolution change
 					{
 						this->screen_x = 1280;
 						this->screen_y = 720;
 						glfwSetWindowSize(window, this->screen_x, this->screen_y);
+						this->writeConfig();
 					}
 					else if (this->menuActive == 12) //Resolution change
 					{
 						this->screen_x = 1920;
 						this->screen_y = 1080;
 						glfwSetWindowSize(window, this->screen_x, this->screen_y);
+						this->writeConfig();
 					}
 					else if (this->menuActive == 13) //Window Mode
 					{
@@ -442,6 +452,7 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 						// if (this->key_change == 5)
 						// 	this->keyCHANGEVIEW = tempKEY;
 						this->menuActive = last_menu;
+						this->writeConfig();
 					}
 				}
 			}
@@ -454,32 +465,41 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 					switch (this->soundActive)
 					{
 						case 3:
-							World::sound->setVolMusic(0);
+							this->volMusic = 0;
+							World::sound->setVolMusic(this->volMusic);
 							break ;
 						case 4:
-							World::sound->setVolMusic(0.2);
+							this->volMusic = 0.2;
+							World::sound->setVolMusic(this->volMusic);
 							break ;
 						case 5:
-							World::sound->setVolMusic(0.5);
+							this->volMusic = 0.5;
+							World::sound->setVolMusic(this->volMusic);
 							break ;
 						case 6:
-							World::sound->setVolMusic(1.0);
+							this->volMusic = 1.0;
+							World::sound->setVolMusic(this->volMusic);
 							break ;
 						case 7:
-							World::sound->setVolEffects(0);
+							this->volEffect = 0;
+							World::sound->setVolEffects(this->volEffect);
 							break ;
 						case 8:
-							World::sound->setVolEffects(0.2);
+							this->volEffect = 0.2;
+							World::sound->setVolEffects(this->volEffect);
 							break ;
 						case 9:
-							World::sound->setVolEffects(0.5);
+							this->volEffect = 0.5;
+							World::sound->setVolEffects(this->volEffect);
 							break ;
 						case 10:
-							World::sound->setVolEffects(1.0);
+							this->volEffect = 1.0;
+							World::sound->setVolEffects(this->volEffect);
 							break ;
 						default:
 							break ;
 					}
+					this->writeConfig();
 				}
 			}
 			usleep(10000);
@@ -912,4 +932,111 @@ inline bool Game::exist(const std::string& name)
 		return false;		// The file was not found.
 	else					// If the file was found, then file is non-0.
 		return true;		// The file was found.
+}
+
+void	Game::writeConfig(void)
+{
+	std::stringstream sstr;
+	std::ofstream file;
+	file.open("gameConfig");
+	sstr << this->volMusic;
+	file << "volMusic: " + sstr.str() + "\n";
+	sstr.str("");
+	sstr << this->volEffect;
+	file << "volEffect: " + sstr.str() + "\n";
+	sstr.str("");
+	sstr << this->keyUP;
+	file << "keyUp: " + sstr.str() + "\n";
+	sstr.str("");
+	sstr << this->keyDOWN;
+	file << "keyDown: " + sstr.str() + "\n";
+	sstr.str("");
+	sstr << this->keyLEFT;
+	file << "keyLeft: " + sstr.str() + "\n";
+	sstr.str("");
+	sstr << this->keyRIGHT;
+	file << "keyRight: " + sstr.str() + "\n";
+	sstr.str("");
+	sstr << this->keyBOMB;
+	file << "keyBomb: " + sstr.str() + "\n";
+	sstr.str("");
+	sstr << this->keyFLASH;
+	file << "keyFlash: " + sstr.str() + "\n";
+	sstr.str("");
+	sstr << this->screen_x;
+	file << "screenX: " + sstr.str() + "\n";
+	sstr.str("");
+	sstr << this->screen_y;
+	file << "screenY: " + sstr.str() + "\n";
+	sstr.str("");
+	file.close();
+}
+
+void	Game::readConfig(void)
+{
+	std::ifstream file;
+	file.open("gameConfig");
+	std::string	line;
+	std::vector<std::string> tokens;
+	//read volMusic
+	getline(file, line);
+	tokens = strsplit(line, ' ');
+	if (tokens[0] == "volMusic:")
+		std::istringstream(tokens[1]) >> this->volMusic;
+	tokens.clear();
+	//read volEffect
+	getline(file, line);
+	tokens = strsplit(line, ' ');
+	if (tokens[0] == "volEffect:")
+		std::istringstream(tokens[1]) >> this->volEffect;
+	tokens.clear();
+	//read keyUp
+	getline(file, line);
+	tokens = strsplit(line, ' ');
+	if (tokens[0] == "keyUp:")
+		std::istringstream(tokens[1]) >> this->keyUP;
+	tokens.clear();
+	//read keyDown
+	getline(file, line);
+	tokens = strsplit(line, ' ');
+	if (tokens[0] == "keyDown:")
+		std::istringstream(tokens[1]) >> this->keyDOWN;
+	tokens.clear();
+	//read keyLeft
+	getline(file, line);
+	tokens = strsplit(line, ' ');
+	if (tokens[0] == "keyLeft:")
+		std::istringstream(tokens[1]) >> this->keyLEFT;
+	tokens.clear();
+	//read keyRight
+	getline(file, line);
+	tokens = strsplit(line, ' ');
+	if (tokens[0] == "keyRight:")
+		std::istringstream(tokens[1]) >> this->keyRIGHT;
+	tokens.clear();
+	//read keyBomb
+	getline(file, line);
+	tokens = strsplit(line, ' ');
+	if (tokens[0] == "keyBomb:")
+		std::istringstream(tokens[1]) >> this->keyBOMB;
+	tokens.clear();
+	//read keyFlashLight
+	getline(file, line);
+	tokens = strsplit(line, ' ');
+	if (tokens[0] == "keyFlash:")
+		std::istringstream(tokens[1]) >> this->keyFLASH;
+	tokens.clear();
+	//read screenX
+	getline(file, line);
+	tokens = strsplit(line, ' ');
+	if (tokens[0] == "screenX:")
+		std::istringstream(tokens[1]) >> this->screen_x;
+	tokens.clear();
+	//read screenY
+	getline(file, line);
+	tokens = strsplit(line, ' ');
+	if (tokens[0] == "screenY:")
+		std::istringstream(tokens[1]) >> this->screen_y;
+	tokens.clear();
+	file.close();
 }
