@@ -1,10 +1,7 @@
 #include "Sound.class.hpp"
 
-//start canonical form
-Sound::Sound(void) : volMusic(0.5), volEffects(0.5)
+Sound::Sound(void) : volMusic(0), volEffects(0)
 {
-	std::cout << "Sound - Default Constructor Called" << std::endl;
-
 	this->isInitialized = false;
 	this->Setup();
 	this->isMusicPlaying = false;
@@ -12,20 +9,17 @@ Sound::Sound(void) : volMusic(0.5), volEffects(0.5)
 
 Sound::Sound(Sound const & src)
 {
-	std::cout << "Sound - Copy constructor called" << std::endl;
 	*this = src;
 }
 
 Sound::~Sound(void)
 {
-	std::cout << "Sound - Destructor called" << std::endl;
 	if (this->isInitialized == true)
 		this->soundEngine->drop();
 }
 
 Sound	&Sound::operator=(Sound const &rhs)
 {
-	std::cout << "Sound - Assignment operator called" << std::endl;
 	if (this != &rhs)
 	{
 		this->soundEngine = rhs.soundEngine;
@@ -33,7 +27,6 @@ Sound	&Sound::operator=(Sound const &rhs)
 	}
 	return (*this);
 }
-//end canonical form
 
 void	Sound::Setup(void)
 {
@@ -45,10 +38,8 @@ void	Sound::Setup(void)
 	this->isInitialized = true;
 	irrklang::ISoundSource *loadMusic = this->soundEngine->addSoundSourceFromFile(MUSIC);
 	this->backgroundMusic = this->soundEngine->addSoundSourceAlias(loadMusic, "backgroundMusic");
-
 	irrklang::ISoundSource *loadBombExplode = this->soundEngine->addSoundSourceFromFile(BOMBEXPLODE);
 	this->bombExplode = this->soundEngine->addSoundSourceAlias(loadBombExplode, "bombExplode");
-
 	this->backgroundMusic->setDefaultVolume(this->volMusic);
 	this->bombExplode->setDefaultVolume(this->volEffects);
 }

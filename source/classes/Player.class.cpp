@@ -3,7 +3,6 @@
 
 Player::Player( Shader &shader, std::string model) : Character(shader, model + "0.obj")
 {
-	std::cout << "Player - Constructor called " << std::endl;
 	this->active = 0;
 	for (int i = 0; i < 22; i++)
 		this->characterModelarr.push_back(new Model(model + std::to_string(i) + ".obj"));
@@ -23,13 +22,11 @@ Player::Player( Shader &shader, std::string model) : Character(shader, model + "
 
 Player::Player( Player const & src) : Character(src)
 {
-
 	*this = src;
 }
 
 Player::~Player( void )
 {
-	std::cout << "Player - Destructor called " << std::endl;
 	for (int i = 0; i < 3; i++)
 		delete this->bomb[i];
 	for (int i = 0; i < 22; i++)
@@ -57,15 +54,12 @@ void Player::draw(void)
 
 void Player::drawBomb(void)
 {
-	
 	switch(this->bombCount)
 	{
 		case 1:
 		{
 			if (this->bomb[0]->getActive() == true && this->dead == true)
-			{
 				this->invincible = true;
-			}
 			else if ((this->bomb[0]->getActive() == false ) && this->dead == true)
 			{
 				this->dead = false;
@@ -76,9 +70,7 @@ void Player::drawBomb(void)
 		case 2:
 		{
 			if ((this->bomb[0]->getActive() == true || this->bomb[1]->getActive() == true ) && this->dead == true)
-			{
 				this->invincible = true;
-			}
 			else if ((this->bomb[0]->getActive() == false && this->bomb[1]->getActive() == false ) && this->dead == true)
 			{
 				this->dead = false;
@@ -89,9 +81,7 @@ void Player::drawBomb(void)
 		case 3:
 		{
 			if ((this->bomb[0]->getActive() == true || this->bomb[1]->getActive() == true || this->bomb[2]->getActive() == true ) && this->dead == true)
-			{
 				this->invincible = true;
-			}
 			else if ((this->bomb[0]->getActive() == false && this->bomb[1]->getActive() == false && this->bomb[2]->getActive() == false ) && this->dead == true)
 			{
 				this->dead = false;
@@ -144,7 +134,6 @@ void	Player::clearPosOnMap()
 
 void	Player::ProcessKeyboard(Direction direction)
 {
-	
 	switch(direction)
 	{
 		case FWD:

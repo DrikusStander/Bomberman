@@ -2,7 +2,6 @@
 
 PauseMenu::PauseMenu(Shader &shader, std::string model)
 {
-	std::cout << "PauseMenu - Constructor called " << std::endl;
 	this->_shader = &shader;
 	this->menu = new Model(model);
 	this->x_trans = 0.0f;
@@ -19,7 +18,6 @@ PauseMenu::PauseMenu( PauseMenu const & src)
 
 PauseMenu::~PauseMenu(void)
 {
-	std::cout << "PauseMenu - Destructor called " << std::endl;
 	delete this->menu;
 }
 

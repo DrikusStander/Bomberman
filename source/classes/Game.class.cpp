@@ -97,6 +97,11 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 
 	this->readConfig();
 
+	World::sound->setVolMusic(this->volMusic);
+	World::sound->setVolEffects(this->volEffect);
+
+
+
 	camera.ProcessMouseMovement(0, -250);
 	// Init GLFW
 	glfwInit();

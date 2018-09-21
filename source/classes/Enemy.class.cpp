@@ -2,7 +2,6 @@
 
 Enemy::Enemy( Shader &shader, std::string model) : Character(shader, model)
 {
-	std::cout << "Enemy - Constructor called " << std::endl;
 	this->dir = FWD;
 	this->changedir = 0;
 }
@@ -15,7 +14,7 @@ Enemy::Enemy( Enemy const & src) : Character(src)
 
 Enemy::~Enemy( void )
 {
-	std::cout << "Enemy - Destructor called " << std::endl;
+	return;
 }
 
 Enemy const & Enemy::operator=(Enemy const & rhs)
@@ -96,7 +95,6 @@ void	Enemy::moveFwd()
 				this->z_trans -= 0.5f;
 				this->clearPosOnMap();
 				this->row = static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21);
-				// this->active++;
 				this->setPosOnMap();
 			}
 		}
@@ -112,7 +110,6 @@ void	Enemy::moveFwd()
 				this->z_trans -= 0.5f;
 				this->clearPosOnMap();
 				this->row = static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21);
-				// this->active++;
 				this->setPosOnMap();
 			}
 			else
@@ -126,7 +123,6 @@ void	Enemy::moveFwd()
 		this->z_trans -= 0.5f;
 		this->clearPosOnMap();
 		this->row = static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21);
-		// this->active++;
 		this->setPosOnMap();
 	}
 	else
@@ -154,7 +150,6 @@ void	Enemy::moveBkw()
 				this->z_trans += 0.5f;
 				this->clearPosOnMap();
 				this->row = static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21);
-				// this->active++;
 				this->setPosOnMap();
 			}
 		}
@@ -172,7 +167,6 @@ void	Enemy::moveBkw()
 				this->z_trans += 0.5f;
 				this->clearPosOnMap();
 				this->row = static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21);
-				// this->active++;
 				this->setPosOnMap();
 			}
 			else
@@ -186,7 +180,6 @@ void	Enemy::moveBkw()
 		this->z_trans += 0.5f;
 		this->clearPosOnMap();
 		this->row = static_cast<int>((-168 - (this->z_trans + 10.5)) /  -21);
-		// this->active++;
 		this->setPosOnMap();
 	}
 	else
@@ -212,7 +205,6 @@ void	Enemy::moveLft()
 				this->x_trans -= 0.5f;
 				this->clearPosOnMap();
 				this->col = static_cast<int>((-168 - (this->x_trans + 10.5)) /  -21);
-				// this->active++;
 				this->setPosOnMap();
 			}
 		}
@@ -228,7 +220,6 @@ void	Enemy::moveLft()
 				this->x_trans -= 0.5f;
 				this->clearPosOnMap();
 				this->col = static_cast<int>((-168 - (this->x_trans + 10.5)) /  -21);
-				// this->active++;
 				this->setPosOnMap();
 			}
 			else
@@ -242,7 +233,6 @@ void	Enemy::moveLft()
 		this->x_trans -= 0.5;
 		this->clearPosOnMap();
 		this->col = static_cast<int>((-168 - (this->x_trans + 10.5)) /  -21);
-		// this->active++;
 		this->setPosOnMap();
 	}
 	else
@@ -268,7 +258,6 @@ void	Enemy::moveRgt()
 				this->x_trans += 0.5f;
 				this->clearPosOnMap();
 				this->col = static_cast<int>((-168 - (this->x_trans + 10.5)) /  -21);
-				// this->active++;
 				this->setPosOnMap();
 			}
 		}
@@ -284,7 +273,6 @@ void	Enemy::moveRgt()
 				this->x_trans += 0.5f;
 				this->clearPosOnMap();
 				this->col = static_cast<int>((-168 - (this->x_trans + 10.5)) /  -21);
-				// this->active++;
 				this->setPosOnMap();
 			}
 			else
@@ -298,7 +286,6 @@ void	Enemy::moveRgt()
 		this->x_trans += 0.5f;
 		this->clearPosOnMap();
 		this->col = static_cast<int>((-168 - (this->x_trans + 10.5)) /  -21);
-		// this->active++;
 		this->setPosOnMap();
 	}
 	else
@@ -312,72 +299,46 @@ void	Enemy::changeDir()
 		case FWD:
 		{
 			if (this->row < 16 && this->map[this->row + 1][this->col] == '\0')
-			{
 				this->dir = BKW;
-			}
 			else if (this->col < 16 && this->map[this->row][this->col + 1] == '\0')
-			{
 				this->dir = RGT;
-			}
 			else if (this->col > 0 && this->map[this->row][this->col - 1] == '\0')
-			{
 				this->dir = LFT;
-			}
 			break;
 		}
 		case BKW:
 		{
 			if (this->row > 0 && this->map[this->row - 1][this->col] == '\0')
-			{
 				this->dir = FWD;
-			}
 			else if (this->col > 0 && this->map[this->row][this->col - 1] == '\0')
-			{
 				this->dir = LFT;
-			}
 			else if (this->col < 16 && this->map[this->row][this->col + 1] == '\0')
-			{
 				this->dir = RGT;
-			}
 			break;
 		}
 		case LFT:
 		{
 			if (this->col < 16 && this->map[this->row][this->col + 1] == '\0')
-			{
 				this->dir = RGT;
-			}
 			else if (this->row > 0 && this->map[this->row - 1][this->col] == '\0')
-			{
 				this->dir = FWD;
-			}
 			else if (this->row < 16 && this->map[this->row + 1][this->col] == '\0')
-			{
 				this->dir = BKW;
-			}
 			break;
 		}
 		case RGT:
 		{
 			if (this->col > 0 && this->map[this->row][this->col - 1] == '\0')
-			{
 				this->dir = LFT;
-			}
 			else if (this->row < 16 && this->map[this->row + 1][this->col] == '\0')
-			{
 				this->dir = BKW;
-			}
 			else if (this->row > 0 && this->map[this->row - 1][this->col] == '\0')
-			{
 				this->dir = FWD;
-			}
 			break;
 		}
 		default:
 			break;
 	}
-
-	
 }
 
 void	Enemy::ProcessKeyboard(Direction direction)

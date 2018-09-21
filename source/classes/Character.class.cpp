@@ -3,7 +3,6 @@
 
 Character::Character( Shader &shader, std::string model)
 {
-	std::cout << "Character - Parametric Constructor called " << std::endl;
 	this->characterModel =  new Model(model);
 	this->_shader = &shader;
 	this->x_trans = 0.0f;
@@ -21,8 +20,8 @@ Character::Character( Character const & src)
 
 Character::~Character( void )
 {
-	std::cout << "Character - Destructor called " << std::endl;
 	delete this->characterModel;
+	return;
 }
 
 Character const & Character::operator=(Character const & rhs)

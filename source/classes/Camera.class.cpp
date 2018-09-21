@@ -15,7 +15,6 @@
 //start canonical form
 Camera::Camera(void)
 {
-	std::cout << "Camera - Default constructor called" << std::endl;
 	this->movementSpeed = SPEED;
 	this->mouseSensitivity = SENSITIVTY;
 	this->zoom = ZOOM;
@@ -28,18 +27,16 @@ Camera::Camera(void)
 
 Camera::Camera(Camera const & src)
 {
-	std::cout << "Camera - Copy constructor called" << std::endl;
 	*this = src;
 }
 
 Camera::~Camera(void)
 {
-	std::cout << "Camera - Destructor called" << std::endl;
+	return;
 }
 
 Camera	&Camera::operator=(Camera const &rhs)
 {
-	std::cout << "Camera - Assignment operator called" << std::endl;
 	if (this != &rhs)
 	{
 		this->position = rhs.position;

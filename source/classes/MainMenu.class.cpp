@@ -2,7 +2,6 @@
 
 MainMenu::MainMenu(Shader &shader, std::string model)
 {
-	std::cout << "MainMenu - Constructor called " << std::endl;
 	this->_shader = &shader;
 	this->menu = new Model(model);
 	this->x_trans = 0.0f;
@@ -19,7 +18,6 @@ MainMenu::MainMenu( MainMenu const & src)
 
 MainMenu::~MainMenu(void)
 {
-	std::cout << "MainMenu - Destructor called " << std::endl;
 	delete this->menu;
 }
 

@@ -2,7 +2,6 @@
 
 LoadingScreen::LoadingScreen(Shader &shader, std::string model)
 {
-	std::cout << "LoadingScreen - Constructor called " << std::endl;
 	this->_shader = &shader;
 	this->menu = new Model(model);
 	this->x_trans = 0.0f;
@@ -11,7 +10,6 @@ LoadingScreen::LoadingScreen(Shader &shader, std::string model)
 	this->rotate = 30.0f;
 }
 
-
 LoadingScreen::LoadingScreen( LoadingScreen const & src)
 {
 	*this = src;
@@ -19,7 +17,6 @@ LoadingScreen::LoadingScreen( LoadingScreen const & src)
 
 LoadingScreen::~LoadingScreen(void)
 {
-	std::cout << "LoadingScreen - Destructor called " << std::endl;
 	delete this->menu;
 }
 

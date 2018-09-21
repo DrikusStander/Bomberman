@@ -2,7 +2,6 @@
 
 SoundMenu::SoundMenu(Shader &shader, std::string model)
 {
-	std::cout << "SoundMenu - Constructor called " << std::endl;
 	this->_shader = &shader;
 	this->menu = new Model(model);
 	this->x_trans = 0.0f;
@@ -19,7 +18,6 @@ SoundMenu::SoundMenu( SoundMenu const & src)
 
 SoundMenu::~SoundMenu(void)
 {
-	std::cout << "SoundMenu - Destructor called " << std::endl;
 	delete this->menu;
 }
 

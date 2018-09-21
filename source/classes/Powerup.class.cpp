@@ -2,7 +2,6 @@
 
 Powerup::Powerup( Shader &shader, std::string model, int type, std::vector<Model*> *modelArr) : Item(shader, model + "0.obj")
 {
-	std::cout << "Powerup - Parametric Constructor called " << std::endl;
 	this->itemModelarr = modelArr;
 	this->_shader = &shader;
 	this->x_trans = 0.0f;
@@ -21,7 +20,7 @@ Powerup::Powerup( Powerup const & src) : Item(src)
 
 Powerup::~Powerup( void )
 {
-	std::cout << "Powerup - Destructor called " << std::endl;
+	return;
 }
 
 Powerup const & Powerup::operator=(Powerup const & rhs)
@@ -49,7 +48,6 @@ void Powerup::draw(void)
 	model = glm::rotate(model, glm::radians(this->rotate), glm::vec3(0, 1, 0)); 			// where x, y, z is axis of rotation (e.g. 0 1 0)
 	glUniformMatrix4fv( glGetUniformLocation(this->_shader->getProgram(), "model"), 1, GL_FALSE, glm::value_ptr(model ));
 	(*this->itemModelarr)[this->activeFrame]->Draw(*this->_shader);
-
 }
 
 int		Powerup::getType(void)

@@ -2,7 +2,6 @@
 
 Item::Item( Shader &shader, std::string model)
 {
-	std::cout << "Item - Parametric Constructor called " << std::endl;
 	this->ItemModel =  new Model(model);
 	this->_shader = &shader;
 	this->x_trans = 0.0f;
@@ -14,7 +13,6 @@ Item::Item( Shader &shader, std::string model)
 
 Item::Item( Shader &shader, Model *model)
 {
-	std::cout << "Item - Parametric Constructor called " << std::endl;
 	this->ItemModel =  model;
 	this->_shader = &shader;
 	this->x_trans = 0.0f;
@@ -31,7 +29,7 @@ Item::Item( Item const & src)
 
 Item::~Item( void )
 {
-	std::cout << "Item - Destructor called " << std::endl;
+	return;
 }
 
 Item const & Item::operator=(Item const & rhs)

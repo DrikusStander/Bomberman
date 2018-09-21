@@ -5,7 +5,6 @@
 
 Bomb::Bomb( Shader &shader, std::string model) : Item(shader, model)
 {
-	std::cout << "Bomb - Parametric Constructor called " << std::endl;
 	this->PlantTime = 0.0f;
 	this->PlantTimeLength = 3.0f;
 	this->ExplodeTimeLength = 1.0f;
@@ -23,7 +22,7 @@ Bomb::Bomb( Bomb const & src) : Item(src)
 
 Bomb::~Bomb( void )
 {
-	std::cout << "Bomb - Destructor called " << std::endl;
+	return;
 }
 
 Bomb const & Bomb::operator=(Bomb const & rhs)
@@ -130,7 +129,6 @@ void	Bomb::checkDestruction()
 	//check left
 	for (int i = 1; i <= this->blastRaduis; i++)
 	{
-		// std::cout << "Checking bomb Left " << this->col - i << std::endl;
 		if (this->col - i > -1)
 		{
 			if (this->map[this->row][this->col - i] == '#')

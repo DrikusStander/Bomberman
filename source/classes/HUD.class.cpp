@@ -4,12 +4,11 @@ int	numDigits(int number);
 
 HUD::HUD(void)
 {
-	std::cout << "HUD - Default Constructor Called" << std::endl;
+	return;
 }
 
 HUD::HUD(Shader shader, float screen_x, float screen_y)
 {
-	std::cout << "HUD - Parametric Constructor called" << std::endl;
 	this->_shader = shader;
 	this->HUD_Pos.left = -0.123f;
 	this->HUD_Pos.center = -0.015f;
@@ -32,7 +31,7 @@ HUD::HUD(HUD const & src)
 
 HUD::~HUD(void)
 {
-	std::cout << "HUD - Destructor called " << std::endl;
+	return;
 }
 
 HUD const & HUD::operator=(HUD const & rhs)
