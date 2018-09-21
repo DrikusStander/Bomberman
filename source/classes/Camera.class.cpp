@@ -6,7 +6,7 @@
 /*   By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/11 11:26:34 by cnolte            #+#    #+#             */
-/*   Updated: 2018/09/21 13:02:25 by cnolte           ###   ########.fr       */
+/*   Updated: 2018/09/21 13:20:25 by cnolte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -223,32 +223,29 @@ void		Camera::setYaw(GLfloat yaw)
 
 void		Camera::set2Dview(const float posX, const float posZ)
 {
-	float moveX = -40.0f;
-	float moveZ = -107.0f;
+	float	moveX;
+	float	moveZ;
 
-	if ((posX >= -168) && (posX <= -40))
+	if ((posX >= -180) && (posX <= -40))
 		moveX = -40.0f;
 	else if ((posX > -40) && (posX < 40))
 		moveX = posX;
-	else if ((posX >= 40) && (posX < 168))
+	else if ((posX >= 40) && (posX < 180))
 		moveX = 40.0f;
 
-	if ((posZ >= -168) && (posZ <= -107))
+	if ((posZ >= -180) && (posZ <= -107))
 		moveZ = -107.0f;
 	else if ((posZ > -107) && (posZ < 107))
 		moveZ = posZ;
-	else if ((posZ >= 107) && (posZ < 168))
+	else if ((posZ >= 107) && (posZ < 180))
 		moveZ = 107.0f;
 	
-	
-	std::cout << std::to_string(posX) << " " << std::to_string(posZ) << std::endl;
 	this->movementSpeed = SPEED;
 	this->mouseSensitivity = SENSITIVTY;
 	this->zoom = ZOOM;
 	this->front.x = 0.0f;
 	this->front.y = 0.0f;
 	this->front.z = 0.0f;
-	// this->position = glm::vec3(-40.0f, 200.0f, -107.0f);
 	this->position = glm::vec3(moveX, 200.0f, moveZ);
 	this->worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
 	this->yaw = YAW;
