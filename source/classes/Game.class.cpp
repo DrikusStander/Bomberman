@@ -62,7 +62,7 @@ Game::Game(const int width, const int height, const bool debug) : screen_x(width
 {
 	std::cout << "Game: Loading..." << std::endl;
 	this->last_menu = 0;
-	this->fullScreenItteration = 2;
+	this->fullScreenItteration = 3;
 	this->stage = 1;
 	lastX = 400;
 	lastY = 300;
@@ -358,21 +358,21 @@ Game::Game(const int width, const int height, const bool debug) : screen_x(width
 					}
 					else if (this->menuActive == 13) //Window Mode
 					{
-						glfwSetWindowMonitor(window, nullptr, 0, 0, this->screen_x, this->screen_y, GLFW_DONT_CARE);
+						glfwSetWindowMonitor(window, nullptr, 100, 100, this->screen_x, this->screen_y, GLFW_DONT_CARE);
 						keys[GLFW_KEY_ENTER] = true;
 					}
 					else if (this->menuActive == 14) //Full Screen Mode 
 					{
 						if (glfwGetWindowMonitor(window) == nullptr)
-							temp22 = 0;
-						if (temp22 < 2)
+							this->fullScreenItteration = 0;
+						if (this->fullScreenItteration < 3)
 						{
 							GLFWmonitor *monitor = glfwGetPrimaryMonitor();
 							const GLFWvidmode *mode = glfwGetVideoMode(monitor);
 							glfwSetWindowMonitor(window, monitor, 0, 0, 2300, 1920, mode->refreshRate);
 							glfwSetWindowMonitor(window, monitor, 0, 0, this->screen_x, this->screen_y, mode->refreshRate);
 							keys[GLFW_KEY_ENTER] = true;
-							temp22++;
+							this->fullScreenItteration++;
 						}
 					}
 				}
@@ -617,10 +617,9 @@ Game::Game(const int width, const int height, const bool debug) : screen_x(width
 										default:
 											break;
 									}
-									pauseVisible = false;
-									menuVisible = false;
-									pauseVisible = false;
-									loadVisible = true;
+									this->pauseVisible = false;
+									this->menuVisible = false;
+									this->loadVisible = true;
 									worldThread = new std::thread(loadGame, this);
 									worldThread->detach();
 								}
@@ -744,17 +743,6 @@ Game::~Game(void)
 		}
 	}
 	glfwTerminate();
-}
-
-Game::Game(Game const & src)
-{
-	// std::cout << "Game - Copy constructor called" << std::endl;
-	*this = src;
-}
-
-Game::~Game(void)
-{
-	// std::cout << "Game - Destructor called" << std::endl;
 }
 
 Game	&Game::operator=(Game const &rhs)
@@ -1552,8 +1540,11 @@ void	Game::menuIsVisible( void )
 
 void	Game::loadIsVisible( void )
 {
-	camera.moveCamForMenu();
-	camera.ProcessMouseMovement(0, -250);
+	if (this->debug == false)
+	{
+		camera.moveCamForMenu();
+		camera.ProcessMouseMovement(0, -250);
+	}
 	if (this->loadActive == 3)
 	{
 		this->loadActive = 0;
@@ -1574,8 +1565,11 @@ void	Game::loadIsVisible( void )
 
 void	Game::pauseIsVisible( void )
 {
-	camera.moveCamForMenu();
-	camera.ProcessMouseMovement(0, -250);
+	if (this->debug == false)
+	{
+		camera.moveCamForMenu();
+		camera.ProcessMouseMovement(0, -250);
+	}
 	this->pauseMenu[this->pauseActive]->draw();
 	MovePause();
 	if (keys[GLFW_KEY_ENTER])
@@ -1622,7 +1616,6 @@ void	Game::pauseIsVisible( void )
 						}
 						pauseVisible = false;
 						menuVisible = false;
-						pauseVisible = false;
 						loadVisible = true;
 						worldThread = new std::thread(loadGame, this);
 						worldThread->detach();
