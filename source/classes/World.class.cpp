@@ -3,7 +3,6 @@ std::mutex mu;
 
 World::World(Shader &shader, std::string model, float screen_x, float screen_y, GLFWwindow	*window)
 {
-	std::cout << "World - Parametric Constructor called " << std::endl;
 	mu.lock();
 	glfwMakeContextCurrent(window);
 	this->WorldModel =  new Model(model);

@@ -98,6 +98,8 @@ class Game
 		int		key_change;
 		float	volMusic;
 		float	volEffect;
+		int		last_menu;
+		int		fullScreenItteration;
 
 		bool 		WorldLoaded;
 		Shader		*shaderNormal;
@@ -111,6 +113,10 @@ class Game
 		inline bool exist(const std::string& name);
 		GLFWwindow	*window;
 		glm::mat4	projection;
+		void		menuIsVisible( void );
+		void		loadIsVisible( void );
+		void		pauseIsVisible( void );
+
 
 };
 void 	createWorld(Game *game);
