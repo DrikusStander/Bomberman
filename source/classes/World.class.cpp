@@ -541,6 +541,8 @@ void World::draw(Camera &camera, const GLfloat glfwTime)
 		powerup->setShader(*this->_shader);
 		powerup->draw();
 	}
+	if (this->_shader->getFlashLight() == false)
+		camera.set2Dview(this->player->getX(), this->player->getZ());
 	//check what items the bomb affected
 	for (int i = 0; i < 17; i++)
 	{

@@ -51,7 +51,6 @@ class Player : public Character
 		void	setActiveMult(float activeMult);
 		float	getActiveMult( void );
 		Direction	getDirLast(void);
-
 };
 
 #endif

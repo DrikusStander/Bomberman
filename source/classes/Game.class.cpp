@@ -186,8 +186,8 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 			}
 			else
 			{
-				camera.moveCamForMenu();
-				camera.ProcessMouseMovement(0, -250);
+				// camera.moveCamForMenu();
+				// camera.ProcessMouseMovement(0, -250);
 				this->shaderActive = this->shaderNormal;
 			}
 		}
@@ -832,23 +832,22 @@ void Game::MoveMenu(void)
 void	Game::DoMovement(void)
 {
 	// Camera controls
-	if (keys[GLFW_KEY_Q])
-		camera.ProcessKeyboard(UP, this->deltaTime);
-	else if (keys[GLFW_KEY_E])
-		camera.ProcessKeyboard(DOWN, this->deltaTime);
-	else if (keys[GLFW_KEY_W])
-		camera.ProcessKeyboard(FORWARD, this->deltaTime);
-	else if (keys[GLFW_KEY_S])
-		camera.ProcessKeyboard(BACKWARD, this->deltaTime);
-	else if (keys[GLFW_KEY_A])
-		camera.ProcessKeyboard(LEFT, this->deltaTime);
-	else if (keys[GLFW_KEY_D] )
-		camera.ProcessKeyboard(RIGHT, this->deltaTime);
+	// if (keys[GLFW_KEY_Q])
+	// 	camera.ProcessKeyboard(UP, this->deltaTime);
+	// else if (keys[GLFW_KEY_E])
+	// 	camera.ProcessKeyboard(DOWN, this->deltaTime);
+	// else if (keys[GLFW_KEY_W])
+	// 	camera.ProcessKeyboard(FORWARD, this->deltaTime);
+	// else if (keys[GLFW_KEY_S])
+	// 	camera.ProcessKeyboard(BACKWARD, this->deltaTime);
+	// else if (keys[GLFW_KEY_A])
+	// 	camera.ProcessKeyboard(LEFT, this->deltaTime);
+	// else if (keys[GLFW_KEY_D] )
+	// 	camera.ProcessKeyboard(RIGHT, this->deltaTime);
+
 	// Player controls
 	if (keys[this->keyUP])
-	{
 		this->world->ProcessKeyboard(FWD, camera, this->toggleFlash);
-	}
 	else if (keys[this->keyDOWN])
 		this->world->ProcessKeyboard(BKW, camera, this->toggleFlash);
 	else if (keys[this->keyLEFT])
