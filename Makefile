@@ -6,7 +6,7 @@
 #    By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/07/31 19:21:44 by cnolte            #+#    #+#              #
-#    Updated: 2018/09/21 16:37:38 by cnolte           ###   ########.fr        #
+#    Updated: 2018/09/23 16:11:50 by cnolte           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -46,7 +46,7 @@ ifneq ($(DYLD_LIBRARY_PATH),$(ROOT_DIR)/resources/Sound/lib)
 endif
 	@if ! test -d resources; \
 	then if ! test -a resources.zip; \
-	then curl -L -o "resources.zip" "https://drive.google.com/uc?export=download&id=1UNuLyEmjuZVLP6-Gy4QJE1nHdajrhRvK"; \
+	then curl -L -o "resources.zip" "https://drive.google.com/uc?export=download&id=1lXeXyKk2mrFBxyYPGL1fMYA0CsZcaGH_"; \
 	fi; \
 	unzip resources.zip; \
 	rm -rf resources.zip; \
