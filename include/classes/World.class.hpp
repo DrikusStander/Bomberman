@@ -90,6 +90,7 @@ class World
 		void	moveCameraFp(Camera &camera);
 		Direction	getDirLast(void);
 		static Sound			*sound;
+		int		getLives(void) const;
 
 };
 

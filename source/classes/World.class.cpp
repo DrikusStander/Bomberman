@@ -986,3 +986,8 @@ Direction	World::getDirLast(void)
 {
 	return (this->dirPlayer);
 }
+
+int	World::getLives(void) const
+{
+	return (this->lives);
+}

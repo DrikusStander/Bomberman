@@ -6,7 +6,7 @@
 /*   By: dwilliam <dwilliam@42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/11 11:20:47 by cnolte            #+#    #+#             */
-/*   Updated: 2018/09/20 18:34:13 by dwilliam         ###   ########.fr       */
+/*   Updated: 2018/09/23 15:05:18 by dwilliam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,10 @@ class Game
 		float	volEffect;
 		int		last_menu;
 		int		fullScreenItteration;
+		GLfloat	pause_died;
+		GLfloat	you_won;
+		GLfloat	you_died;
+		int		lives;
 
 		bool 		WorldLoaded;
 		Shader		*shaderNormal;
