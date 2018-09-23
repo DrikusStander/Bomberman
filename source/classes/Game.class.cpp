@@ -756,10 +756,7 @@ void	Game::menuIsVisible( void )
 					getline(file, line);
 					tokens = strsplit(line, ' ');
 					if (tokens[0] == "stage:")
-					{
-						std::cout << tokens[0] << std::endl;
 						std::istringstream(tokens[1]) >> this->stage;
-					}
 					file.close();
 					switch(this->stage)
 					{
