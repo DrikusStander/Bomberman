@@ -67,10 +67,11 @@ class World
 		int						timeSinceNewFrame;
 		int						stage;
 		Direction				dirPlayer;
+		bool					debug;
 
 	public:
-		World(Shader &shader, std::string model, float screen_x, float screen_y, GLFWwindow	*window);
-		World(Shader &shader, std::string model, float screen_x, float screen_y, GLFWwindow	*window, std::string savedGame);
+		World(Shader &shader, std::string model, float screen_x, float screen_y, GLFWwindow	*window, const bool debug);
+		World(Shader &shader, std::string model, float screen_x, float screen_y, GLFWwindow	*window, std::string savedGame, const bool debug);
 		World(World const & src);
 		~World(void);
 		World const & operator=(World const & rhs);

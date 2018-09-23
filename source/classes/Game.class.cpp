@@ -56,10 +56,9 @@ void	MouseCallback(GLFWwindow *window, double xPos, double yPos)
 //start canonical form
 Game::Game(void) : screen_x(100), screen_y(100)
 {
-	return;
 }
 
-Game::Game(const int width, const int height) : screen_x(width), screen_y(height)
+Game::Game(const int width, const int height, const bool debug) : screen_x(width), screen_y(height), debug(debug)
 {
 	std::cout << "Game: Loading..." << std::endl;
 	bool	died_msg = false;
@@ -103,8 +102,6 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 	// Create a GLFWwindow object that we can use for GLFW's functions
-
-	// windowed
 	GLFWwindow	*window = glfwCreateWindow(this->screen_x, this->screen_y, "Bomberman", nullptr, nullptr);
 	this->window = window;
 	if (window == nullptr)
@@ -116,7 +113,10 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 	glfwGetFramebufferSize(window, &SCREEN_WIDTH, &SCREEN_HEIGHT);
 	// Set the required callback functions
 	glfwSetKeyCallback(window, KeyCallback);
-	glfwSetCursorPosCallback(window, MouseCallback);
+	if (this->debug == false)
+		glfwSetCursorPosCallback(window, nullptr);
+	else
+		glfwSetCursorPosCallback(window, MouseCallback);
 	// GLFW Options
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	// Set this to true so GLEW knows to use a modern approach to retrieving function pointers and extensions
@@ -174,33 +174,22 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 			{
 				this->shaderActive = this->shaderFlash;
 				this->placeSpotLight();
-				// camera.ProcessMouseMovement(0, 0);
 			}
 			else
-			{
-				// camera.moveCamForMenu();
-				// camera.ProcessMouseMovement(0, -250);
 				this->shaderActive = this->shaderNormal;
-			}
 		}
 		this->shaderActive->Use();
 		// set the camera view and projection
 		glUniformMatrix4fv(glGetUniformLocation(this->shaderActive->getProgram(), "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 		glUniformMatrix4fv(glGetUniformLocation(this->shaderActive->getProgram(), "view"), 1, GL_FALSE, glm::value_ptr(camera.GetViewMatrix()));
 		if (this->menuVisible == true || this->soundMenuVisible == true)
-		{
 			this->menuIsVisible();
-		}
 		else
 		{
 			if (this->loadVisible == true)
-			{
 				this->loadIsVisible();
-			}
 			else if (this->pauseVisible == true)
-			{
 				this->pauseIsVisible();
-			}
 			else
 			{
 				if (currentFrame - old_time_key >= 0.01f)
@@ -263,8 +252,11 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 						if (this->stage < 4)
 						{
 							loadVisible = true;
-							camera.moveCamForMenu();
-							camera.ProcessMouseMovement(0, -250);
+							if (this->debug == false)
+							{
+								camera.moveCamForMenu();
+								camera.ProcessMouseMovement(0, -250);
+							}
 							std::thread *worldThread =  new std::thread(loadStage, this);
 							worldThread->detach();
 						}
@@ -331,6 +323,24 @@ Game	&Game::operator=(Game const &rhs)
 
 void Game::MovePause(void)
 {
+	// Debugging
+	if (this->debug == true)
+	{
+		// Camera controls
+		if (keys[GLFW_KEY_Q])
+			camera.ProcessKeyboard(UP, this->deltaTime);
+		else if (keys[GLFW_KEY_E])
+			camera.ProcessKeyboard(DOWN, this->deltaTime);
+		else if (keys[GLFW_KEY_W])
+			camera.ProcessKeyboard(FORWARD, this->deltaTime);
+		else if (keys[GLFW_KEY_S])
+			camera.ProcessKeyboard(BACKWARD, this->deltaTime);
+		else if (keys[GLFW_KEY_A])
+			camera.ProcessKeyboard(LEFT, this->deltaTime);
+		else if (keys[GLFW_KEY_D] )
+			camera.ProcessKeyboard(RIGHT, this->deltaTime);
+	}
+
 	// Pause Menu controls
 	if (this->pauseActive != 5)
 	{
@@ -351,6 +361,24 @@ void Game::MovePause(void)
 
 void Game::MoveSoundMenu(void)
 {
+	// Debugging
+	if (this->debug == true)
+	{
+		// Camera controls
+		if (keys[GLFW_KEY_Q])
+			camera.ProcessKeyboard(UP, this->deltaTime);
+		else if (keys[GLFW_KEY_E])
+			camera.ProcessKeyboard(DOWN, this->deltaTime);
+		else if (keys[GLFW_KEY_W])
+			camera.ProcessKeyboard(FORWARD, this->deltaTime);
+		else if (keys[GLFW_KEY_S])
+			camera.ProcessKeyboard(BACKWARD, this->deltaTime);
+		else if (keys[GLFW_KEY_A])
+			camera.ProcessKeyboard(LEFT, this->deltaTime);
+		else if (keys[GLFW_KEY_D] )
+			camera.ProcessKeyboard(RIGHT, this->deltaTime);
+	}
+
 	//SoundMenu controls
 	if (keys[GLFW_KEY_UP])
 	{
@@ -391,6 +419,24 @@ void Game::MoveSoundMenu(void)
 
 void Game::MoveMenu(void)
 {
+	// Debugging
+	if (this->debug == true)
+	{
+		// Camera controls
+		if (keys[GLFW_KEY_Q])
+			camera.ProcessKeyboard(UP, this->deltaTime);
+		else if (keys[GLFW_KEY_E])
+			camera.ProcessKeyboard(DOWN, this->deltaTime);
+		else if (keys[GLFW_KEY_W])
+			camera.ProcessKeyboard(FORWARD, this->deltaTime);
+		else if (keys[GLFW_KEY_S])
+			camera.ProcessKeyboard(BACKWARD, this->deltaTime);
+		else if (keys[GLFW_KEY_A])
+			camera.ProcessKeyboard(LEFT, this->deltaTime);
+		else if (keys[GLFW_KEY_D] )
+			camera.ProcessKeyboard(RIGHT, this->deltaTime);
+	}
+
 	// Menu controls
 	if (this->menuActive != 5 || this->menuActive != 16 || this->menuActive != 25 || this->menuActive != 26 || this->menuActive != 27 || this->menuActive != 28)
 	{
@@ -446,19 +492,31 @@ void Game::MoveMenu(void)
 // Moves/alters the camera positions based on user input
 void	Game::DoMovement(void)
 {
-	// Camera controls
-	// if (keys[GLFW_KEY_Q])
-	// 	camera.ProcessKeyboard(UP, this->deltaTime);
-	// else if (keys[GLFW_KEY_E])
-	// 	camera.ProcessKeyboard(DOWN, this->deltaTime);
-	// else if (keys[GLFW_KEY_W])
-	// 	camera.ProcessKeyboard(FORWARD, this->deltaTime);
-	// else if (keys[GLFW_KEY_S])
-	// 	camera.ProcessKeyboard(BACKWARD, this->deltaTime);
-	// else if (keys[GLFW_KEY_A])
-	// 	camera.ProcessKeyboard(LEFT, this->deltaTime);
-	// else if (keys[GLFW_KEY_D] )
-	// 	camera.ProcessKeyboard(RIGHT, this->deltaTime);
+	// Debugging
+	if (this->debug == true)
+	{
+		this->keyUP = GLFW_KEY_UP;
+		this->keyDOWN = GLFW_KEY_DOWN;
+		this->keyLEFT = GLFW_KEY_LEFT;
+		this->keyRIGHT = GLFW_KEY_RIGHT;
+		this->keyBOMB = GLFW_KEY_SPACE;
+		this->keyFLASH = GLFW_KEY_F;
+
+		// Camera controls
+		if (keys[GLFW_KEY_Q])
+			camera.ProcessKeyboard(UP, this->deltaTime);
+		else if (keys[GLFW_KEY_E])
+			camera.ProcessKeyboard(DOWN, this->deltaTime);
+		else if (keys[GLFW_KEY_W])
+			camera.ProcessKeyboard(FORWARD, this->deltaTime);
+		else if (keys[GLFW_KEY_S])
+			camera.ProcessKeyboard(BACKWARD, this->deltaTime);
+		else if (keys[GLFW_KEY_A])
+			camera.ProcessKeyboard(LEFT, this->deltaTime);
+		else if (keys[GLFW_KEY_D] )
+			camera.ProcessKeyboard(RIGHT, this->deltaTime);
+	}
+
 	// Player controls
 	if (keys[this->keyUP])
 		this->world->ProcessKeyboard(FWD, camera, this->toggleFlash);
@@ -480,16 +538,24 @@ void	Game::DoMovement(void)
 		this->pauseActive = 0;
 		this->toggleFlash = false;
 		this->pauseVisible = true;
+		if (this->debug == false)
+			glfwSetCursorPosCallback(window, nullptr);
 	}
 	else if (keys[this->keyFLASH])
 	{
 		keys[this->keyFLASH] = false;
 		if (this->toggleFlash == true)
+		{
 			this->toggleFlash = false;
+			if (this->debug == false)
+				glfwSetCursorPosCallback(window, nullptr);
+		}
 		else if (this->toggleFlash == false)
 		{
 			this->toggleFlash = true;
 			camera.resetPitch();
+			if (this->debug == false)
+				glfwSetCursorPosCallback(window, MouseCallback);
 			switch (this->world->getDirLast())
 			{
 				case FWD:
@@ -521,7 +587,7 @@ void 	createWorld(Game *game)
 
 void 	Game::createWorld2(void )
 {
-	this->world = new World(*(this->shaderActive), "resources/models/world.obj", this->screen_x, this->screen_y, this->window);
+	this->world = new World(*(this->shaderActive), "resources/models/world.obj", this->screen_x, this->screen_y, this->window, this->debug);
 	this->loadVisible = false;
 }
 
@@ -543,7 +609,7 @@ void 	loadGame(Game *game)
 
 void 	Game::loadGame1(void )
 {
-	this->world = new World(*(this->shaderNormal), "resources/models/world.obj", this->screen_x, this->screen_y, this->window, "saveGame");
+	this->world = new World(*(this->shaderNormal), "resources/models/world.obj", this->screen_x, this->screen_y, this->window, "saveGame", this->debug);
 	this->stage = this->world->getStage();
 	this->loadVisible = false;
 	this->lives = this->world->getLives();
@@ -680,8 +746,11 @@ void	Game::readConfig(void)
 
 void	Game::menuIsVisible( void )
 {
-	camera.moveCamForMenu();
-	camera.ProcessMouseMovement(0, -250);
+	if (this->debug == false)
+	{
+		camera.moveCamForMenu();
+		camera.ProcessMouseMovement(0, -250);
+	}
 	if (this->menuActive == 26)
 	{
 		this->Menus[26]->draw();
@@ -1059,8 +1128,11 @@ void	Game::menuIsVisible( void )
 
 void	Game::loadIsVisible( void )
 {
-	camera.moveCamForMenu();
-	camera.ProcessMouseMovement(0, -250);
+	if (this->debug == false)
+	{
+		camera.moveCamForMenu();
+		camera.ProcessMouseMovement(0, -250);
+	}
 	if (this->loadActive == 3)
 	{
 		this->loadActive = 0;
@@ -1081,8 +1153,11 @@ void	Game::loadIsVisible( void )
 
 void	Game::pauseIsVisible( void )
 {
-	camera.moveCamForMenu();
-	camera.ProcessMouseMovement(0, -250);
+	if (this->debug == false)
+	{
+		camera.moveCamForMenu();
+		camera.ProcessMouseMovement(0, -250);
+	}
 	this->pauseMenu[this->pauseActive]->draw();
 	MovePause();
 	if (keys[GLFW_KEY_ENTER])
@@ -1127,10 +1202,10 @@ void	Game::pauseIsVisible( void )
 							default:
 								break;
 						}
-						pauseVisible = false;
-						menuVisible = false;
-						pauseVisible = false;
-						loadVisible = true;
+						this->pauseVisible = false;
+						this->menuVisible = false;
+						this->pauseVisible = false;
+						this->loadVisible = true;
 						worldThread = new std::thread(loadGame, this);
 						worldThread->detach();
 					}

@@ -10,7 +10,6 @@ SoundMenu::SoundMenu(Shader &shader, std::string model)
 	this->rotate = 30.0f;
 }
 
-
 SoundMenu::SoundMenu( SoundMenu const & src)
 {
 	*this = src;

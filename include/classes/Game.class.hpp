@@ -6,7 +6,7 @@
 /*   By: dwilliam <dwilliam@42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/11 11:20:47 by cnolte            #+#    #+#             */
-/*   Updated: 2018/09/23 15:05:18 by dwilliam         ###   ########.fr       */
+/*   Updated: 2018/09/23 15:38:46 by dwilliam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ class Game
 	public:
 		//start canonical form
 		Game(void);
-		Game(const int width, const int height);
+		Game(const int width, const int height, const bool debug);
 		Game(Game const & src);
 		~Game(void);
 
@@ -98,6 +98,7 @@ class Game
 		int		key_change;
 		float	volMusic;
 		float	volEffect;
+		bool	debug;
 		int		last_menu;
 		int		fullScreenItteration;
 		GLfloat	pause_died;
