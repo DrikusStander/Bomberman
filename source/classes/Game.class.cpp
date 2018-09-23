@@ -62,6 +62,7 @@ Game::Game(void) : screen_x(100), screen_y(100)
 Game::Game(const int width, const int height) : screen_x(width), screen_y(height)
 {
 	std::cout << "Game: Loading..." << std::endl;
+	bool	died_msg = false;
 	this->last_menu = 0;
 	this->fullScreenItteration = 2;
 	this->stage = 1;
@@ -81,6 +82,10 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 	this->pauseActive = 0;
 	this->check = 0;
 	this->key_change = 0;
+	this->pause_died = 0.0f;
+	this->you_won = 0.0f;
+	this->you_died = 0.0f;
+	this->lives = 3;
 	this->readConfig();
 
 	// ---------Sound-----------
@@ -98,8 +103,7 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 	// Create a GLFWwindow object that we can use for GLFW's functions
-	// fullscreen
-	// GLFWwindow	*window = glfwCreateWindow(this->screen_x, this->screen_y, "Bomberman", glfwGetPrimaryMonitor(), nullptr);
+
 	// windowed
 	GLFWwindow	*window = glfwCreateWindow(this->screen_x, this->screen_y, "Bomberman", nullptr, nullptr);
 	this->window = window;
@@ -131,7 +135,7 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 	this->shaderFlash = &shaderFlash;
 	this->shaderActive = this->shaderNormal;
 	// Load models
-	for (int i = 0; i < 26; i++)
+	for (int i = 0; i < 29; i++)//default 26
 		this->Menus.push_back(new MainMenu(shader, "resources/models/menu/Menu_" + std::to_string(i) + ".obj"));
 	for (int i = 0; i < 9; i++)
 		this->load.push_back(new LoadingScreen((*this->shaderNormal), "resources/models/menu/LoadingScreen/Loading_screen_" + std::to_string(i) + ".obj"));
@@ -198,18 +202,40 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 				this->pauseIsVisible();
 			}
 			else
-			{	
+			{
 				if (currentFrame - old_time_key >= 0.01f)
 				{
 					old_time_key = currentFrame;
 					this->world->setShader((*this->shaderActive));
-					this->world->draw(camera, currentFrame);
+					if (this->lives != this->world->getLives())
+					{
+						this->you_died = this->lastFrame;
+						this->lives = this->world->getLives();
+						died_msg = true;
+					}
+					if (died_msg == true)
+					{
+						if (this->lastFrame - this->you_died >= 1.0f)
+						{
+							this->you_died = this->lastFrame;
+							died_msg = false;
+						}
+						else
+						{
+							camera.moveCamForMenu();
+							camera.ProcessMouseMovement(0, -250);
+							this->Menus[27]->draw();
+						}
+					}
+					else
+						this->world->draw(camera, currentFrame);
 					DoMovement();
 					if (world->getStatus() == 1)
 					{
 						delete this->world;
-						this->menuActive = 0;
 						this->menuVisible = true;
+						this->menuActive = 26;
+						this->pause_died = this->lastFrame;
 					}
 					else if (world->getStatus() == 2)
 					{
@@ -217,9 +243,11 @@ Game::Game(const int width, const int height) : screen_x(width), screen_y(height
 						{
 							case 3:
 								delete this->world;
-								this->menuActive = 0;
+								// this->menuActive = 0;
 								this->stage = 4;
 								menuVisible = true;
+								this->menuActive = 28;
+								this->you_won = this->lastFrame;
 								break;
 							case 1:
 								this->loadActive = 4;
@@ -364,7 +392,7 @@ void Game::MoveSoundMenu(void)
 void Game::MoveMenu(void)
 {
 	// Menu controls
-	if (this->menuActive != 5 || this->menuActive != 16 || this->menuActive != 25)
+	if (this->menuActive != 5 || this->menuActive != 16 || this->menuActive != 25 || this->menuActive != 26 || this->menuActive != 27 || this->menuActive != 28)
 	{
 		if (keys[GLFW_KEY_UP])
 		{
@@ -518,6 +546,7 @@ void 	Game::loadGame1(void )
 	this->world = new World(*(this->shaderNormal), "resources/models/world.obj", this->screen_x, this->screen_y, this->window, "saveGame");
 	this->stage = this->world->getStage();
 	this->loadVisible = false;
+	this->lives = this->world->getLives();
 }
 void	Game::placeSpotLight(void)
 {
@@ -653,356 +682,379 @@ void	Game::menuIsVisible( void )
 {
 	camera.moveCamForMenu();
 	camera.ProcessMouseMovement(0, -250);
-	if (this->soundMenuVisible == true)
+	if (this->menuActive == 26)
 	{
-		this->soundMenu[this->soundActive]->draw();
-		MoveSoundMenu();
+		this->Menus[26]->draw();
+		if (this->lastFrame - this->pause_died >= 3.0f)
+		{
+			this->pause_died = this->lastFrame;
+			this->menuActive = 0;
+		}
+	}
+	else if (this->menuActive == 28)
+	{
+		this->Menus[28]->draw();
+		if (this->lastFrame - this->you_won >= 3.0f)
+		{
+			this->you_won = this->lastFrame;
+			this->menuActive = 0;
+		}
 	}
 	else
 	{
-		this->Menus[this->menuActive]->draw();
-		MoveMenu();
-	}
-	if (keys[GLFW_KEY_ENTER])
-	{
-		keys[GLFW_KEY_ENTER] = false;
-		if (this->menuVisible == true)
+		if (this->soundMenuVisible == true)
 		{
-			if (this->menuActive == 0)
+			this->soundMenu[this->soundActive]->draw();
+			MoveSoundMenu();
+		}
+		else
+		{
+			this->Menus[this->menuActive]->draw();
+			MoveMenu();
+		}
+		
+		if (keys[GLFW_KEY_ENTER])
+		{
+			keys[GLFW_KEY_ENTER] = false;
+			if (this->menuVisible == true)
 			{
-				this->loadActive = 0;
-				this->menuVisible = false;
-				this->loadVisible =true;
-				std::thread *worldThread =  new std::thread(createWorld, this);
-				worldThread->detach();
-			}
-			else if (this->menuActive == 1)//load Game
-			{
-				if (exist("saveGame"))
+				if (this->menuActive == 0)
 				{
-					std::ifstream file;
-					std::string	line;
-					std::vector<std::string> tokens;
-					file.open("saveGame");
-					getline(file, line);
-					tokens = strsplit(line, ' ');
-					if (tokens[0] == "stage:")
-					{
-						std::cout << tokens[0] << std::endl;
-						std::istringstream(tokens[1]) >> this->stage;
-					}
-					file.close();
-					switch(this->stage)
-					{
-						case 1:
-							this->loadActive = 0;
-							break;
-						case 2:
-							this->loadActive = 4;
-							break;
-						case 3:
-							this->loadActive = 7;
-							break;
-						default:
-							break;
-					}
-					menuVisible = false;
-					loadVisible =true;
-					std::thread *worldThread =  new std::thread(loadGame, this);
+					this->lives = 3;
+					this->loadActive = 0;
+					this->menuVisible = false;
+					this->loadVisible =true;
+					std::thread *worldThread =  new std::thread(createWorld, this);
 					worldThread->detach();
 				}
-				else
-					this->menuActive = 16;
-			}
-			else if (this->menuActive == 4)
-				glfwSetWindowShouldClose(window, GL_TRUE);
-			else if (this->menuActive == 2)//Options
-				this->menuActive = 6;
-			else if (this->menuActive == 3)
-				this->menuActive = 5;
-			else if (this->menuActive == 4)
-				glfwSetWindowShouldClose(window, GL_TRUE);
-			else if (this->menuActive == 6)//Resolution
-				this->menuActive = 10;
-			else if (this->menuActive == 7) //Sound
-			{
-				menuVisible = false;
-				this->soundActive = 0;
-				soundMenuVisible = true;
-			}
-			else if (this->menuActive == 8) //Key Bindings
-				this->menuActive = 17;
-			else if (this->menuActive == 5) //Back to Main Menu
-				this->menuActive = 0;
-			else if (this->menuActive == 15) //Going back to Options
-				this->menuActive = 6;
-			else if (this->menuActive == 16)
-				this->menuActive = 1;
-			//------------------------------Changing Keys----------------------------------------------
-			else if (this->menuActive == 17)//changing UP key
-			{
-				last_menu = this->menuActive;
-				this->key_change = 0;
-				this->menuActive = 24;
-				keys[GLFW_KEY_ENTER] = false;
-			}
-			else if (this->menuActive == 18)//changing DOWN key
-			{
-				last_menu = this->menuActive;
-				this->key_change = 1;
-				this->menuActive = 24;
-				keys[GLFW_KEY_ENTER] = false;
-			}
-			else if (this->menuActive == 19)//changing LEFT key
-			{
-				last_menu = this->menuActive;
-				this->key_change = 2;
-				this->menuActive = 24;
-				keys[GLFW_KEY_ENTER] = false;
-			}
-			else if (this->menuActive == 20)//changing RIGHT key
-			{
-				last_menu = this->menuActive;
-				this->key_change = 3;
-				this->menuActive = 24;
-				keys[GLFW_KEY_ENTER] = false;
-			}
-			else if (this->menuActive == 21)//changing BOMB key
-			{
-				last_menu = this->menuActive;
-				this->key_change = 4;
-				this->menuActive = 24;
-				keys[GLFW_KEY_ENTER] = false;
-			}
-			else if (this->menuActive == 22)//changing 1st/3rd person View key
-			{
-				last_menu = this->menuActive;
-				this->key_change = 5;
-				this->menuActive = 24;
-				keys[GLFW_KEY_ENTER] = false;
-			}
-			else if (this->menuActive == 23)
-			{
-				last_menu = 0;
-				this->key_change = 0;
-				this->menuActive = 8;
-			}
-			//---------------------------END Changing KEYS-------------------------------------------------
-			else if (this->menuActive == 9)
-			{
-				if (this->check == 1)
+				else if (this->menuActive == 1)//load Game
 				{
-					this->menuVisible = false;
-					this->pauseVisible = true;
-					check = 0;
-					this->pauseActive = 3;
+					if (exist("saveGame"))
+					{
+						std::ifstream file;
+						std::string	line;
+						std::vector<std::string> tokens;
+						file.open("saveGame");
+						getline(file, line);
+						tokens = strsplit(line, ' ');
+						if (tokens[0] == "stage:")
+						{
+							std::cout << tokens[0] << std::endl;
+							std::istringstream(tokens[1]) >> this->stage;
+						}
+						file.close();
+						switch(this->stage)
+						{
+							case 1:
+								this->loadActive = 0;
+								break;
+							case 2:
+								this->loadActive = 4;
+								break;
+							case 3:
+								this->loadActive = 7;
+								break;
+							default:
+								break;
+						}
+						menuVisible = false;
+						loadVisible =true;
+						std::thread *worldThread =  new std::thread(loadGame, this);
+						worldThread->detach();
+					}
+					else
+						this->menuActive = 16;
 				}
-				else
-					this->menuActive = 2;
-			}
-			//-------------------Changing Resolutions--------------------------------------------------------
-			else if (this->menuActive == 10) //Resolution change
-			{
-				this->screen_x = 1024;
-				this->screen_y = 576;
-				glfwSetWindowSize(window, this->screen_x, this->screen_y);
-				this->writeConfig();
-			}
-			else if (this->menuActive == 11) //Resolution change
-			{
-				this->screen_x = 1280;
-				this->screen_y = 720;
-				glfwSetWindowSize(window, this->screen_x, this->screen_y);
-				this->writeConfig();
-			}
-			else if (this->menuActive == 12) //Resolution change
-			{
-				this->screen_x = 1920;
-				this->screen_y = 1080;
-				glfwSetWindowSize(window, this->screen_x, this->screen_y);
-				this->writeConfig();
-			}
-			else if (this->menuActive == 13) //Window Mode
-			{
-				glfwSetWindowMonitor(window, nullptr, 0, 0, this->screen_x, this->screen_y, GLFW_DONT_CARE);
-				keys[GLFW_KEY_ENTER] = true;
-			}
-			else if (this->menuActive == 14) //Full Screen Mode 
-			{
-				if (glfwGetWindowMonitor(window) == nullptr)
-					this->fullScreenItteration = 0;
-				if (this->fullScreenItteration < 2)
+				else if (this->menuActive == 4)
+					glfwSetWindowShouldClose(window, GL_TRUE);
+				else if (this->menuActive == 2)//Options
+					this->menuActive = 6;
+				else if (this->menuActive == 3)
+					this->menuActive = 5;
+				else if (this->menuActive == 4)
+					glfwSetWindowShouldClose(window, GL_TRUE);
+				else if (this->menuActive == 6)//Resolution
+					this->menuActive = 10;
+				else if (this->menuActive == 7) //Sound
 				{
-					GLFWmonitor *monitor = glfwGetPrimaryMonitor();
-					const GLFWvidmode *mode = glfwGetVideoMode(monitor);
-					glfwSetWindowMonitor(window, monitor, 0, 0, 2300, 1920, mode->refreshRate);
-					glfwSetWindowMonitor(window, monitor, 0, 0, this->screen_x, this->screen_y, mode->refreshRate);
+					menuVisible = false;
+					this->soundActive = 0;
+					soundMenuVisible = true;
+				}
+				else if (this->menuActive == 8) //Key Bindings
+					this->menuActive = 17;
+				else if (this->menuActive == 5) //Back to Main Menu
+					this->menuActive = 0;
+				else if (this->menuActive == 15) //Going back to Options
+					this->menuActive = 6;
+				else if (this->menuActive == 16)
+					this->menuActive = 1;
+				//------------------------------Changing Keys----------------------------------------------
+				else if (this->menuActive == 17)//changing UP key
+				{
+					last_menu = this->menuActive;
+					this->key_change = 0;
+					this->menuActive = 24;
+					keys[GLFW_KEY_ENTER] = false;
+				}
+				else if (this->menuActive == 18)//changing DOWN key
+				{
+					last_menu = this->menuActive;
+					this->key_change = 1;
+					this->menuActive = 24;
+					keys[GLFW_KEY_ENTER] = false;
+				}
+				else if (this->menuActive == 19)//changing LEFT key
+				{
+					last_menu = this->menuActive;
+					this->key_change = 2;
+					this->menuActive = 24;
+					keys[GLFW_KEY_ENTER] = false;
+				}
+				else if (this->menuActive == 20)//changing RIGHT key
+				{
+					last_menu = this->menuActive;
+					this->key_change = 3;
+					this->menuActive = 24;
+					keys[GLFW_KEY_ENTER] = false;
+				}
+				else if (this->menuActive == 21)//changing BOMB key
+				{
+					last_menu = this->menuActive;
+					this->key_change = 4;
+					this->menuActive = 24;
+					keys[GLFW_KEY_ENTER] = false;
+				}
+				else if (this->menuActive == 22)//changing 1st/3rd person View key
+				{
+					last_menu = this->menuActive;
+					this->key_change = 5;
+					this->menuActive = 24;
+					keys[GLFW_KEY_ENTER] = false;
+				}
+				else if (this->menuActive == 23)
+				{
+					last_menu = 0;
+					this->key_change = 0;
+					this->menuActive = 8;
+				}
+				//---------------------------END Changing KEYS-------------------------------------------------
+				else if (this->menuActive == 9)
+				{
+					if (this->check == 1)
+					{
+						this->menuVisible = false;
+						this->pauseVisible = true;
+						check = 0;
+						this->pauseActive = 3;
+					}
+					else
+						this->menuActive = 2;
+				}
+				//-------------------Changing Resolutions--------------------------------------------------------
+				else if (this->menuActive == 10) //Resolution change
+				{
+					this->screen_x = 1024;
+					this->screen_y = 576;
+					glfwSetWindowSize(window, this->screen_x, this->screen_y);
+					this->writeConfig();
+				}
+				else if (this->menuActive == 11) //Resolution change
+				{
+					this->screen_x = 1280;
+					this->screen_y = 720;
+					glfwSetWindowSize(window, this->screen_x, this->screen_y);
+					this->writeConfig();
+				}
+				else if (this->menuActive == 12) //Resolution change
+				{
+					this->screen_x = 1920;
+					this->screen_y = 1080;
+					glfwSetWindowSize(window, this->screen_x, this->screen_y);
+					this->writeConfig();
+				}
+				else if (this->menuActive == 13) //Window Mode
+				{
+					glfwSetWindowMonitor(window, nullptr, 0, 0, this->screen_x, this->screen_y, GLFW_DONT_CARE);
 					keys[GLFW_KEY_ENTER] = true;
-					this->fullScreenItteration++;
+				}
+				else if (this->menuActive == 14) //Full Screen Mode 
+				{
+					if (glfwGetWindowMonitor(window) == nullptr)
+						this->fullScreenItteration = 0;
+					if (this->fullScreenItteration < 2)
+					{
+						GLFWmonitor *monitor = glfwGetPrimaryMonitor();
+						const GLFWvidmode *mode = glfwGetVideoMode(monitor);
+						glfwSetWindowMonitor(window, monitor, 0, 0, 2300, 1920, mode->refreshRate);
+						glfwSetWindowMonitor(window, monitor, 0, 0, this->screen_x, this->screen_y, mode->refreshRate);
+						keys[GLFW_KEY_ENTER] = true;
+						this->fullScreenItteration++;
+					}
+				}
+			}
+			//--------------------Changing Sound--------------------------------------------------------------------
+			else if (this->soundMenuVisible == true)
+			{
+				if (this->soundActive == 0)
+				{
+					if (this->volMusic == 0.0f)
+						this->soundActive = 3;
+					else if (this->volMusic == 0.2f)
+						this->soundActive = 4;
+					else if (this->volMusic == 0.5f)
+						this->soundActive = 5;
+					else if(this->volMusic == 1.0f)
+						this->soundActive = 6;
+				}
+				else if (this->soundActive == 1)
+				{
+					if (this->volEffect == 0.0f)
+						this->soundActive = 7;
+					else if (this->volEffect == 0.2f)
+						this->soundActive = 8;
+					else if (this->volEffect == 0.5f)
+						this->soundActive = 9;
+					else if (this->volEffect == 1.0f)
+						this->soundActive = 10;
+				}
+				else if (this->soundActive == 2)
+				{
+					this->menuActive = 7;
+					this->soundMenuVisible = false;
+					this->menuVisible = true;
+				}
+				else if ((this->soundActive >= 3) && (this->soundActive <= 6))
+					this->soundActive = 0;
+				else if ((this->soundActive >= 7) && (this->soundActive <= 10))
+					this->soundActive = 1;
+			}
+		}
+		//---------------------Selecting Keys---------------------------------------------------------------------------
+		else if (this->menuActive == 24 || this->menuActive == 25)
+		{
+			if (this->menuActive == 25)
+			{
+				usleep(1000000);
+				this->menuActive = last_menu;
+			}
+			if (keys[lastkeypressed])
+			{
+				if (!(keys[GLFW_KEY_ENTER] && keys[GLFW_KEY_ESCAPE]))
+				{
+					tempKEY = lastkeypressed;
+					if (this->key_change == 0)
+					{
+						if ((tempKEY != this->keyDOWN) && (tempKEY != this->keyLEFT) && (tempKEY != this->keyRIGHT) && (tempKEY != this->keyBOMB) && (tempKEY != this->keyFLASH))
+						{
+							this->keyUP = tempKEY;
+							this->menuActive = last_menu;
+						}
+						else
+							this->menuActive = 25;
+					}
+					if (this->key_change == 1)
+					{
+						if ((tempKEY != this->keyUP) && (tempKEY != this->keyLEFT) && (tempKEY != this->keyRIGHT) && (tempKEY != this->keyBOMB) && (tempKEY != this->keyFLASH))
+						{
+							this->keyDOWN = tempKEY;
+							this->menuActive = last_menu;
+						}
+						else
+							this->menuActive = 25;
+					}
+					if (this->key_change == 2)
+					{
+						if ((tempKEY != this->keyUP) && (tempKEY != this->keyDOWN) && (tempKEY != this->keyRIGHT) && (tempKEY != this->keyBOMB) && (tempKEY != this->keyFLASH))
+						{
+							this->keyLEFT = tempKEY;
+							this->menuActive = last_menu;
+						}
+						else
+							this->menuActive = 25;
+					}
+					if (this->key_change == 3)
+					{
+						if ((tempKEY != this->keyUP) && (tempKEY != this->keyDOWN) && (tempKEY != this->keyLEFT) && (tempKEY != this->keyBOMB) && (tempKEY != this->keyFLASH))
+						{
+							this->keyRIGHT = tempKEY;
+							this->menuActive = last_menu;
+						}
+						else
+							this->menuActive = 25;
+					}
+					if (this->key_change == 4)
+					{
+						if ((tempKEY != this->keyUP) && (tempKEY != this->keyDOWN) && (tempKEY != this->keyLEFT) && (tempKEY != this->keyRIGHT) && (tempKEY != this->keyFLASH))
+						{
+							this->keyBOMB = tempKEY;
+							this->menuActive = last_menu;
+						}
+						else
+							this->menuActive = 25;
+					}
+					if (this->key_change == 5)
+					{
+						if ((tempKEY != this->keyUP) && (tempKEY != this->keyDOWN) && (tempKEY != this->keyLEFT) && (tempKEY != this->keyRIGHT) && (tempKEY != this->keyBOMB))
+						{
+							this->keyFLASH = tempKEY;
+							this->menuActive = last_menu;
+						}
+						else
+							this->menuActive = 25;
+					}
+					this->writeConfig();
 				}
 			}
 		}
-		//--------------------Changing Sound--------------------------------------------------------------------
-		else if (this->soundMenuVisible == true)
+		//--------------------END Selecting Keys-------------------------------------------------------------------------
+		else if (keys[GLFW_KEY_SPACE]) // Changing volume in-game
 		{
-			if (this->soundActive == 0)
+			if (this->soundActive >= 3 && this->soundActive <= 10)
 			{
-				if (this->volMusic == 0.0f)
-					this->soundActive = 3;
-				else if (this->volMusic == 0.2f)
-					this->soundActive = 4;
-				else if (this->volMusic == 0.5f)
-					this->soundActive = 5;
-				else if(this->volMusic == 1.0f)
-					this->soundActive = 6;
-			}
-			else if (this->soundActive == 1)
-			{
-				if (this->volEffect == 0.0f)
-					this->soundActive = 7;
-				else if (this->volEffect == 0.2f)
-					this->soundActive = 8;
-				else if (this->volEffect == 0.5f)
-					this->soundActive = 9;
-				else if (this->volEffect == 1.0f)
-					this->soundActive = 10;
-			}
-			else if (this->soundActive == 2)
-			{
-				this->menuActive = 7;
-				this->soundMenuVisible = false;
-				this->menuVisible = true;
-			}
-			else if ((this->soundActive >= 3) && (this->soundActive <= 6))
-				this->soundActive = 0;
-			else if ((this->soundActive >= 7) && (this->soundActive <= 10))
-				this->soundActive = 1;
-		}
-	}
-	//---------------------Selecting Keys---------------------------------------------------------------------------
-	else if (this->menuActive == 24 || this->menuActive == 25)
-	{
-		if (this->menuActive == 25)
-		{
-			usleep(1000000);
-			this->menuActive = last_menu;
-		}
-		if (keys[lastkeypressed])
-		{
-			if (!(keys[GLFW_KEY_ENTER] && keys[GLFW_KEY_ESCAPE]))
-			{
-				tempKEY = lastkeypressed;
-				if (this->key_change == 0)
+				keys[GLFW_KEY_SPACE] = false;
+				switch (this->soundActive)
 				{
-					if ((tempKEY != this->keyDOWN) && (tempKEY != this->keyLEFT) && (tempKEY != this->keyRIGHT) && (tempKEY != this->keyBOMB) && (tempKEY != this->keyFLASH))
-					{
-						this->keyUP = tempKEY;
-						this->menuActive = last_menu;
-					}
-					else
-						this->menuActive = 25;
-				}
-				if (this->key_change == 1)
-				{
-					if ((tempKEY != this->keyUP) && (tempKEY != this->keyLEFT) && (tempKEY != this->keyRIGHT) && (tempKEY != this->keyBOMB) && (tempKEY != this->keyFLASH))
-					{
-						this->keyDOWN = tempKEY;
-						this->menuActive = last_menu;
-					}
-					else
-						this->menuActive = 25;
-				}
-				if (this->key_change == 2)
-				{
-					if ((tempKEY != this->keyUP) && (tempKEY != this->keyDOWN) && (tempKEY != this->keyRIGHT) && (tempKEY != this->keyBOMB) && (tempKEY != this->keyFLASH))
-					{
-						this->keyLEFT = tempKEY;
-						this->menuActive = last_menu;
-					}
-					else
-						this->menuActive = 25;
-				}
-				if (this->key_change == 3)
-				{
-					if ((tempKEY != this->keyUP) && (tempKEY != this->keyDOWN) && (tempKEY != this->keyLEFT) && (tempKEY != this->keyBOMB) && (tempKEY != this->keyFLASH))
-					{
-						this->keyRIGHT = tempKEY;
-						this->menuActive = last_menu;
-					}
-					else
-						this->menuActive = 25;
-				}
-				if (this->key_change == 4)
-				{
-					if ((tempKEY != this->keyUP) && (tempKEY != this->keyDOWN) && (tempKEY != this->keyLEFT) && (tempKEY != this->keyRIGHT) && (tempKEY != this->keyFLASH))
-					{
-						this->keyBOMB = tempKEY;
-						this->menuActive = last_menu;
-					}
-					else
-						this->menuActive = 25;
-				}
-				if (this->key_change == 5)
-				{
-					if ((tempKEY != this->keyUP) && (tempKEY != this->keyDOWN) && (tempKEY != this->keyLEFT) && (tempKEY != this->keyRIGHT) && (tempKEY != this->keyBOMB))
-					{
-						this->keyFLASH = tempKEY;
-						this->menuActive = last_menu;
-					}
-					else
-						this->menuActive = 25;
+					case 3:
+						this->volMusic = 0;
+						World::sound->setVolMusic(this->volMusic);
+						break ;
+					case 4:
+						this->volMusic = 0.2;
+						World::sound->setVolMusic(this->volMusic);
+						break ;
+					case 5:
+						this->volMusic = 0.5;
+						World::sound->setVolMusic(this->volMusic);
+						break ;
+					case 6:
+						this->volMusic = 1.0;
+						World::sound->setVolMusic(this->volMusic);
+						break ;
+					case 7:
+						this->volEffect = 0;
+						World::sound->setVolEffects(this->volEffect);
+						break ;
+					case 8:
+						this->volEffect = 0.2;
+						World::sound->setVolEffects(this->volEffect);
+						break ;
+					case 9:
+						this->volEffect = 0.5;
+						World::sound->setVolEffects(this->volEffect);
+						break ;
+					case 10:
+						this->volEffect = 1.0;
+						World::sound->setVolEffects(this->volEffect);
+						break ;
+					default:
+						break ;
 				}
 				this->writeConfig();
 			}
 		}
+		usleep(10000);
 	}
-	//--------------------END Selecting Keys-------------------------------------------------------------------------
-	else if (keys[GLFW_KEY_SPACE]) // Changing volume in-game
-	{
-		if (this->soundActive >= 3 && this->soundActive <= 10)
-		{
-			keys[GLFW_KEY_SPACE] = false;
-			switch (this->soundActive)
-			{
-				case 3:
-					this->volMusic = 0;
-					World::sound->setVolMusic(this->volMusic);
-					break ;
-				case 4:
-					this->volMusic = 0.2;
-					World::sound->setVolMusic(this->volMusic);
-					break ;
-				case 5:
-					this->volMusic = 0.5;
-					World::sound->setVolMusic(this->volMusic);
-					break ;
-				case 6:
-					this->volMusic = 1.0;
-					World::sound->setVolMusic(this->volMusic);
-					break ;
-				case 7:
-					this->volEffect = 0;
-					World::sound->setVolEffects(this->volEffect);
-					break ;
-				case 8:
-					this->volEffect = 0.2;
-					World::sound->setVolEffects(this->volEffect);
-					break ;
-				case 9:
-					this->volEffect = 0.5;
-					World::sound->setVolEffects(this->volEffect);
-					break ;
-				case 10:
-					this->volEffect = 1.0;
-					World::sound->setVolEffects(this->volEffect);
-					break ;
-				default:
-					break ;
-			}
-			this->writeConfig();
-		}
-	}
-	usleep(10000);
 }
 
 void	Game::loadIsVisible( void )
