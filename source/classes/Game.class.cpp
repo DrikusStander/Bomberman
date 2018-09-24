@@ -198,6 +198,7 @@ Game::Game(const int width, const int height, const bool debug) : screen_x(width
 					this->world->setShader((*this->shaderActive));
 					if (this->lives != this->world->getLives())
 					{
+						this->toggleFlash = false;
 						this->you_died = this->lastFrame;
 						this->lives = this->world->getLives();
 						died_msg = true;
