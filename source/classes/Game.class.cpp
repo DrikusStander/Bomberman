@@ -85,14 +85,11 @@ Game::Game(const int width, const int height, const bool debug) : screen_x(width
 	this->you_won = 0.0f;
 	this->you_died = 0.0f;
 	this->lives = 3;
-	this->wtclogo_animate = 0.0f;
+	// this->wtclogo_animate = 0.0f;
 	this->readConfig();
 
-	// ---------Sound-----------
-	World::sound->playMusic();
-	World::sound->setVolMusic(this->volMusic);
-	World::sound->setVolEffects(this->volEffect);
-	// -------------------------
+	
+
 	camera.ProcessMouseMovement(0, -250);
 	// Init GLFW
 	glfwInit();
@@ -118,6 +115,7 @@ Game::Game(const int width, const int height, const bool debug) : screen_x(width
 		glfwSetCursorPosCallback(window, nullptr);
 	else
 		glfwSetCursorPosCallback(window, MouseCallback);
+
 	// GLFW Options
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	// Set this to true so GLEW knows to use a modern approach to retrieving function pointers and extensions
@@ -135,39 +133,39 @@ Game::Game(const int width, const int height, const bool debug) : screen_x(width
 	Shader	shaderFlash("resources/shaders/lighting.vs", "resources/shaders/lighting.frag");
 	this->shaderFlash = &shaderFlash;
 	this->shaderActive = this->shaderNormal;
-	// Load models
-	for (int i = 0; i < 29; i++)
-		this->Menus.push_back(new MainMenu(shader, "resources/models/menu/Menu_" + std::to_string(i) + ".obj"));
-	for (int i = 0; i < 9; i++)
-		this->load.push_back(new LoadingScreen((*this->shaderNormal), "resources/models/menu/LoadingScreen/Loading_screen_" + std::to_string(i) + ".obj"));
-	for (int i = 0; i < 11; i++)
-		this->soundMenu.push_back(new SoundMenu((*this->shaderNormal), "resources/models/menu/SoundScreen/SoundScreen_" + std::to_string(i) + ".obj"));
-	for (int i = 0; i < 6; i++)
-		this->pauseMenu.push_back(new PauseMenu(shader, "resources/models/menu/PauseMenu/pauseMenu_" + std::to_string(i) + ".obj"));
+
 	for (int i = 0; i <= 60; i++)
 		this->wtc.push_back(new wtcLogo(shader, "resources/models/wtc_logo/wtc_" + std::to_string(i) + ".obj"));
+
+	std::thread *modelsThread =  new std::thread(loadmodels, this);
+	modelsThread->detach();
+
 	glm::mat4 projection = glm::perspective(camera.GetZoom(), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 1000.0f);
 	this->projection = projection;
 	GLfloat old_time = 0.0f;
 	GLfloat old_time_key = 0.0f;
-	bool	wtc_logo = true;
+	this->wtc_logo = true;
 	bool	wtc_last = false;
 	int		wtc_active = 0;
+	int		wtc_count = 0;
+
+	// ---------Sound-----------
+	World::sound->playMusic();
+	World::sound->setVolMusic(this->volMusic);
+	World::sound->setVolEffects(this->volEffect);
+	// -------------------------
 	// Game loop
 	while (!glfwWindowShouldClose(window))
 	{
 		mu.lock();
 		glfwMakeContextCurrent(window);
+		wtcAnimation:
 		// Set frame time
 		GLfloat currentFrame = glfwGetTime();
 		this->deltaTime = currentFrame - this->lastFrame;
 		this->lastFrame = currentFrame;
 		if (currentFrame - old_time >= 1.0f)
 			old_time = currentFrame;
-		if (this->lastFrame - this->wtclogo_animate >= 1.0f)
-		{
-			this->wtclogo_animate = this->lastFrame;
-		}
 		// Check and call events
 		glfwPollEvents();
 		// Clear the colorbuffer
@@ -194,6 +192,7 @@ Game::Game(const int width, const int height, const bool debug) : screen_x(width
 		glUniformMatrix4fv(glGetUniformLocation(this->shaderActive->getProgram(), "view"), 1, GL_FALSE, glm::value_ptr(camera.GetViewMatrix()));
 		if (wtc_logo == true)
 		{
+			wtc_count++;
 			this->wtc[wtc_active]->draw();
 			if (wtc_last == false)
 			{
@@ -207,12 +206,19 @@ Game::Game(const int width, const int height, const bool debug) : screen_x(width
 				if (wtc_active > 0)
 					wtc_active--;
 				else
-					wtc_logo = false;
+					wtc_last = false;
 			}
+			if (wtc_count < 4)
+			{
+				glfwSwapBuffers(window);
+				goto wtcAnimation;
+			}
+			else
+				wtc_count = 0;
 
 			usleep(30000);
 		}
-		else if (this->menuVisible == true || this->soundMenuVisible == true)
+		if (this->menuVisible == true || this->soundMenuVisible == true)
 			this->menuIsVisible();
 		else
 		{
@@ -1262,4 +1268,47 @@ void	Game::pauseIsVisible( void )
 			}
 		}
 	}
+}
+
+void	loadmodels(Game *game)
+{
+	game->loadmodels1();
+}
+
+void	Game::loadmodels1()
+{
+	// Load models
+	for (int i = 0; i < 29; i++)
+	{
+		mu.lock();
+		glfwMakeContextCurrent(window);
+		this->Menus.push_back(new MainMenu((*this->shaderNormal), "resources/models/menu/Menu_" + std::to_string(i) + ".obj"));
+		glfwMakeContextCurrent(NULL);
+		mu.unlock();
+	}
+	for (int i = 0; i < 9; i++)
+	{
+		mu.lock();
+		glfwMakeContextCurrent(window);
+		this->load.push_back(new LoadingScreen((*this->shaderNormal), "resources/models/menu/LoadingScreen/Loading_screen_" + std::to_string(i) + ".obj"));
+		glfwMakeContextCurrent(NULL);
+		mu.unlock();
+	}
+	for (int i = 0; i < 11; i++)
+	{
+		mu.lock();
+		glfwMakeContextCurrent(window);
+		this->soundMenu.push_back(new SoundMenu((*this->shaderNormal), "resources/models/menu/SoundScreen/SoundScreen_" + std::to_string(i) + ".obj"));
+		glfwMakeContextCurrent(NULL);
+		mu.unlock();
+	}
+	for (int i = 0; i < 6; i++)
+	{
+		mu.lock();
+		glfwMakeContextCurrent(window);
+		this->pauseMenu.push_back(new PauseMenu((*this->shaderNormal), "resources/models/menu/PauseMenu/pauseMenu_" + std::to_string(i) + ".obj"));
+		glfwMakeContextCurrent(NULL);
+		mu.unlock();
+	}
+	this->wtc_logo = false;
 }

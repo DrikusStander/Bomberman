@@ -63,7 +63,7 @@ class Game
 		void 	loadGame1(void );
 		void	writeConfig(void);
 		void	readConfig(void);
-
+		void	loadmodels1();
 
 		// static void 	createWorld( Game *game);
 
@@ -106,7 +106,8 @@ class Game
 		GLfloat	pause_died;
 		GLfloat	you_won;
 		GLfloat	you_died;
-		GLfloat	wtclogo_animate;
+		// GLfloat	wtclogo_animate;
+		bool	wtc_logo;
 		int		lives;
 
 		bool 		WorldLoaded;
@@ -130,5 +131,6 @@ class Game
 void 	createWorld(Game *game);
 void 	loadStage(Game *game);
 void 	loadGame(Game *game);
+void	loadmodels(Game *game);
 
 #endif
