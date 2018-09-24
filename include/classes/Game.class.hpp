@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Game.class.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dwilliam <dwilliam@42.fr>                  +#+  +:+       +#+        */
+/*   By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/11 11:20:47 by cnolte            #+#    #+#             */
-/*   Updated: 2018/09/23 15:38:46 by dwilliam         ###   ########.fr       */
+/*   Updated: 2018/09/24 13:39:25 by cnolte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@
 # include "LoadingScreen.class.hpp"
 # include "SoundMenu.class.hpp"
 # include "PauseMenu.class.hpp"
+# include "wtcLogo.class.hpp"
 # include <unistd.h>
 # include <thread>
 # include <future>
@@ -68,6 +69,7 @@ class Game
 
 	private:
 		std::vector<MainMenu*>	Menus;
+		std::vector<wtcLogo*>	wtc;
 		std::vector<LoadingScreen*> load;
 		std::vector<SoundMenu*> soundMenu;
 		std::vector<PauseMenu*> pauseMenu;
@@ -104,6 +106,7 @@ class Game
 		GLfloat	pause_died;
 		GLfloat	you_won;
 		GLfloat	you_died;
+		GLfloat	wtclogo_animate;
 		int		lives;
 
 		bool 		WorldLoaded;

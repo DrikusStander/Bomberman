@@ -6,7 +6,7 @@
 #    By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/07/31 19:21:44 by cnolte            #+#    #+#              #
-#    Updated: 2018/09/23 16:11:50 by cnolte           ###   ########.fr        #
+#    Updated: 2018/09/24 13:57:50 by cnolte           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,7 +21,7 @@ SRCS := source/main.cpp source/classes/Game.class.cpp source/classes/Camera.clas
 		source/classes/World.class.cpp source/classes/Enemy.class.cpp source/Exceptions.cpp							\
 		source/classes/HUD.class.cpp source/classes/Powerup.class.cpp source/classes/MainMenu.class.cpp				\
 		source/classes/LoadingScreen.class.cpp source/classes/Sound.class.cpp source/classes/SoundMenu.class.cpp	\
-		source/classes/PauseMenu.class.cpp
+		source/classes/PauseMenu.class.cpp source/classes/wtcLogo.class.cpp
 
 OBJS := $(SRCS:.cpp=.o)
 
@@ -46,7 +46,7 @@ ifneq ($(DYLD_LIBRARY_PATH),$(ROOT_DIR)/resources/Sound/lib)
 endif
 	@if ! test -d resources; \
 	then if ! test -a resources.zip; \
-	then curl -L -o "resources.zip" "https://drive.google.com/uc?export=download&id=1lXeXyKk2mrFBxyYPGL1fMYA0CsZcaGH_"; \
+	then curl -L -o "resources.zip" "https://drive.google.com/uc?export=download&id=1Q3GjxDyHI3tTV83E77WaJ4j0vZTQ0hlA"; \
 	fi; \
 	unzip resources.zip; \
 	rm -rf resources.zip; \
