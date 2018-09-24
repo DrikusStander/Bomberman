@@ -1329,16 +1329,7 @@ void	Game::loadWTCmodels1(int i)
 {
 	mu.lock();
 	glfwMakeContextCurrent(window);
-	
-		
-		this->wtc.push_back(new wtcLogo((*this->shaderNormal), "resources/models/wtc_logo/wtc_" + std::to_string(i) + ".obj"));
-		// if(i % 3 == 0 || i == 60)
-		// {
-		// 
-		// }
-		glfwMakeContextCurrent(NULL);
-		mu.unlock();
-	
-
-	
+	this->wtc.push_back(new wtcLogo((*this->shaderNormal), "resources/models/wtc_logo/wtc_" + std::to_string(i) + ".obj"));
+	glfwMakeContextCurrent(NULL);
+	mu.unlock();
 }
