@@ -64,6 +64,7 @@ class Game
 		void	writeConfig(void);
 		void	readConfig(void);
 		void	loadmodels1();
+		void	loadWTCmodels1(int i);
 
 		// static void 	createWorld( Game *game);
 
@@ -132,5 +133,6 @@ void 	createWorld(Game *game);
 void 	loadStage(Game *game);
 void 	loadGame(Game *game);
 void	loadmodels(Game *game);
+void	loadWTCmodels(Game *game, int i);
 
 #endif

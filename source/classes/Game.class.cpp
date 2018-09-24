@@ -135,10 +135,17 @@ Game::Game(const int width, const int height, const bool debug) : screen_x(width
 	this->shaderActive = this->shaderNormal;
 
 	for (int i = 0; i <= 60; i++)
-		this->wtc.push_back(new wtcLogo(shader, "resources/models/wtc_logo/wtc_" + std::to_string(i) + ".obj"));
+	{
+		std::thread *modelsWTCThread =  new std::thread(loadWTCmodels, this, i);
+		modelsWTCThread->detach();
+		// usleep(300000);
+	}
+	std::cout << "wtc models loaded"<< std::endl;
+
 
 	std::thread *modelsThread =  new std::thread(loadmodels, this);
 	modelsThread->detach();
+	
 
 	glm::mat4 projection = glm::perspective(camera.GetZoom(), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 1000.0f);
 	this->projection = projection;
@@ -1311,4 +1318,27 @@ void	Game::loadmodels1()
 		mu.unlock();
 	}
 	this->wtc_logo = false;
+}
+
+void	loadWTCmodels(Game *game, int i)
+{
+	game->loadWTCmodels1(i);
+}
+
+void	Game::loadWTCmodels1(int i)
+{
+	mu.lock();
+	glfwMakeContextCurrent(window);
+	
+		
+		this->wtc.push_back(new wtcLogo((*this->shaderNormal), "resources/models/wtc_logo/wtc_" + std::to_string(i) + ".obj"));
+		// if(i % 3 == 0 || i == 60)
+		// {
+		// 
+		// }
+		glfwMakeContextCurrent(NULL);
+		mu.unlock();
+	
+
+	
 }

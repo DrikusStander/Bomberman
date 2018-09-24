@@ -46,7 +46,7 @@ ifneq ($(DYLD_LIBRARY_PATH),$(ROOT_DIR)/resources/Sound/lib)
 endif
 	@if ! test -d resources; \
 	then if ! test -a resources.zip; \
-	then curl -L -o "resources.zip" "https://drive.google.com/uc?export=download&id=1Q3GjxDyHI3tTV83E77WaJ4j0vZTQ0hlA"; \
+	then curl -L -o "resources.zip" "https://drive.google.com/uc?export=download&id=1jlH9w42SgsKSa80jntQ_dGHl6rddyBgx"; \
 	fi; \
 	unzip resources.zip; \
 	rm -rf resources.zip; \
