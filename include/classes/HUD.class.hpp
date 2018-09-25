@@ -31,7 +31,7 @@ class HUD
 {
 	public:
 		HUD(void);
-		HUD(Shader shader, float screen_x, float screen_y);
+		HUD(Shader shader);
 		HUD(HUD const & src);
 		~HUD(void);
 		HUD const & operator=(HUD const & rhs);

@@ -6,7 +6,7 @@
 #    By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/07/31 19:21:44 by cnolte            #+#    #+#              #
-#    Updated: 2018/09/25 13:50:47 by cnolte           ###   ########.fr        #
+#    Updated: 2018/09/25 14:05:37 by cnolte           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,7 +25,7 @@ SRCS := source/main.cpp source/classes/Game.class.cpp source/classes/Camera.clas
 
 OBJS := $(SRCS:.cpp=.o)
 
-CXX := clang++ -std=c++11
+CXX := clang++ -std=c++11 -Wall -Werror -Wextra
 
 INC_DIRS = include/ include/classes $(HOME)/.brew/include resources/SOIL2 resources/Sound/include
 CXXFLAGS += $(addprefix -I, $(INC_DIRS))

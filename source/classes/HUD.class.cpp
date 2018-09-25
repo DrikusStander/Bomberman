@@ -7,7 +7,7 @@ HUD::HUD(void)
 	return;
 }
 
-HUD::HUD(Shader shader, float screen_x, float screen_y)
+HUD::HUD(Shader shader)
 {
 	this->_shader = shader;
 	this->HUD_Pos.left = -0.123f;
@@ -38,7 +38,7 @@ HUD const & HUD::operator=(HUD const & rhs)
 {
 	if (this != &rhs)
 	{
-		for (int i = 0; i < rhs.HUD_item.size(); i++)
+		for (int i = 0; i < static_cast<int>(rhs.HUD_item.size()); i++)
 			this->HUD_item.push_back(rhs.HUD_item[i]);
 		this->_shader = rhs._shader;
 		this->lives = rhs.lives;

@@ -70,10 +70,10 @@ class World
 		bool					debug;
 
 	public:
-		World(Shader &shader, std::string model, float screen_x, float screen_y, GLFWwindow	*window, const bool debug);
-		World(Shader &shader, std::string model, float screen_x, float screen_y, GLFWwindow	*window, std::string savedGame, const bool debug);
+		World(Shader &shader, std::string model, GLFWwindow	*window, const bool debug);
+		World(Shader &shader, std::string model, GLFWwindow	*window, std::string savedGame, const bool debug);
 		World(World const & src);
-		~World(void);
+		virtual ~World(void);
 		World const & operator=(World const & rhs);
 		void	draw(Camera &camera, const GLfloat glfwTime);
 		virtual void	ProcessKeyboard(Direction direction, Camera &camera, bool toggleFlash);

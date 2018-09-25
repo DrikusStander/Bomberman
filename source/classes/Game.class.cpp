@@ -24,6 +24,9 @@ int		tempKEY;
 // Is called whenever a key is pressed/released via GLFW
 void	KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mode)
 {
+	(void)mode;
+	(void)window;
+	(void)scancode;
 	if (key >= 0 && key < 1024)
 	{
 		if (action == GLFW_PRESS)
@@ -40,6 +43,7 @@ void	KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mode
 
 void	MouseCallback(GLFWwindow *window, double xPos, double yPos)
 {
+	(void) window;
 	if (firstMouse)
 	{
 		lastX = xPos;
@@ -629,7 +633,7 @@ void 	createWorld(Game *game)
 
 void 	Game::createWorld2(void )
 {
-	this->world = new World(*(this->shaderActive), "resources/models/world.obj", this->screen_x, this->screen_y, this->window, this->debug);
+	this->world = new World(*(this->shaderActive), "resources/models/world.obj", this->window, this->debug);
 	this->loadVisible = false;
 }
 
@@ -651,7 +655,7 @@ void 	loadGame(Game *game)
 
 void 	Game::loadGame1(void )
 {
-	this->world = new World(*(this->shaderNormal), "resources/models/world.obj", this->screen_x, this->screen_y, this->window, "saveGame", this->debug);
+	this->world = new World(*(this->shaderNormal), "resources/models/world.obj", this->window, "saveGame", this->debug);
 	this->stage = this->world->getStage();
 	this->loadVisible = false;
 	this->lives = this->world->getLives();

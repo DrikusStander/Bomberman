@@ -364,8 +364,8 @@ void	Player::ProcessKeyboard(Direction direction)
 					break;
 				if (this->bomb[i]->getActive() == false)
 				{
-					float bomb_x;
-					float bomb_z;
+					float bomb_x = 0.0f;
+					float bomb_z = 0.0f;
 					if (fmod(((168) - (this->z_trans - 10.5)), -21) > 10.5)
 						bomb_z = this->z_trans + fmod(((168) - (this->z_trans)), -21);
 					else if (fmod(((168) - (this->z_trans - 10.5)), -21) <= 10.5)

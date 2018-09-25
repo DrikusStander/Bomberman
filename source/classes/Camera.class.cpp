@@ -6,7 +6,7 @@
 /*   By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/11 11:26:34 by cnolte            #+#    #+#             */
-/*   Updated: 2018/09/21 19:19:50 by cnolte           ###   ########.fr       */
+/*   Updated: 2018/09/25 14:08:22 by cnolte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -198,8 +198,8 @@ void		Camera::setYaw(GLfloat yaw)
 
 void		Camera::set2Dview(const float posX, const float posZ)
 {
-	float	moveX;
-	float	moveZ;
+	float	moveX = 0.0f;
+	float	moveZ = 0.0f;
 
 	if ((posX >= -180) && (posX <= -40))
 		moveX = -40.0f;

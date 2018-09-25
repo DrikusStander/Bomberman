@@ -1,7 +1,7 @@
 #include "World.class.hpp"
 std::mutex mu;
 
-World::World(Shader &shader, std::string model, float screen_x, float screen_y, GLFWwindow	*window, const bool debug)
+World::World(Shader &shader, std::string model, GLFWwindow	*window, const bool debug)
 {
 	this->debug = debug;
 	mu.lock();
@@ -12,7 +12,7 @@ World::World(Shader &shader, std::string model, float screen_x, float screen_y, 
 
 	mu.lock();
 	glfwMakeContextCurrent(window);	
-	this->hud = HUD(shader, screen_x, screen_y);
+	this->hud = HUD(shader);
 	glfwMakeContextCurrent(NULL);
 	mu.unlock();
 
@@ -179,7 +179,7 @@ World::World(Shader &shader, std::string model, float screen_x, float screen_y, 
 }
 
 // load saved game constructor
-World::World(Shader &shader, std::string model, float screen_x, float screen_y, GLFWwindow	*window, std::string savedGame, const bool debug)
+World::World(Shader &shader, std::string model, GLFWwindow	*window, std::string savedGame, const bool debug)
 {
 	this->debug = debug;
 	mu.lock();
@@ -190,7 +190,7 @@ World::World(Shader &shader, std::string model, float screen_x, float screen_y, 
 
 	mu.lock();
 	glfwMakeContextCurrent(window);
-	this->hud = HUD(shader, screen_x, screen_y);
+	this->hud = HUD(shader);
 	glfwMakeContextCurrent(NULL);
 	mu.unlock();
 
@@ -582,8 +582,6 @@ void World::draw(Camera &camera, const GLfloat glfwTime)
 				{
 					if (it == this->objects->end())
 						break;
-					int objRow = (*it)->getRow();
-					int objCol = (*it)->getCol();
 					if ((*it)->getRow() == i && (*it)->getCol() == j)
 					{
 						if ((rand() % this->wallCount) == 0 && this->portalActive == false)

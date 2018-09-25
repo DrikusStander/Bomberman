@@ -22,7 +22,7 @@ class Player : public Character
 	public:
 		Player( Shader &shader, std::string model);
 		Player( Player const & src);
-		~Player( void );
+		virtual ~Player(void);
 		Player const & operator=(Player const & rhs);
 		void draw(void);
 		void	ProcessKeyboard(Direction direction);

@@ -14,7 +14,7 @@ class Enemy : public Character
 	public:
 		Enemy( Shader &shader, std::string model);
 		Enemy( Enemy const & src);
-		~Enemy( void );
+		virtual ~Enemy(void);
 		Enemy const & operator=(Enemy const & rhs);
 		void draw(void);
 		void	ProcessKeyboard(Direction direction);
