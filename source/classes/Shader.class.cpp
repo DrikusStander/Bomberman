@@ -6,7 +6,7 @@
 /*   By: cnolte <cnolte@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/11 11:26:34 by cnolte            #+#    #+#             */
-/*   Updated: 2018/09/20 15:38:22 by cnolte           ###   ########.fr       */
+/*   Updated: 2018/09/25 11:31:34 by cnolte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ Shader::Shader(const GLchar *vertexPath, const GLchar *fragmentPath)
 	std::ifstream	vShaderFile;
 	std::ifstream	fShaderFile;
 	std::string temp(vertexPath);
-	if (temp == "resources/shaders/lighting.vs")
+	if (temp == "source/shaders/lighting.vs")
 	{
 		this->flashlight = true;
 	}

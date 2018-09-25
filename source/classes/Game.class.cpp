@@ -128,9 +128,9 @@ Game::Game(const int width, const int height, const bool debug) : screen_x(width
 	// OpenGL options
 	glEnable(GL_DEPTH_TEST);
 	// Setup and compile our shaders
-	Shader	shader("resources/shaders/modelLoading.vert", "resources/shaders/modelLoading.frag");
+	Shader	shader("source/shaders/modelLoading.vert", "source/shaders/modelLoading.frag");
 	this->shaderNormal = &shader;
-	Shader	shaderFlash("resources/shaders/lighting.vs", "resources/shaders/lighting.frag");
+	Shader	shaderFlash("source/shaders/lighting.vs", "source/shaders/lighting.frag");
 	this->shaderFlash = &shaderFlash;
 	this->shaderActive = this->shaderNormal;
 
@@ -225,7 +225,7 @@ Game::Game(const int width, const int height, const bool debug) : screen_x(width
 
 			usleep(30000);
 		}
-		if (this->menuVisible == true || this->soundMenuVisible == true)
+		else if (this->menuVisible == true || this->soundMenuVisible == true)
 			this->menuIsVisible();
 		else
 		{
@@ -850,10 +850,7 @@ void	Game::menuIsVisible( void )
 						getline(file, line);
 						tokens = strsplit(line, ' ');
 						if (tokens[0] == "stage:")
-						{
-							std::cout << tokens[0] << std::endl;
 							std::istringstream(tokens[1]) >> this->stage;
-						}
 						file.close();
 						switch(this->stage)
 						{
