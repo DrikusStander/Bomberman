@@ -60,7 +60,6 @@ Game::Game(void) : screen_x(100), screen_y(100)
 
 Game::Game(const int width, const int height, const bool debug) : screen_x(width), screen_y(height), debug(debug)
 {
-	std::cout << "Game: Loading..." << std::endl;
 	bool	died_msg = false;
 	this->last_menu = 0;
 	this->fullScreenItteration = 2;
@@ -138,10 +137,7 @@ Game::Game(const int width, const int height, const bool debug) : screen_x(width
 	{
 		std::thread *modelsWTCThread =  new std::thread(loadWTCmodels, this, i);
 		modelsWTCThread->detach();
-		// usleep(300000);
 	}
-	std::cout << "wtc models loaded"<< std::endl;
-
 
 	std::thread *modelsThread =  new std::thread(loadmodels, this);
 	modelsThread->detach();
@@ -266,6 +262,7 @@ Game::Game(const int width, const int height, const bool debug) : screen_x(width
 					if (world->getStatus() == 1)
 					{
 						delete this->world;
+						this->world->sound->setMusicGame(false);
 						this->menuVisible = true;
 						this->menuActive = 26;
 						this->pause_died = this->lastFrame;
@@ -524,6 +521,7 @@ void Game::MoveMenu(void)
 				{
 					this->menuVisible = false;
 					this->pauseVisible = true;
+					this->world->sound->setMusicGame(false);
 					this->check = 1;
 					this->pauseActive = 3;
 				} 
@@ -579,6 +577,7 @@ void	Game::DoMovement(void)
 	{
 		keys[GLFW_KEY_ESCAPE] = false;
 		this->pauseActive = 0;
+		this->world->sound->setMusicGame(false);
 		this->toggleFlash = false;
 		this->pauseVisible = true;
 		if (this->debug == false)
@@ -838,11 +837,13 @@ void	Game::menuIsVisible( void )
 					this->loadVisible =true;
 					std::thread *worldThread =  new std::thread(createWorld, this);
 					worldThread->detach();
+					this->world->sound->setMusicGame(true);
 				}
 				else if (this->menuActive == 1)//load Game
 				{
 					if (exist("saveGame"))
 					{
+						this->world->sound->setMusicGame(true);
 						std::ifstream file;
 						std::string	line;
 						std::vector<std::string> tokens;
@@ -1213,9 +1214,11 @@ void	Game::pauseIsVisible( void )
 			{
 				case 0://Resume Game
 					this->pauseVisible = false;
+					this->world->sound->setMusicGame(true);
 					break ;
 				case 1:// Save Game
 					this->world->saveWorld();
+					this->world->sound->setMusicGame(true);
 					pauseVisible = false;
 					break ;
 				case 2://Load Game
@@ -1248,6 +1251,7 @@ void	Game::pauseIsVisible( void )
 						this->loadVisible = true;
 						worldThread = new std::thread(loadGame, this);
 						worldThread->detach();
+						this->world->sound->setMusicGame(true);
 					}
 					else
 						this->pauseActive = 5;

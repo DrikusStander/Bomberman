@@ -3,7 +3,6 @@ std::mutex mu;
 
 World::World(Shader &shader, std::string model, float screen_x, float screen_y, GLFWwindow	*window, const bool debug)
 {
-	// std::cout << "World - Parametric Constructor called " << std::endl;
 	this->debug = debug;
 	mu.lock();
 	glfwMakeContextCurrent(window);
@@ -555,6 +554,7 @@ void World::draw(Camera &camera, const GLfloat glfwTime)
 				if (this->player->getRow() == i && this->player->getCol() == j && this->player->getInvincible() == false)
 				{
 					this->lives = this->player->subLife();
+					sound->playDie();
 					this->player->setPos(-168, -168, 0, 0);
 					if ((this->_shader->getFlashLight() == true) && this->debug == false)
 						this->moveCameraFp(camera);
@@ -669,14 +669,17 @@ void World::draw(Camera &camera, const GLfloat glfwTime)
 							case 0:
 								it = this->powerups->erase(it);
 								this->bombRaduis_index--;
+								sound->playPickup();
 								break;
 							case 1:
 								it = this->powerups->erase(it);
 								this->speed_index--;
+								sound->playPickup();
 								break;
 							case 2:
 								it = this->powerups->erase(it);
 								this->bombCount_index--;
+								sound->playPickup();
 								break;
 							case 3:
 							{
