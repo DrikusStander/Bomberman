@@ -14,3 +14,8 @@ Bomberman is a classic video game: as simple in its gameplay as fun to play! Her
 * Rigor 
 * Graphics 
 * Group & interpersonal 
+
+###### Contributors
+* [cnolte1](https://github.com/cnolte1)
+* [dylanmilliams](https://github.com/daylanwilliams)
+* [DrikusStander](https://github.com/DrikusStander)
